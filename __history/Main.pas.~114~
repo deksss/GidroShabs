@@ -88,6 +88,10 @@ type
     Label1: TLabel;
     EditNumberPrognoz: TEdit;
     ButtonNumberPrognoz: TButton;
+    IBQueryNUMVIPUSK: TIBQuery;
+    RadioGroupPROGorKon: TRadioGroup;
+    CheckDeckList: TCheckListBox;
+    CheckBUtochMonh: TCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure TreeView1CustomDrawItem(Sender: TCustomTreeView; Node: TTreeNode;
       State: TCustomDrawState; var DefaultDraw: Boolean);
@@ -114,6 +118,8 @@ procedure Progn_dnist_mon;
     procedure OpenFileClick(Sender: TObject);
     procedure ExportcabClick(Sender: TObject);
     procedure ExpEmailClick(Sender: TObject);
+    procedure ButtonNumberPrognozClick(Sender: TObject);
+    procedure RadioGroupPROGorKonClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -127,12 +133,13 @@ var
   i, c, j: integer;
   m, mb, me: integer; // ---month-begin month, end month
   d, dbeg, dend: integer; // --decada-begin decada, end decada
+  tmp_int:integer;
   parForm,Nach1,Nach2: string;
   MyTreeNode1, MyTreeNode2: TTreeNode;
   DateProgn: TDateTime;
   // ----------shabl---------
   WordApp: TWordApplication;
-  wdUnit, tmp1, tmp2, tmp3, tmp4, RowsIns: OleVariant;
+  wdUnit, tmp1, tmp2, tmp3, tmp4, tmp9, RowsIns: OleVariant;
   m_TemplateFile, m_ReportFileName: string;
   // ----------
   fi : WIN32_FILE_ATTRIBUTE_DATA;
@@ -191,11 +198,50 @@ FileSystemCreate,FileSystemModify:SYSTEMTIME;
     9,
     12
   );
+  progOrKon:string = 'Консульатція';
 
 implementation
 
 uses den, IniFiles,MAPI;
 {$R *.dfm}
+
+function generateDecLabel():string;
+var
+str:string;
+begin
+if (Form1.CheckDeckList.Checked[0]=true) then
+ str:= 'першу';
+if (Form1.CheckDeckList.Checked[1]=true) then
+begin
+if str<>'' then
+  str:=str+', ';
+ str:=str+ 'другу';
+end;
+if (Form1.CheckDeckList.Checked[2]=true) then begin
+if str<>'' then
+  str:=str+', ';
+ str:=str+'третю';
+end;
+ str:=str+' декаду';
+ result:=str;
+end;
+
+function decCount():integer;
+ var n:integer;
+begin
+n:=0;
+  if (Form1.CheckDeckList.Checked[0]=true)
+  then
+  n:=n+1;
+   if (Form1.CheckDeckList.Checked[1]=true)
+  then
+  n:=n+1;
+   if (Form1.CheckDeckList.Checked[2]=true)
+  then
+  n:=n+1;
+
+  result:=n;
+end;
 
 function SendEMail(Handle: THandle; Mail: TStrings): Cardinal;
 type
@@ -319,11 +365,12 @@ begin
   begin
     if (ComboDecMonList.Visible) and (ComboDecMonList.ItemIndex = -1) then
     begin
-      ShowMessage('Не вибрано декаду місяця.');
+      ShowMessage('Не вибрано місяць.');
       Exit;
     end
     else if (ComboDecMonList.Visible) and (ComboDecMonList.ItemIndex >= 0) then
-      if (RadioDeckList.ItemIndex = -1) then
+    //  if (RadioDeckList.ItemIndex = -1) then
+   if (CheckDeckList.Checked[0] = false) and (CheckDeckList.Checked[1] = false) and (CheckDeckList.Checked[2] = false) then
       begin
         ShowMessage('Не вибрано декаду місяця.');
         Exit;
@@ -466,10 +513,20 @@ begin
   wdUnit := '#numvipusk';
   tmp1 := true;
   tmp2 := wdFindContinue;
-  tmp3 := ''; // LENvipusk.Text;
+  tmp3 := EditNumberPrognoz.Text;
   tmp4 := wdReplaceAll;
   WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
     EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+
+    wdUnit := '#PrognozOrKonsultaciya';
+  tmp1 := true;
+  tmp2 := wdFindContinue;
+  tmp3 := progOrKon;
+  tmp4 := wdReplaceAll;
+  WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+    EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+
+
   //--------
     wdUnit := '#Zabezp';
     tmp1 := true;
@@ -696,7 +753,7 @@ begin
   wdUnit := '#numvipusk';
   tmp1 := true;
   tmp2 := wdFindContinue;
-  tmp3 := ''; // LENvipusk.Text;
+  tmp3 := EditNumberPrognoz.Text;
   tmp4 := wdReplaceAll;
   WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
     EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
@@ -1007,7 +1064,7 @@ begin
   Screen.Cursor := crHourGlass;
   WordApp := TWordApplication.Create(Self);
   WordApp.Connect();
-  WordApp.Visible := false;
+  WordApp.Visible := true;
 {$IFDEF DEBUG}
   // WordApp.Visible := true;
 {$ENDIF}
@@ -1037,7 +1094,7 @@ begin
   wdUnit := '#numvipusk';
   tmp1 := true;
   tmp2 := wdFindContinue;
-  tmp3 := ''; // LENvipusk.Text;
+  tmp3 := EditNumberPrognoz.Text;
   tmp4 := wdReplaceAll;
   WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
     EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
@@ -1072,6 +1129,26 @@ begin
   tmp4 := wdReplaceOne;
   WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
     EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+
+    //new b
+
+        wdUnit := '#DateTable';
+    tmp1 := true;
+    tmp2 := wdFindStop;
+    tmp3 := '';
+    tmp4 := wdReplaceOne;
+    WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+      EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+    if CheckDeckList.Visible=true then
+      tmp9:=decCount()-1
+      else
+      tmp9:=0;
+      if (tmp9>0) then
+      WordApp.Selection.InsertRows(tmp9);
+
+
+
+    //new e
   // вставляем данные в таблицу, при этом удаляем ненужные столбцы
   // после областей Херсонская=23 и Черновецкая=12 пропускаем 1 строку
   wdUnit := wdCharacter;
@@ -1082,6 +1159,8 @@ begin
     // ===========================================================
     for j := 0 to 1 do
     begin
+
+
       if j = 0 then
       begin
         basesql := 'gydro_4_5';
@@ -1106,17 +1185,62 @@ begin
           ('select *  from q_zabezp q where q.post_index="' + ind_st +
             '" and q.proc="' + zabezp_proc + '"');
         IBQZABEZP.Open;
-        curCol := curCol + 2;
+
+        if   CheckDeckList.Visible=false then
+        curCol := curCol + 2
+        else begin
+
+        wdUnit := '#KanivTable2';
+  tmp1 := true;
+  tmp2 := wdFindStop;
+  tmp3 := '';
+  tmp4 := wdReplaceOne;
+  WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+    EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+
+    //new b
+
+        wdUnit := '#KanivTable2';
+    tmp1 := true;
+    tmp2 := wdFindStop;
+    tmp3 := '';
+    tmp4 := wdReplaceOne;
+    WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+      EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+
+      if CheckDeckList.Visible=true then
+      tmp9:=decCount()-1
+      else
+      tmp9:=0;
+      if (tmp9>0) then
+      WordApp.Selection.InsertRows(tmp9);
+         curCol := curCol + 1;
+        end;
       end;
       // ------------декада-----------------
+
+
       if copy(parForm, 1, 1) = '1' then
         if CBDekeda.Checked then
         begin
           if ((ComboDecMonList.ItemIndex >= 0) and
-              (RadioDeckList.ItemIndex >= 0)) then
+              (CheckDeckList.ItemIndex >= 0)) then
           begin
+          if Form1.CheckDeckList.Checked[0]=true then  begin
             Cell(curCol, 1).Range.Text := Mon_ukr[ComboDecMonList.ItemIndex]
-              + ', ' + Dec_ukr[RadioDeckList.ItemIndex];
+              + ', ' + Dec_ukr[0];
+               curCol := curCol + 1;
+          end;
+               if Form1.CheckDeckList.Checked[1]=true then  begin
+            Cell(curCol, 1).Range.Text := Mon_ukr[ComboDecMonList.ItemIndex]
+              + ', ' + Dec_ukr[1];
+                curCol := curCol + 1;
+               end;
+               if Form1.CheckDeckList.Checked[2]=true then begin
+            Cell(curCol, 1).Range.Text := Mon_ukr[ComboDecMonList.ItemIndex]
+              + ', ' + Dec_ukr[2];
+                curCol := curCol + 1;
+               end;
           end;
         end;
       // ---------місяць-----------
@@ -1257,7 +1381,7 @@ begin
               curCol := curCol + 1;
             end;
             Cell(curCol, 1).Range.Text := Kvart_ukr[RadioKvartList.ItemIndex]
-              + ', сер.';
+              + ', середній';
             // -------------------
             if not IBQZABEZP.FieldByName
               ('q' + IntToStr(RadioKvartList.ItemIndex + 1) + 'kv').IsNull then
@@ -1295,7 +1419,7 @@ begin
             WordApp.Selection.InsertRowsBelow(RowsIns);
             curCol := curCol + 1;
           end;
-          Cell(curCol, 1).Range.Text := 'період IV - XII , сер.';
+          Cell(curCol, 1).Range.Text := 'період IV - XII , середній';
           // -----------------------------
           year_prog := StrToInt(FormatDateTime('yyyy', DTProgn.Date)) - 1;
           dat_beg := '01.04.' + IntToStr(year_prog);
@@ -1313,6 +1437,7 @@ begin
               (IBQPripliv.FieldByName('QQ').AsFloat);
         end;
       // -------utoch-------------
+      {
       if (UtochDecada.Checked) or (UtochMonList.Checked) or
         (UtochMonPer.Checked) or (UtochKvart.Checked) then
       begin
@@ -1327,7 +1452,7 @@ begin
         WordApp.Selection.EndKey(tmp2, tmp3);
         WordApp.Selection.Cells.Merge;
       end;
-
+          }
     end;
     // ------------------------------------
     // ======================================================================
@@ -1406,6 +1531,13 @@ begin
   Screen.Cursor := crArrow;
 end;
 
+procedure TForm1.RadioGroupPROGorKonClick(Sender: TObject);
+begin
+if RadioGroupPROGorKon.ItemIndex = 0 then
+progOrKon:='Консультація' else
+progOrKon:='Прогноз';
+end;
+
 procedure TForm1.OpenFileClick(Sender: TObject);
 begin
   if FileExists(putchshab + '\' + m_TemplateFile) then
@@ -1461,9 +1593,24 @@ if FileExists(putchrezultcab + '\' + m_ReportFileName) then ShowMessage('Фай�
 end else ShowMessage('Файл для відправлення в кабінет відсутній, сформуйте його!');
 end;
 
+procedure TForm1.ButtonNumberPrognozClick(Sender: TObject);
+var
+ IBsetNum: TIBQuery;
+begin
+       IBsetNum := TIBQuery.Create(nil);
+   IBsetNum.Database := IBDatabase1;
+    IBsetNum.Transaction := IBTransaction1;
+   IBsetNum.Close;
+    IBsetNum.SQL.Text :=
+'UPDATE PROGNPERIOD  SET NUMVIPUSK =' + EditNumberPrognoz.text +
+'WHERE NPERIOD ='+ inttostr(TreeView1.Selected.StateIndex);
+  IBsetNum.Open;
+end;
+
 procedure TForm1.CBDekedaClick(Sender: TObject);
 begin
   RadioDeckList.Visible := CBDekeda.Checked;
+  CheckDeckList.Visible := CBDekeda.Checked;
   Label3.Visible := CBDekeda.Checked;
   ComboDecMonList.Visible := CBDekeda.Checked;
   UtochDecada.Visible := CBDekeda.Checked;
@@ -1492,6 +1639,8 @@ end;
 procedure TForm1.ComboDecMonListChange(Sender: TObject);
 begin
   // NameProgn(parForm);
+
+  CheckBUtochMonh.Visible:=true;
 end;
 
 procedure TForm1.ComboMonListChange(Sender: TObject);
@@ -1725,6 +1874,7 @@ begin
   ComboMonList.Items.Clear;
   ComboDecMonList.Items.Clear;
   ComboMonList.Text := '';
+  ComboDecMonList.Text := '';
   CBmonmbeg.Text := '';
   CBmonmend.Text := '';
   for i := 0 to 11 do
@@ -1753,11 +1903,14 @@ begin
   end;
   // ----------------------
   PanelDec.Visible := false;
+  RadioGroupPROGorKon.Visible:=false;
   CBDekeda.Checked := false;
   UtochDecada.Checked := false;
   RadioDeckList.Visible := false;
+  CheckDeckList.Visible := false;
   Label3.Visible := false;
   ComboDecMonList.Visible := false;
+  CheckBUtochMonh.Visible := false;
   // ----------------------
   PanelMon.Visible := false;
   CBMonList.Checked := false;
@@ -1797,6 +1950,7 @@ begin
   if TreeView1.Selected.Level = 1 then
   begin
     Panel5.Visible := true;
+    PanelNumberPrognoz.Visible:=true;
     // -----------------------
     IBViewForm := TIBQuery.Create(nil);
     IBViewForm.Database := IBDatabase1;
@@ -1812,6 +1966,7 @@ begin
       // ------------------------------------------------------------------------
       if parForm = 'dmp' then
       begin
+      RadioGroupPROGorKon.Visible:=true;
           PanelMon.Visible := true;
           CBMonList.Checked := true;
           UtochMonList.Visible := false;
@@ -1852,6 +2007,7 @@ begin
           CBDekeda.Checked := false;
           UtochDecada.Checked := false;
           RadioDeckList.Visible := false;
+          CheckDeckList.Visible := false;
         end;
         // ----month------
         if copy(parForm, 2, 1) = '1' then
@@ -1891,6 +2047,7 @@ begin
         end;
       end;
       // -----------------
+      EditNumberPrognoz.Text:=  IBViewForm.FieldByName('NUMVIPUSK').AsString;
       m_TemplateFile := IBViewForm.FieldByName('NAME_SHABLON').AsString;
       m_ReportFileName := IBViewForm.FieldByName('RESULT_FILENAME').AsString;
       NFile.Caption :=
@@ -2045,14 +2202,19 @@ begin
   // if copy(idparam, 1, 1) = '1' then
   // begin
   if ((CBDekeda.Checked) and (ComboDecMonList.ItemIndex >= 0) and
-      (RadioDeckList.ItemIndex >= 0)) then
+     // (RadioDeckList.ItemIndex >= 0)) then
+     (CheckDeckList.ItemIndex >= 0)) then
   begin
-    if UtochDecada.Checked then
-      Decklist := 'уточнення на ' + Dec_ukr_str[RadioDeckList.ItemIndex]
-        + ' ' + Mon_ukr_str[ComboDecMonList.ItemIndex] + ''
-    else
-      Decklist := 'на ' + Dec_ukr_str[RadioDeckList.ItemIndex]
-        + ' ' + Mon_ukr_str[ComboDecMonList.ItemIndex] + '';
+  //  if UtochDecada.Checked then
+ //     Decklist := 'уточнення на ' + Dec_ukr_str[RadioDeckList.ItemIndex]
+    //    + ' ' + Mon_ukr_str[ComboDecMonList.ItemIndex] + ''
+ //     Decklist := 'на ' +  generateDecLabel()
+//   + ' ' + Mon_ukr_str[ComboDecMonList.ItemIndex] + ' (уточнення)'
+//    else
+  //    Decklist := 'на ' + Dec_ukr_str[RadioDeckList.ItemIndex]
+  //      + ' ' + Mon_ukr_str[ComboDecMonList.ItemIndex] + '';
+        Decklist := 'на ' + generateDecLabel()
+          + ' ' + Mon_ukr_str[ComboDecMonList.ItemIndex] + '';
   end;
   // end;
   // ----month------
@@ -2143,6 +2305,8 @@ begin
   // --------------
   if result <> '' then
     result := result + ' ' + FormatDateTime('yyyy', DTProgn.Date) + 'р.';
+      if UtochDecada.Checked then
+      result:=result+' (уточнення)'
   // =====================================================
 
 end;

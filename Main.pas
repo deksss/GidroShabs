@@ -1139,12 +1139,17 @@ begin
     tmp4 := wdReplaceOne;
     WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
       EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
-    if CheckDeckList.Visible=true then
+
+ if CheckDeckList.Visible=true then
       tmp9:=decCount()-1
       else
       tmp9:=0;
-      if (tmp9>0) then
+      if (tmp9>0) then begin
+        if CheckBUtochMonh.Checked=true then
+      tmp9:=  tmp9+1;
       WordApp.Selection.InsertRows(tmp9);
+         curCol := curCol + 1;
+      end;
 
 
 
@@ -1212,12 +1217,18 @@ begin
       tmp9:=decCount()-1
       else
       tmp9:=0;
-      if (tmp9>0) then
+      if (tmp9>0) then begin
+        if CheckBUtochMonh.Checked=true then
+      tmp9:=  tmp9+1;
       WordApp.Selection.InsertRows(tmp9);
          curCol := curCol + 1;
+      end;
+
         end;
       end;
       // ------------декада-----------------
+
+
 
 
       if copy(parForm, 1, 1) = '1' then
@@ -1241,8 +1252,14 @@ begin
               + ', ' + Dec_ukr[2];
                 curCol := curCol + 1;
                end;
+               if CheckBUtochMonh.Checked then begin
+                   Cell(curCol, 1).Range.Text := Mon_ukr[ComboDecMonList.ItemIndex];
+                curCol := curCol + 1;
+               end;
           end;
         end;
+
+
       // ---------місяць-----------
       if copy(parForm, 2, 1) = '1' then
         if CBMonList.Checked then
@@ -2216,6 +2233,18 @@ begin
         Decklist := 'на ' + generateDecLabel()
           + ' ' + Mon_ukr_str[ComboDecMonList.ItemIndex] + '';
   end;
+
+
+    if ((CBDekeda.Checked) and (ComboDecMonList.ItemIndex >= 0) and
+
+     (CheckDeckList.ItemIndex >= 0)) then
+  begin
+        Decklist := 'на ' + generateDecLabel()
+          + ' ' + Mon_ukr_str[ComboDecMonList.ItemIndex] + ' та уточнення на '+Mon_ukr[ComboDecMonList.ItemIndex] ;
+  end;
+
+
+
   // end;
   // ----month------
   // if copy(idparam, 2, 1) = '1' then
