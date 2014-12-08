@@ -1,0 +1,638 @@
+unit ListZakladki;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, Buttons, DB, IBCustomDataSet, IBQuery, DBCtrls, Grids,
+  DBGrids, ExtCtrls;
+
+
+type
+TLocateOptionMay = set of (loPrimary, loPos);
+  TForm2 = class(TForm)
+    ListBox1: TListBox;
+    DeleteZakladka: TSpeedButton;
+    ExitForm: TSpeedButton;
+    AddZakladka: TSpeedButton;
+    EditZakladka: TSpeedButton;
+    RefreshZakladki: TSpeedButton;
+    PriorZakladka: TSpeedButton;
+    NextZakladka: TSpeedButton;
+    VodocheQuery: TIBQuery;
+    DataSource6: TDataSource;
+    Panel1: TPanel;
+    Label5: TLabel;
+    Group_Zakladka: TDBLookupComboBox;
+    Label1: TLabel;
+    Type_Zakladka: TDBLookupComboBox;
+    Group_Zakladka_Query: TIBQuery;
+    DataSource1: TDataSource;
+    DataSource2: TDataSource;
+    Zakladka_Elementi_Query: TIBQuery;
+    Panel3: TPanel;
+    Label6: TLabel;
+    Panel5: TPanel;
+    Label4: TLabel;
+    Vodoche: TDBLookupComboBox;
+    Panel7: TPanel;
+    Label10: TLabel;
+    Yazik: TComboBox;
+    Prognozyear: TComboBox;
+    Panel2: TPanel;
+    Label2: TLabel;
+    Prognozza: TDBLookupComboBox;
+    PrognozQuery: TIBQuery;
+    DataSource3: TDataSource;
+    Panel4: TPanel;
+    Label3: TLabel;
+    Label7: TLabel;
+    Label8: TLabel;
+    monbeg: TComboBox;
+    monend: TComboBox;
+    procedure FormShow(Sender: TObject);
+    procedure ListBox1Click(Sender: TObject);
+    procedure DeleteZakladkaClick(Sender: TObject);
+    procedure FormHide(Sender: TObject);
+    procedure ExitFormClick(Sender: TObject);
+    procedure AddZakladkaClick(Sender: TObject);
+    procedure EditZakladkaClick(Sender: TObject);
+    procedure RefreshZakladkiClick(Sender: TObject);
+    procedure PriorZakladkaClick(Sender: TObject);
+    procedure NextZakladkaClick(Sender: TObject);
+    procedure Group_ZakladkaClick(Sender: TObject);
+    procedure Type_ZakladkaClick(Sender: TObject);
+    procedure VisibleFalseObject;
+    procedure BazaChange(Sender: TObject);
+    procedure YazikChange(Sender: TObject);
+    procedure PrognozzaClick(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  Form2: TForm2;
+  IndexZakladka:OleVariant;
+  BookmarksName:OleVariant;
+  Zakladka:String;
+implementation
+uses unit1, WordXP;
+{$R *.dfm}
+
+function Locate(Query:TIBQuery;KeyFields:string;KeyValue:Variant;Options:TLocateOptionMay):Boolean;
+begin
+Result:=false;
+Query.First;
+while not Query.Eof do
+begin
+if Options=[loPrimary] then
+begin
+if Query.FieldByName(KeyFields).AsString=KeyValue then
+begin
+Result:=true;
+break;
+end;
+end;
+if Options=[loPos] then
+begin
+if pos(KeyValue,Query.FieldByName(KeyFields).AsString)>0 then
+begin
+Result:=true;
+break;
+end;
+end;
+Query.Next;
+end;
+
+end;
+
+
+procedure TForm2.VisibleFalseObject();
+begin
+Label6.Visible:=false;
+Prognozyear.Visible:=false;
+Label4.Visible:=false;
+Vodoche.Visible:=false;
+Label2.Visible:=false;
+Prognozza.Visible:=false;
+Label3.Visible:=false;
+Label7.Visible:=false;
+Label8.Visible:=false;
+monbeg.Visible:=false;
+monend.Visible:=false;
+Label10.Visible:=false;
+Yazik.Visible:=false;
+end;
+
+function zakladki(Doc_:OleVariant):TStringList;
+var
+i:integer;
+temp:OleVariant;
+begin
+Result:=TStringList.Create;
+for i:=1 to Doc_.Count do
+begin
+temp:=i;
+Result.Add(Doc_.Item(temp).Name);
+end;
+
+end;
+
+
+procedure TForm2.FormShow(Sender: TObject);
+var
+rgStart,rgEnd,temp_i:OleVariant;
+i:integer;
+begin
+Group_Zakladka_Query.Close;
+Group_Zakladka_Query.SQL.Text:='select * from WORD_PROGN_GROUP';
+Group_Zakladka_Query.Open;
+Group_Zakladka_Query.Last;
+Group_Zakladka_Query.First;
+Group_Zakladka.KeyValue:=Group_Zakladka_Query.fieldbyname('name_uk').AsString;
+Group_ZakladkaClick(Sender);
+
+if MsWord.Documents.Count>0 then
+begin
+ListBox1.Items.Text:=zakladki(Doc.Bookmarks).Text;
+//поиск на какой закладке находится курсор начало
+rgStart:=Doc.Application.Selection.Start;
+rgEnd:=Doc.Application.Selection.End_;
+
+for i:=1 to Doc.Bookmarks.Count do
+begin
+temp_i:=i;
+if (Doc.Bookmarks.Item(temp_i).Range.Start<rgEnd) And (Doc.Bookmarks.Item(temp_i).Range.End_>=rgStart) Then
+begin
+ListBox1.Selected[i-1]:=true;
+ListBox1Click(Sender);
+break;
+end;
+end;
+//поиск на какой закладке находится курсор конец
+end
+else
+begin
+MessageDlg('Увага:'+#13#10+'Активних документів незнайдено',mtWarning,[mbOK],0);
+end;
+
+end;
+
+procedure TForm2.ListBox1Click(Sender: TObject);
+var
+format,language,progy:string;
+sutki_:integer;
+begin
+if MsWord.Documents.Count>0 then
+begin
+SendMessageUser('Зачекайте',Form2,true);
+IndexZakladka:=ListBox1.ItemIndex+1;
+Doc.Bookmarks.Item(IndexZakladka).Select;
+BookmarksName:=Doc.Bookmarks.Item(IndexZakladka).Name;
+
+if pos('wDate',copy(BookmarksName,1,pos('ъ',BookmarksName)-1))>0 then
+begin//Закладка Даты начало
+Locate(Group_Zakladka_Query,'type_','wDate',[loPrimary]);//ищем нужную запись
+Group_ZakladkaClick(Sender);
+Group_Zakladka.KeyValue:=Group_Zakladka_Query.fieldbyname('name_uk').AsString;
+BookmarksName:=copy(BookmarksName,pos('ъ',BookmarksName)+1,length(BookmarksName));
+format:=copy(BookmarksName,1,pos('ъ',BookmarksName)-1);
+Locate(Zakladka_Elementi_Query,'value_',format,[loPrimary]);//ищем нужную запись
+Type_ZakladkaClick(Sender);
+Type_Zakladka.KeyValue:=Zakladka_Elementi_Query.fieldbyname('name_uk').AsString;
+BookmarksName:=copy(BookmarksName,pos('ъ',BookmarksName)+1,length(BookmarksName));
+if (format='yy') or (format='yyyy')then
+begin
+progy:='';
+progy:=copy(BookmarksName,1,pos('ъ',BookmarksName)-1);
+if progy<>'' then
+Prognozza.ListFieldIndex:=StrToInt(progy);
+BookmarksName:=copy(BookmarksName,pos('ъ',BookmarksName)+1,length(BookmarksName));
+end;
+language:=copy(BookmarksName,1,pos('ъ',BookmarksName)-1);
+if language='ukr' then Yazik.Text:='Українська';
+if language='rus' then Yazik.Text:='Російська';
+YazikChange(Sender);
+end//Закладка Даты конец
+else
+if pos('Gyd',copy(BookmarksName,1,pos('ъ',BookmarksName)-1))>0 then
+begin//Закладка Бюлетень начало
+{Locate(Group_Zakladka_Query,'type_','wBulleten',[loPrimary]);//ищем нужную запись
+Group_ZakladkaClick(Sender);
+Group_Zakladka.KeyValue:=Group_Zakladka_Query.fieldbyname('name_uk').AsString;
+BookmarksName:=copy(BookmarksName,pos('ъ',BookmarksName)+1,length(BookmarksName));
+pole:=copy(BookmarksName,1,length(BookmarksName));
+Locate(Zakladka_Elementi_Query,'value_',AnsiUpperCase(pole),[loPrimary]);//ищем нужную запись
+Type_ZakladkaClick(Sender);
+Type_Zakladka.KeyValue:=Zakladka_Elementi_Query.fieldbyname('name_uk').AsString;
+end//Закладка Бюлетень конец
+else
+if pos('Sin_sit',copy(BookmarksName,1,pos('ъ',BookmarksName)-1))>0 then
+begin//Закладка Текстовой информации начало
+Locate(Group_Zakladka_Query,'type_','Sin_sit',[loPrimary]);//ищем нужную запись
+Group_ZakladkaClick(Sender);
+Group_Zakladka.KeyValue:=Group_Zakladka_Query.fieldbyname('name_uk').AsString;
+BookmarksName:=copy(BookmarksName,pos('ъ',BookmarksName)+1,length(BookmarksName));
+pole:=copy(BookmarksName,1,length(BookmarksName));
+Locate(Zakladka_Elementi_Query,'NAME_ZAKLADKA',pole,[loPrimary]);//ищем нужную запись
+Type_ZakladkaClick(Sender);
+Type_Zakladka.KeyValue:=Zakladka_Elementi_Query.fieldbyname('name_uk').AsString;
+end//Закладка Текстовой информации конец
+else
+if pos('EURO',copy(BookmarksName,1,pos('ъ',BookmarksName)-1))>0 then
+begin//Закладка столиц Европы начало
+Locate(Group_Zakladka_Query,'type_','EURO',[loPrimary]);//ищем нужную запись
+Group_ZakladkaClick(Sender);
+Group_Zakladka.KeyValue:=Group_Zakladka_Query.fieldbyname('name_uk').AsString;
+BookmarksName:=copy(BookmarksName,pos('ъ',BookmarksName)+1,length(BookmarksName));
+kod_:=copy(BookmarksName,1,pos('ъ',BookmarksName)-1);
+BookmarksName:=copy(BookmarksName,pos('ъ',BookmarksName)+1,length(BookmarksName));
+pole:=copy(BookmarksName,1,length(BookmarksName));
+Locate(Zakladka_Elementi_Query,'value_',pole,[loPrimary]);//ищем нужную запись
+Type_ZakladkaClick(Sender);
+Type_Zakladka.KeyValue:=Zakladka_Elementi_Query.fieldbyname('name_uk').AsString;
+Locate(EuroCityQuery,'INDEX_STANC',kod_,[loPrimary]);//ищем нужную запись
+EuroCityClick(Sender);
+EuroCity.KeyValue:=EuroCityQuery.fieldbyname('name_uk').AsString;
+end//Закладка столиц Европы конец
+else
+if pos('ABS',copy(BookmarksName,1,pos('ъ',BookmarksName)-1))>0 then
+begin//Закладка Абсолютна начало
+Locate(Group_Zakladka_Query,'type_','ABS',[loPrimary]);//ищем нужную запись
+Group_ZakladkaClick(Sender);
+Group_Zakladka.KeyValue:=Group_Zakladka_Query.fieldbyname('name_uk').AsString;
+BookmarksName:=copy(BookmarksName,pos('ъ',BookmarksName)+1,length(BookmarksName));
+kod_:=copy(BookmarksName,1,pos('ъ',BookmarksName)-1);
+BookmarksName:=copy(BookmarksName,pos('ъ',BookmarksName)+1,length(BookmarksName));
+if copy(BookmarksName,1,1)='_' then
+begin
+BookmarksName:=copy(BookmarksName,2,length(BookmarksName));
+sutki_:=StrToInt('-'+copy(BookmarksName,1,pos('ъ',BookmarksName)-1));
+end
+else sutki_:=StrToInt(copy(BookmarksName,1,pos('ъ',BookmarksName)-1));
+BookmarksName:=copy(BookmarksName,pos('ъ',BookmarksName)+1,length(BookmarksName));
+pole:=copy(BookmarksName,1,length(BookmarksName));
+Locate(Zakladka_Elementi_Query,'value_',pole,[loPrimary]);//ищем нужную запись
+Type_ZakladkaClick(Sender);
+Type_Zakladka.KeyValue:=Zakladka_Elementi_Query.fieldbyname('name_uk').AsString;
+Locate(AbsolutnaIndexQuery,'name_uk',kod_,[loPrimary]);//ищем нужную запись
+AbsolutnaIndexClick(Sender);
+AbsolutnaIndex.KeyValue:=AbsolutnaIndexQuery.fieldbyname('name_uk').AsString;
+Locate(PrognozNaQuery,'kod',sutki_,[loPrimary]);//ищем нужную запись
+PrognozNaClick(Sender);
+PrognozNa.KeyValue:=PrognozNaQuery.fieldbyname('name_uk').AsString;
+end//Закладка Абсолютна конец
+else
+if pos('UKR_INFO',copy(BookmarksName,1,pos('ъ',BookmarksName)-1))>0 then
+begin//Закладка Информация по Украине начало
+Locate(Group_Zakladka_Query,'type_','UKR_INFO',[loPrimary]);//ищем нужную запись
+Group_ZakladkaClick(Sender);
+Group_Zakladka.KeyValue:=Group_Zakladka_Query.fieldbyname('name_uk').AsString;
+BookmarksName:=copy(BookmarksName,pos('ъ',BookmarksName)+1,length(BookmarksName));
+if copy(BookmarksName,1,1)='_' then
+begin
+BookmarksName:=copy(BookmarksName,2,length(BookmarksName));
+sutki_:=StrToInt('-'+copy(BookmarksName,1,length(BookmarksName)));
+end
+else sutki_:=StrToInt(copy(BookmarksName,1,length(BookmarksName)));
+Locate(Zakladka_Elementi_Query,'value_','UKR_INFO',[loPrimary]);//ищем нужную запись
+Type_ZakladkaClick(Sender);
+Type_Zakladka.KeyValue:=Zakladka_Elementi_Query.fieldbyname('name_uk').AsString;
+Locate(PrognozNaQuery,'kod',sutki_,[loPrimary]);//ищем нужную запись
+PrognozNaClick(Sender);
+PrognozNa.KeyValue:=PrognozNaQuery.fieldbyname('name_uk').AsString;
+end//Закладка Информация по Украине конец
+else
+if pos('IMAGE',copy(BookmarksName,1,pos('ъ',BookmarksName)-1))>0 then
+begin//Закладка Рисунки начало
+Locate(Group_Zakladka_Query,'type_','IMAGE',[loPrimary]);//ищем нужную запись
+Group_ZakladkaClick(Sender);
+Group_Zakladka.KeyValue:=Group_Zakladka_Query.fieldbyname('name_uk').AsString;
+BookmarksName:=copy(BookmarksName,pos('ъ',BookmarksName)+1,length(BookmarksName));
+table:=copy(BookmarksName,1,pos('ъ',BookmarksName)-1);
+BookmarksName:=copy(BookmarksName,pos('ъ',BookmarksName)+1,length(BookmarksName));
+if copy(BookmarksName,1,1)='_' then
+begin
+BookmarksName:=copy(BookmarksName,2,length(BookmarksName));
+sutki_:=StrToInt('-'+copy(BookmarksName,1,pos('ъ',BookmarksName)-1));
+end
+else sutki_:=StrToInt(copy(BookmarksName,1,pos('ъ',BookmarksName)-1));
+
+BookmarksName:=copy(BookmarksName,pos('ъ',BookmarksName)+1,length(BookmarksName));
+kod_:=copy(BookmarksName,1,pos('ъ',BookmarksName)-1);
+BookmarksName:=copy(BookmarksName,pos('ъ',BookmarksName)+1,length(BookmarksName));
+noch_den:=copy(BookmarksName,1,pos('ъ',BookmarksName)-1);
+BookmarksName:=copy(BookmarksName,pos('ъ',BookmarksName)+1,length(BookmarksName));
+risunok_:=copy(BookmarksName,1,length(BookmarksName));
+
+Locate(Zakladka_Elementi_Query,'value_','IMAGE_METEO',[loPrimary]);//ищем нужную запись
+Type_ZakladkaClick(Sender);
+Type_Zakladka.KeyValue:=Zakladka_Elementi_Query.fieldbyname('name_uk').AsString;
+Locate(PrognozNaQuery,'kod',sutki_,[loPrimary]);//ищем нужную запись
+PrognozNaClick(Sender);
+PrognozNa.KeyValue:=PrognozNaQuery.fieldbyname('name_uk').AsString;
+if table='obl' then Baza.Text:='Областей';
+if table='reg' then Baza.Text:='Регіонів';
+BazaChange(Sender);
+Locate(RegionOblastQuery,'kod',kod_,[loPrimary]);//ищем нужную запись
+RegionOblast.KeyValue:=RegionOblastQuery.fieldbyname('name_uk').AsString;
+if noch_den='1' then Sutki.Text:='Ніч';
+if noch_den='2' then Sutki.Text:='День';
+if risunok_='1' then Risunok.Text:='Кольоровий';
+if risunok_='2' then Risunok.Text:='Чорно-білий';
+RegionOblastClick(Sender);
+end//Закладка Рисунки конец
+else
+if pos('Met',copy(BookmarksName,1,pos('ъ',BookmarksName)-1))>0 then
+begin//Закладка Метео информация начало
+Locate(Group_Zakladka_Query,'type_','Met',[loPrimary]);//ищем нужную запись
+Group_ZakladkaClick(Sender);
+Group_Zakladka.KeyValue:=Group_Zakladka_Query.fieldbyname('name_uk').AsString;
+BookmarksName:=copy(BookmarksName,pos('ъ',BookmarksName)+1,length(BookmarksName));
+table:=copy(BookmarksName,1,pos('ъ',BookmarksName)-1);
+BookmarksName:=copy(BookmarksName,pos('ъ',BookmarksName)+1,length(BookmarksName));
+if copy(BookmarksName,1,1)='_' then
+begin
+BookmarksName:=copy(BookmarksName,2,length(BookmarksName));
+sutki_:=StrToInt('-'+copy(BookmarksName,1,pos('ъ',BookmarksName)-1));
+end
+else sutki_:=StrToInt(copy(BookmarksName,1,pos('ъ',BookmarksName)-1));
+
+BookmarksName:=copy(BookmarksName,pos('ъ',BookmarksName)+1,length(BookmarksName));
+kod_:=copy(BookmarksName,1,pos('ъ',BookmarksName)-1);
+BookmarksName:=copy(BookmarksName,pos('ъ',BookmarksName)+1,length(BookmarksName));
+pole:=copy(BookmarksName,1,length(BookmarksName));
+
+Locate(Zakladka_Elementi_Query,'value_',pole,[loPrimary]);//ищем нужную запись
+Type_ZakladkaClick(Sender);
+Type_Zakladka.KeyValue:=Zakladka_Elementi_Query.fieldbyname('name_uk').AsString;
+Locate(PrognozNaQuery,'kod',sutki_,[loPrimary]);//ищем нужную запись
+PrognozNaClick(Sender);
+PrognozNa.KeyValue:=PrognozNaQuery.fieldbyname('name_uk').AsString;
+if table='obl' then Baza.Text:='Областей';
+if table='reg' then Baza.Text:='Регіонів';
+BazaChange(Sender);
+Locate(RegionOblastQuery,'kod',kod_,[loPrimary]);//ищем нужную запись
+RegionOblast.KeyValue:=RegionOblastQuery.fieldbyname('name_uk').AsString;
+if noch_den='1' then Sutki.Text:='Ніч';
+if noch_den='2' then Sutki.Text:='День';
+if risunok_='1' then Risunok.Text:='Кольоровий';
+if risunok_='2' then Risunok.Text:='Чорно-білий';
+RegionOblastClick(Sender);
+}end;//Закладка Метео информация конец
+SendMessageUser('Зачекайте',Form2,false);
+end;
+
+end;
+
+procedure TForm2.DeleteZakladkaClick(Sender: TObject);
+begin
+if MessageDlg('Видалити закладку?',mtWarning,[mbYes,mbNo],0)=mrYes then
+begin
+SendMessageUser('Зачекайте',Form2,true);
+Doc.Bookmarks.Item(IndexZakladka).Delete;
+ListBox1.Items.Delete(IndexZakladka-1);
+IndexZakladka:=IndexZakladka-1;
+ListBox1.Selected[IndexZakladka-1]:=true;
+ListBox1Click(Sender);
+SendMessageUser('Зачекайте',Form2,false);
+end;
+end;
+
+procedure TForm2.FormHide(Sender: TObject);
+begin
+windows.SetForegroundWindow(HandleWord);
+ListBox1.Items.Clear;
+end;
+
+procedure TForm2.ExitFormClick(Sender: TObject);
+begin
+Form2.Close;
+end;
+
+procedure TForm2.AddZakladkaClick(Sender: TObject);
+var
+range:OleVariant;
+i:integer;
+begin
+SendMessageUser('Зачекайте',Form2,true);
+try
+begin
+range:= Doc.Application.Selection.Range;
+if Doc.Bookmarks.Exists(Zakladka) then
+begin//1 begin
+if MessageDlg('Увага : така закладка вже існує.'+#13#10+'Дублювати?',mtWarning,[mbYes,mbCancel],0)=mrYes then
+begin//2 begin
+for i:=1 to 10 do if Doc.Bookmarks.Exists(Zakladka) then Insert('1',Zakladka,pos('ъ',Zakladka));
+Doc.Bookmarks.Add(Zakladka,range);
+FormShow(Sender);
+end;//2 end
+end
+else
+begin
+Doc.Bookmarks.Add(Zakladka,range);
+FormShow(Sender);
+end;//1 end
+end;
+except
+on Exception do MessageDlg('Ошибка',mtError,[mbOK],0);
+end;
+SendMessageUser('Зачекайте',Form2,false);
+end;
+
+procedure TForm2.EditZakladkaClick(Sender: TObject);
+begin
+Doc.Bookmarks.Item(IndexZakladka).Delete;
+AddZakladka.Click;
+end;
+
+procedure TForm2.RefreshZakladkiClick(Sender: TObject);
+begin
+SendMessageUser('Зачекайте',Form2,true);
+FormShow(Sender);
+SendMessageUser('Зачекайте',Form2,false);
+end;
+
+procedure TForm2.PriorZakladkaClick(Sender: TObject);
+begin
+SendMessageUser('Зачекайте',Form2,true);
+IndexZakladka:=IndexZakladka-1;
+if IndexZakladka<=0 then IndexZakladka:=1;
+ListBox1.Selected[IndexZakladka-1]:=true;
+ListBox1Click(Sender);
+SendMessageUser('Зачекайте',Form2,false);
+end;
+
+procedure TForm2.PrognozzaClick(Sender: TObject);
+begin
+if (PrognozQuery.fieldbyname('value_').AsString='monper') then
+begin
+Label3.Visible:=true;
+Label7.Visible:=true;
+Label8.Visible:=true;
+monbeg.Visible:=true;
+monend.Visible:=true;
+monbeg.ItemIndex:=0;
+monend.ItemIndex:=0;
+end
+else
+begin
+Label3.Visible:=false;
+Label7.Visible:=false;
+Label8.Visible:=false;
+monbeg.Visible:=false;
+monend.Visible:=false;
+monbeg.ItemIndex:=0;
+monend.ItemIndex:=0;
+end
+end;
+
+procedure TForm2.NextZakladkaClick(Sender: TObject);
+begin
+SendMessageUser('Зачекайте',Form2,true);
+IndexZakladka:=IndexZakladka+1;
+if IndexZakladka>ListBox1.Count then IndexZakladka:=ListBox1.Count;
+ListBox1.Selected[IndexZakladka-1]:=true;
+ListBox1Click(Sender);
+SendMessageUser('Зачекайте',Form2,false);
+end;
+
+procedure TForm2.Group_ZakladkaClick(Sender: TObject);
+begin
+
+Zakladka_Elementi_Query.Close;
+Zakladka_Elementi_Query.SQL.Text:='select * from  WORDPROGN_ELEMENTI where type_="'+Group_Zakladka_Query.fieldbyname('type_').AsString+'" order by name_uk';
+Zakladka_Elementi_Query.Open;
+
+
+Zakladka_Elementi_Query.Last;
+Zakladka_Elementi_Query.First;
+Type_Zakladka.KeyValue:=Zakladka_Elementi_Query.fieldbyname('name_uk').AsString;
+Type_ZakladkaClick(Sender);
+end;
+
+procedure TForm2.Type_ZakladkaClick(Sender: TObject);
+begin
+VisibleFalseObject();
+
+if (Group_Zakladka_Query.fieldbyname('type_').AsString='Gyd') then
+begin
+Label1.Visible:=true;
+Type_Zakladka.Visible:=true;
+//--------------
+Label4.Visible:=true;
+Vodoche.Visible:=true;
+
+BazaChange(Sender);
+end
+else
+if Group_Zakladka_Query.fieldbyname('type_').AsString='wDate' then
+begin
+Label1.Visible:=true;
+Type_Zakladka.Visible:=true;
+//--------------
+if (Zakladka_Elementi_Query.fieldbyname('value_').AsString='yy') or
+    (Zakladka_Elementi_Query.fieldbyname('value_').AsString='yyyy') then
+begin
+Label6.Visible:=true;
+Prognozyear.Visible:=true;
+Prognozyear.ItemIndex:=0;
+end;
+Label10.Visible:=true;
+Yazik.Visible:=true;
+YazikChange(Sender);
+end
+else
+if Group_Zakladka_Query.fieldbyname('type_').AsString='wNPer' then
+begin
+Label1.Visible:=false;
+Type_Zakladka.Visible:=false;
+//--------------
+Label2.Visible:=true;
+Prognozza.Visible:=true;
+BazaChange(Sender);
+
+Label10.Visible:=true;
+Yazik.Visible:=true;
+YazikChange(Sender);
+end
+else
+MessageDlg('Увага:'+#13#10+'Невідомий тип інформації',mtWarning,[mbOK],0);
+end;
+
+procedure TForm2.BazaChange(Sender: TObject);
+begin
+if (Group_Zakladka_Query.fieldbyname('type_').AsString='Gyd') then
+begin
+VodocheQuery.Close;
+VodocheQuery.SQL.Text:='select *  from CAT_POSTM where  TYPEPOST="БФ" order by CPM_NAME';
+VodocheQuery.Open;
+VodocheQuery.Last;
+VodocheQuery.First;
+Vodoche.KeyValue:=VodocheQuery.fieldbyname('CPM_NAME').AsString;
+Label4.Caption:='Водосховища:';
+Label4.Visible:=true;
+Vodoche.Visible:=true;
+//----------------
+PrognozQuery.Close;
+PrognozQuery.SQL.Text:='select *  from WORDPROGN_ELEMENTI where  TYPE_="wdec" or TYPE_="wkvart" or TYPE_="wmon" order by kod';
+PrognozQuery.Open;
+PrognozQuery.Last;
+PrognozQuery.First;
+Prognozza.KeyValue:=PrognozQuery.fieldbyname('name_uk').AsString;
+Label2.Visible:=true;
+Prognozza.Visible:=true;
+if (PrognozQuery.fieldbyname('value_').AsString='monper') then
+begin
+Label3.Visible:=true;
+Label7.Visible:=true;
+Label8.Visible:=true;
+monbeg.Visible:=true;
+monend.Visible:=true;
+monbeg.ItemIndex:=0;
+monend.ItemIndex:=0;
+end;
+
+end
+else
+if (Group_Zakladka_Query.fieldbyname('type_').AsString='wNPer') then
+begin
+PrognozQuery.Close;
+PrognozQuery.SQL.Text:='select *  from WORDPROGN_ELEMENTI where  TYPE_="wdec" or TYPE_="wkvart" or TYPE_="wmon" order by kod';
+PrognozQuery.Open;
+PrognozQuery.Last;
+PrognozQuery.First;
+Prognozza.KeyValue:=PrognozQuery.fieldbyname('name_uk').AsString;
+Label2.Visible:=true;
+Prognozza.Visible:=true;
+if (PrognozQuery.fieldbyname('value_').AsString='monper') then
+begin
+Label3.Visible:=true;
+Label7.Visible:=true;
+Label8.Visible:=true;
+monbeg.Visible:=true;
+monend.Visible:=true;
+monbeg.ItemIndex:=0;
+monend.ItemIndex:=0;
+end;
+
+end;
+
+
+
+end;
+
+procedure TForm2.YazikChange(Sender: TObject);
+begin
+if Yazik.Text='Українська' then Zakladka:=Group_Zakladka_Query.fieldbyname('type_').AsString+'ъ'+Zakladka_Elementi_Query.fieldbyname('VALUE_').AsString+'ъ'+IntToStr(Prognozyear.ItemIndex)+'ъukrъ';
+if Yazik.Text='Російська' then Zakladka:=Group_Zakladka_Query.fieldbyname('type_').AsString+'ъ'+Zakladka_Elementi_Query.fieldbyname('VALUE_').AsString+'ъ'+IntToStr(Prognozyear.ItemIndex)+'ъrusъ';
+if pos('-',Zakladka)>0 then
+begin
+Insert('_',Zakladka,pos('-',Zakladka));
+Delete(Zakladka,pos('-',Zakladka),1);
+end;
+end;
+
+end.

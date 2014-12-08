@@ -1,0 +1,617 @@
+object Form2: TForm2
+  Left = 193
+  Top = 109
+  BorderIcons = [biSystemMenu]
+  BorderStyle = bsSingle
+  Caption = #1057#1087#1080#1089#1086#1082' '#1084#1077#1090#1077#1086#1110#1085#1092#1086#1088#1084#1072#1094#1110#1111' '#1076#1086#1082#1091#1084#1077#1085#1090#1072
+  ClientHeight = 334
+  ClientWidth = 688
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  OldCreateOrder = False
+  Position = poDesktopCenter
+  OnHide = FormHide
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  object DeleteZakladka: TSpeedButton
+    Left = 219
+    Top = 281
+    Width = 144
+    Height = 22
+    Caption = #1042#1080#1076#1072#1083#1080#1090#1080' '#1079#1072#1082#1083#1072#1076#1082#1091' '
+    Flat = True
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clNavy
+    Font.Height = -11
+    Font.Name = 'MS Sans Serif'
+    Font.Style = [fsBold]
+    Glyph.Data = {
+      76010000424D7601000000000000760000002800000020000000100000000100
+      04000000000000010000130B0000130B00001000000000000000000000000000
+      800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+      FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333333333
+      333333333333333333FF33333333333330003333333333333777333333333333
+      300033FFFFFF3333377739999993333333333777777F3333333F399999933333
+      3300377777733333337733333333333333003333333333333377333333333333
+      3333333333333333333F333333333333330033333F33333333773333C3333333
+      330033337F3333333377333CC3333333333333F77FFFFFFF3FF33CCCCCCCCCC3
+      993337777777777F77F33CCCCCCCCCC399333777777777737733333CC3333333
+      333333377F33333333FF3333C333333330003333733333333777333333333333
+      3000333333333333377733333333333333333333333333333333}
+    NumGlyphs = 2
+    ParentFont = False
+    OnClick = DeleteZakladkaClick
+  end
+  object ExitForm: TSpeedButton
+    Left = 219
+    Top = 305
+    Width = 145
+    Height = 22
+    Caption = #1042#1080#1081#1090#1080
+    Flat = True
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clNavy
+    Font.Height = -11
+    Font.Name = 'MS Sans Serif'
+    Font.Style = [fsBold]
+    Glyph.Data = {
+      76010000424D7601000000000000760000002800000020000000100000000100
+      04000000000000010000120B0000120B00001000000000000000000000000000
+      800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+      FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00330000000000
+      03333377777777777F333301BBBBBBBB033333773F3333337F3333011BBBBBBB
+      0333337F73F333337F33330111BBBBBB0333337F373F33337F333301110BBBBB
+      0333337F337F33337F333301110BBBBB0333337F337F33337F333301110BBBBB
+      0333337F337F33337F333301110BBBBB0333337F337F33337F333301110BBBBB
+      0333337F337F33337F333301110BBBBB0333337F337FF3337F33330111B0BBBB
+      0333337F337733337F333301110BBBBB0333337F337F33337F333301110BBBBB
+      0333337F3F7F33337F333301E10BBBBB0333337F7F7F33337F333301EE0BBBBB
+      0333337F777FFFFF7F3333000000000003333377777777777333}
+    NumGlyphs = 2
+    ParentFont = False
+    OnClick = ExitFormClick
+  end
+  object AddZakladka: TSpeedButton
+    Left = 51
+    Top = 281
+    Width = 163
+    Height = 22
+    Caption = #1055#1086#1089#1090#1072#1074#1080#1090#1080' '#1079#1072#1082#1083#1072#1076#1082#1091
+    Flat = True
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clNavy
+    Font.Height = -11
+    Font.Name = 'MS Sans Serif'
+    Font.Style = [fsBold]
+    Glyph.Data = {
+      76010000424D7601000000000000760000002800000020000000100000000100
+      04000000000000010000130B0000130B00001000000000000000000000000000
+      800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+      FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333333333
+      33333333FF33333333FF333993333333300033377F3333333777333993333333
+      300033F77FFF3333377739999993333333333777777F3333333F399999933333
+      33003777777333333377333993333333330033377F3333333377333993333333
+      3333333773333333333F333333333333330033333333F33333773333333C3333
+      330033333337FF3333773333333CC333333333FFFFF77FFF3FF33CCCCCCCCCC3
+      993337777777777F77F33CCCCCCCCCC3993337777777777377333333333CC333
+      333333333337733333FF3333333C333330003333333733333777333333333333
+      3000333333333333377733333333333333333333333333333333}
+    NumGlyphs = 2
+    ParentFont = False
+    OnClick = AddZakladkaClick
+  end
+  object EditZakladka: TSpeedButton
+    Left = 51
+    Top = 305
+    Width = 163
+    Height = 22
+    Caption = #1047#1084#1110#1085#1080#1090#1080' '#1079#1072#1082#1083#1072#1076#1082#1091
+    Flat = True
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clNavy
+    Font.Height = -11
+    Font.Name = 'MS Sans Serif'
+    Font.Style = [fsBold]
+    Glyph.Data = {
+      76010000424D7601000000000000760000002800000020000000100000000100
+      04000000000000010000120B0000120B00001000000000000000000000000000
+      800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+      FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333000000
+      000033333377777777773333330FFFFFFFF03FF3FF7FF33F3FF700300000FF0F
+      00F077F777773F737737E00BFBFB0FFFFFF07773333F7F3333F7E0BFBF000FFF
+      F0F077F3337773F3F737E0FBFBFBF0F00FF077F3333FF7F77F37E0BFBF00000B
+      0FF077F3337777737337E0FBFBFBFBF0FFF077F33FFFFFF73337E0BF0000000F
+      FFF077FF777777733FF7000BFB00B0FF00F07773FF77373377373330000B0FFF
+      FFF03337777373333FF7333330B0FFFF00003333373733FF777733330B0FF00F
+      0FF03333737F37737F373330B00FFFFF0F033337F77F33337F733309030FFFFF
+      00333377737FFFFF773333303300000003333337337777777333}
+    NumGlyphs = 2
+    ParentFont = False
+    OnClick = EditZakladkaClick
+  end
+  object RefreshZakladki: TSpeedButton
+    Left = 424
+    Top = 297
+    Width = 23
+    Height = 22
+    Hint = #1054#1073#1085#1086#1074#1080#1090#1080' '#1079#1072#1082#1083#1072#1076#1082#1080
+    Flat = True
+    Glyph.Data = {
+      76010000424D7601000000000000760000002800000020000000100000000100
+      04000000000000010000130B0000130B00001000000000000000000000000000
+      800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+      FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333333333
+      3333333333FFFFF3333333333999993333333333F77777FFF333333999999999
+      3333333777333777FF33339993707399933333773337F3777FF3399933000339
+      9933377333777F3377F3399333707333993337733337333337FF993333333333
+      399377F33333F333377F993333303333399377F33337FF333373993333707333
+      333377F333777F333333993333101333333377F333777F3FFFFF993333000399
+      999377FF33777F77777F3993330003399993373FF3777F37777F399933000333
+      99933773FF777F3F777F339993707399999333773F373F77777F333999999999
+      3393333777333777337333333999993333333333377777333333}
+    NumGlyphs = 2
+    ParentShowHint = False
+    ShowHint = True
+    OnClick = RefreshZakladkiClick
+  end
+  object PriorZakladka: TSpeedButton
+    Left = 397
+    Top = 283
+    Width = 23
+    Height = 22
+    Hint = #1055#1077#1088#1077#1084#1110#1089#1090#1080#1090#1080#1089#1103' '#1085#1072' '#1087#1086#1087#1077#1088#1077#1076#1085#1102' '#1079#1072#1082#1083#1072#1076#1082#1091
+    Flat = True
+    Glyph.Data = {
+      76010000424D7601000000000000760000002800000020000000100000000100
+      04000000000000010000120B0000120B00001000000000000000000000000000
+      800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+      FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333000333
+      3333333333777F33333333333309033333333333337F7F333333333333090333
+      33333333337F7F33333333333309033333333333337F7F333333333333090333
+      33333333337F7F33333333333309033333333333FF7F7FFFF333333000090000
+      3333333777737777F333333099999990333333373F3333373333333309999903
+      333333337F33337F33333333099999033333333373F333733333333330999033
+      3333333337F337F3333333333099903333333333373F37333333333333090333
+      33333333337F7F33333333333309033333333333337373333333333333303333
+      333333333337F333333333333330333333333333333733333333}
+    NumGlyphs = 2
+    ParentShowHint = False
+    ShowHint = True
+    OnClick = PriorZakladkaClick
+  end
+  object NextZakladka: TSpeedButton
+    Left = 397
+    Top = 307
+    Width = 23
+    Height = 22
+    Hint = #1055#1077#1088#1077#1084#1110#1089#1090#1080#1090#1080#1089#1103' '#1085#1072' '#1085#1072#1089#1090#1091#1087#1085#1091' '#1079#1072#1082#1083#1072#1076#1082#1091
+    Flat = True
+    Glyph.Data = {
+      76010000424D7601000000000000760000002800000020000000100000000100
+      04000000000000010000120B0000120B00001000000000000000000000000000
+      800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+      FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333303333
+      333333333337F33333333333333033333333333333373F333333333333090333
+      33333333337F7F33333333333309033333333333337373F33333333330999033
+      3333333337F337F33333333330999033333333333733373F3333333309999903
+      333333337F33337F33333333099999033333333373333373F333333099999990
+      33333337FFFF3FF7F33333300009000033333337777F77773333333333090333
+      33333333337F7F33333333333309033333333333337F7F333333333333090333
+      33333333337F7F33333333333309033333333333337F7F333333333333090333
+      33333333337F7F33333333333300033333333333337773333333}
+    NumGlyphs = 2
+    ParentShowHint = False
+    ShowHint = True
+    OnClick = NextZakladkaClick
+  end
+  object ListBox1: TListBox
+    Left = 450
+    Top = 0
+    Width = 238
+    Height = 334
+    Align = alRight
+    Color = cl3DLight
+    Ctl3D = False
+    ItemHeight = 13
+    ParentCtl3D = False
+    TabOrder = 0
+    OnClick = ListBox1Click
+  end
+  object Panel1: TPanel
+    Left = 0
+    Top = 0
+    Width = 449
+    Height = 61
+    BevelInner = bvLowered
+    TabOrder = 1
+    object Label5: TLabel
+      Left = 10
+      Top = 11
+      Width = 39
+      Height = 13
+      Caption = #1043#1088#1091#1087#1072':'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'MS Sans Serif'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object Label1: TLabel
+      Left = 10
+      Top = 35
+      Width = 27
+      Height = 13
+      Caption = #1058#1080#1087':'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'MS Sans Serif'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object Group_Zakladka: TDBLookupComboBox
+      Left = 66
+      Top = 9
+      Width = 375
+      Height = 19
+      Color = cl3DLight
+      Ctl3D = False
+      KeyField = 'NAME_UK'
+      ListField = 'NAME_UK'
+      ListSource = DataSource1
+      ParentCtl3D = False
+      TabOrder = 0
+      OnClick = Group_ZakladkaClick
+    end
+    object Type_Zakladka: TDBLookupComboBox
+      Left = 66
+      Top = 33
+      Width = 375
+      Height = 19
+      Color = cl3DLight
+      Ctl3D = False
+      KeyField = 'NAME_UK'
+      ListField = 'NAME_UK'
+      ListSource = DataSource2
+      ParentCtl3D = False
+      TabOrder = 1
+      OnClick = Type_ZakladkaClick
+    end
+  end
+  object Panel3: TPanel
+    Left = 0
+    Top = 59
+    Width = 449
+    Height = 29
+    BevelInner = bvLowered
+    TabOrder = 2
+    object Label6: TLabel
+      Left = 10
+      Top = 8
+      Width = 81
+      Height = 13
+      Caption = #1056#1110#1082' '#1087#1088#1086#1075#1085#1086#1079#1091':'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'MS Sans Serif'
+      Font.Style = [fsBold]
+      ParentFont = False
+      Visible = False
+    end
+    object Prognozyear: TComboBox
+      Left = 97
+      Top = 5
+      Width = 165
+      Height = 21
+      Color = cl3DLight
+      TabOrder = 0
+      Text = 'Prognozyear'
+      Items.Strings = (
+        #1084#1080#1085#1091#1083#1080#1081
+        #1087#1086#1090#1086#1095#1085#1080#1081)
+    end
+  end
+  object Panel5: TPanel
+    Left = 0
+    Top = 87
+    Width = 449
+    Height = 35
+    BevelInner = bvLowered
+    TabOrder = 3
+    object Label4: TLabel
+      Left = 10
+      Top = 11
+      Width = 85
+      Height = 13
+      Caption = #1042#1086#1076#1086#1089#1093#1086#1074#1080#1097#1072':'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'MS Sans Serif'
+      Font.Style = [fsBold]
+      ParentFont = False
+      Visible = False
+    end
+    object Vodoche: TDBLookupComboBox
+      Left = 100
+      Top = 9
+      Width = 196
+      Height = 19
+      Color = cl3DLight
+      Ctl3D = False
+      KeyField = 'CPM_NAME'
+      ListSource = DataSource6
+      ParentCtl3D = False
+      TabOrder = 0
+      Visible = False
+    end
+  end
+  object Panel7: TPanel
+    Left = -5
+    Top = 252
+    Width = 449
+    Height = 30
+    BevelInner = bvLowered
+    TabOrder = 4
+    object Label10: TLabel
+      Left = 15
+      Top = 8
+      Width = 36
+      Height = 13
+      Caption = #1052#1086#1074#1072':'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'MS Sans Serif'
+      Font.Style = [fsBold]
+      ParentFont = False
+      Visible = False
+    end
+    object Yazik: TComboBox
+      Left = 54
+      Top = 4
+      Width = 121
+      Height = 21
+      Color = cl3DLight
+      TabOrder = 0
+      Text = #1059#1082#1088#1072#1111#1085#1089#1100#1082#1072
+      Visible = False
+      OnChange = YazikChange
+      Items.Strings = (
+        #1059#1082#1088#1072#1111#1085#1089#1100#1082#1072
+        #1056#1086#1089#1110#1081#1089#1100#1082#1072)
+    end
+  end
+  object Panel2: TPanel
+    Left = 0
+    Top = 121
+    Width = 449
+    Height = 35
+    BevelInner = bvLowered
+    TabOrder = 5
+    object Label2: TLabel
+      Left = 10
+      Top = 11
+      Width = 73
+      Height = 13
+      Caption = #1055#1088#1086#1075#1085#1086#1079' '#1079#1072':'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'MS Sans Serif'
+      Font.Style = [fsBold]
+      ParentFont = False
+      Visible = False
+    end
+    object Prognozza: TDBLookupComboBox
+      Left = 100
+      Top = 9
+      Width = 196
+      Height = 19
+      Color = cl3DLight
+      Ctl3D = False
+      KeyField = 'NAME_UK'
+      ListSource = DataSource3
+      ParentCtl3D = False
+      TabOrder = 0
+      Visible = False
+      OnClick = PrognozzaClick
+    end
+  end
+  object Panel4: TPanel
+    Left = 0
+    Top = 189
+    Width = 449
+    Height = 35
+    BevelInner = bvLowered
+    TabOrder = 6
+    object Label3: TLabel
+      Left = 12
+      Top = 10
+      Width = 45
+      Height = 13
+      Caption = #1055#1077#1088#1110#1086#1076' '
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'MS Sans Serif'
+      Font.Style = [fsBold]
+      ParentFont = False
+      Visible = False
+    end
+    object Label7: TLabel
+      Left = 112
+      Top = 8
+      Width = 14
+      Height = 16
+      Caption = ' - '
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'MS Sans Serif'
+      Font.Style = [fsBold]
+      ParentFont = False
+      Visible = False
+    end
+    object Label8: TLabel
+      Left = 179
+      Top = 10
+      Width = 41
+      Height = 13
+      Caption = #1084#1110#1089#1103#1094#1100
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'MS Sans Serif'
+      Font.Style = [fsBold]
+      ParentFont = False
+      Visible = False
+    end
+    object monbeg: TComboBox
+      Left = 64
+      Top = 8
+      Width = 45
+      Height = 21
+      TabOrder = 0
+      Items.Strings = (
+        '1'
+        '2'
+        '3'
+        '4'
+        '5'
+        '6'
+        '7'
+        '8'
+        '9'
+        '10'
+        '11'
+        '12')
+    end
+    object monend: TComboBox
+      Left = 128
+      Top = 7
+      Width = 45
+      Height = 21
+      TabOrder = 1
+      Items.Strings = (
+        '1'
+        '2'
+        '3'
+        '4'
+        '5'
+        '6'
+        '7'
+        '8'
+        '9'
+        '10'
+        '11'
+        '12')
+    end
+  end
+  object Panel6: TPanel
+    Left = 0
+    Top = 155
+    Width = 449
+    Height = 35
+    BevelInner = bvLowered
+    TabOrder = 7
+    object Label9: TLabel
+      Left = 10
+      Top = 11
+      Width = 94
+      Height = 13
+      Caption = #1044#1077#1082#1072#1076#1072' '#1084#1110#1089#1103#1094#1103':'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'MS Sans Serif'
+      Font.Style = [fsBold]
+      ParentFont = False
+      Visible = False
+    end
+    object DecMon: TDBLookupComboBox
+      Left = 110
+      Top = 9
+      Width = 196
+      Height = 19
+      Color = cl3DLight
+      Ctl3D = False
+      KeyField = 'NAME_UK'
+      ListSource = DataSource4
+      ParentCtl3D = False
+      TabOrder = 0
+      Visible = False
+    end
+  end
+  object VodocheQuery: TIBQuery
+    Database = Form1.IBDatabase1
+    Transaction = Form1.IBTransaction1
+    SQL.Strings = (
+      'select *  from CAT_POSTM where  TYPEPOST='#39#1041#1060#39)
+    Left = 360
+    Top = 80
+  end
+  object DataSource6: TDataSource
+    DataSet = VodocheQuery
+    Left = 392
+    Top = 80
+  end
+  object Group_Zakladka_Query: TIBQuery
+    Database = Form1.IBDatabase1
+    Transaction = Form1.IBTransaction1
+    SQL.Strings = (
+      'select * from WORD_BOOKMARK_GROUP')
+    Left = 360
+  end
+  object DataSource1: TDataSource
+    DataSet = Group_Zakladka_Query
+    Left = 392
+  end
+  object DataSource2: TDataSource
+    DataSet = Zakladka_Elementi_Query
+    Left = 392
+    Top = 32
+  end
+  object Zakladka_Elementi_Query: TIBQuery
+    Database = Form1.IBDatabase1
+    Transaction = Form1.IBTransaction1
+    SQL.Strings = (
+      'select *  from WORDPROGN_ELEMENTI')
+    Left = 360
+    Top = 32
+  end
+  object PrognozQuery: TIBQuery
+    Database = Form1.IBDatabase1
+    Transaction = Form1.IBTransaction1
+    SQL.Strings = (
+      'select *  from WORDPROGN_ELEMENTI where  TYPE_='#39'wdec'#39' and '
+      'TYPE_='#39'wkvart'#39' and TYPE_='#39'wmon'#39)
+    Left = 360
+    Top = 128
+  end
+  object DataSource3: TDataSource
+    DataSet = PrognozQuery
+    Left = 392
+    Top = 128
+  end
+  object DataSource4: TDataSource
+    DataSet = DecListQuery
+    Left = 392
+    Top = 160
+  end
+  object DecListQuery: TIBQuery
+    Database = Form1.IBDatabase1
+    Transaction = Form1.IBTransaction1
+    SQL.Strings = (
+      'select *  from WORDPROGN_ELEMENTI where  TYPE_='#39'wdec'#39)
+    Left = 360
+    Top = 160
+  end
+end

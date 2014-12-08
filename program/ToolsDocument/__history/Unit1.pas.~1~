@@ -1,0 +1,570 @@
+unit Unit1;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, Mask, DBCtrls, Grids, DBGrids, DB, IBCustomDataSet,
+  IBTable, IBDatabase, Buttons, ExtCtrls, IBQuery, Menus;
+
+type
+  TForm1 = class(TForm)
+    SpeedButton3: TSpeedButton;
+    SpeedButton6: TSpeedButton;
+    Label7: TLabel;
+    GroupBox1: TGroupBox;
+    Label13: TLabel;
+    DBEdit7: TDBEdit;
+    DBGrid2: TDBGrid;
+    DBNavigator2: TDBNavigator;
+    Label14: TLabel;
+    Label15: TLabel;
+    ColorDialog3: TColorDialog;
+    Label16: TLabel;
+    Label17: TLabel;
+    ColorDialog4: TColorDialog;
+    GroupBox2: TGroupBox;
+    Label1: TLabel;
+    Label2: TLabel;
+    Label3: TLabel;
+    Label4: TLabel;
+    Label5: TLabel;
+    Label6: TLabel;
+    SpeedButton1: TSpeedButton;
+    SpeedButton2: TSpeedButton;
+    Label8: TLabel;
+    UP: TSpeedButton;
+    DOWN: TSpeedButton;
+    DBGrid1: TDBGrid;
+    DBEdit1: TDBEdit;
+    DBEdit2: TDBEdit;
+    DBEdit3: TDBEdit;
+    DBEdit4: TDBEdit;
+    DBEdit5: TDBEdit;
+    DBEdit6: TDBEdit;
+    DBNavigator1: TDBNavigator;
+    IBDatabase1: TIBDatabase;
+    IBTransaction1: TIBTransaction;
+    DataSource1: TDataSource;
+    OpenDialog1: TOpenDialog;
+    IBTable1: TIBTable;
+    connect_: TPopupMenu;
+    N14: TMenuItem;
+    N21: TMenuItem;
+    IBTable2: TIBTable;
+    DBLookupComboBox1: TDBLookupComboBox;
+    DataSource2: TDataSource;
+    Label9: TLabel;
+    Label10: TLabel;
+    ColorDialog1: TColorDialog;
+    Label11: TLabel;
+    Label12: TLabel;
+    ColorDialog2: TColorDialog;
+    PopupMenu1: TPopupMenu;
+    big1: TMenuItem;
+    PopupMenu2: TPopupMenu;
+    N1: TMenuItem;
+    N2: TMenuItem;
+    Memo1: TMemo;
+    N3: TMenuItem;
+    N4: TMenuItem;
+    N5: TMenuItem;
+    procedure SpeedButton3Click(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure SpeedButton1Click(Sender: TObject);
+    procedure SpeedButton2Click(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure DBNavigator1Click(Sender: TObject; Button: TNavigateBtn);
+    procedure IBTable1AfterPost(DataSet: TDataSet);
+    procedure UPClick(Sender: TObject);
+    procedure SpeedButton6Click(Sender: TObject);
+    procedure N14Click(Sender: TObject);
+    procedure Label10Click(Sender: TObject);
+    procedure Label12Click(Sender: TObject);
+    procedure IBTable1AfterScroll(DataSet: TDataSet);
+    procedure Label15Click(Sender: TObject);
+    procedure Label17Click(Sender: TObject);
+    procedure DBNavigator2Click(Sender: TObject; Button: TNavigateBtn);
+    procedure IBTable2AfterPost(DataSet: TDataSet);
+    procedure IBTable2AfterScroll(DataSet: TDataSet);
+    procedure DBGrid2DrawColumnCell(Sender: TObject; const Rect: TRect;
+      DataCol: Integer; Column: TColumn; State: TGridDrawState);
+    procedure big1Click(Sender: TObject);
+    procedure N1Click(Sender: TObject);
+    procedure N2Click(Sender: TObject);
+    procedure N3Click(Sender: TObject);
+    procedure N4Click(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  Form1: TForm1;
+  default : String;
+  iniPath : String;
+  Cur:string;
+  two_parram:string;
+  password: string='';
+  const correct_password='1952' ;
+  implementation
+
+uses IniFiles;
+{$R *.dfm}
+
+Function IniGetStringValue(
+  TheIniFile            : String;
+  IniSection            : String;
+  StringName            : String;
+  DefaultString         : String): String;
+Var
+  TheIni : TIniFile;
+Begin
+  TheIni := TIniFile.Create(TheIniFile);
+  Try
+    Result :=
+      TheIni.ReadString(
+        IniSection,
+        StringName,
+        DefaultString);
+    If Result = '' Then
+		  Result := DefaultString;
+  Finally
+    TheIni.Free;
+  End;
+End;
+
+procedure TForm1.SpeedButton3Click(Sender: TObject);
+begin
+form1.Close;
+end;
+
+procedure TForm1.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+if IBTransaction1.Active=true then
+try
+IBTransaction1.CommitRetaining;
+except
+on Exception do ShowMessage('Ошибка.Данні небули записанні в базу.');
+end;
+end;
+
+procedure TForm1.SpeedButton1Click(Sender: TObject);
+begin
+OpenDialog1.Filter:='Microsoft Office Word|*.doc';
+if OpenDialog1.Execute then
+begin
+IBTable1.Edit;
+IBTable1.FieldByName('NAME_SHABLON').AsString:=ExtractFileName(OpenDialog1.FileName);
+IBTable1.FieldByName('RESULT_FILENAME').AsString:=ExtractFileName(OpenDialog1.FileName);
+end;
+
+end;
+
+procedure TForm1.SpeedButton2Click(Sender: TObject);
+begin
+OpenDialog1.Filter:='Email - шаблон|*.eml';
+if OpenDialog1.Execute then
+begin
+IBTable1.Edit;
+IBTable1.FieldByName('EMAIL_SHABLON').AsString:=ExtractFileName(OpenDialog1.FileName);
+end;
+end;
+
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+{try
+begin }
+Cur:=GetCurrentDir;
+iniPath :=Cur+'\options.ini';
+
+{if copy(IniGetStringValue (iniPath,'Firebird','databasename1',default),pos(':',IniGetStringValue (iniPath,'Firebird','databasename1',default))+1,1)='\' then
+N14.Caption:='Локальна база'
+else
+N14.Caption:=copy(IniGetStringValue (iniPath,'Firebird','databasename1',default),1,pos(':',IniGetStringValue (iniPath,'Firebird','databasename1',default))-1);
+
+if copy(IniGetStringValue (iniPath,'Firebird','databasename2',default),pos(':',IniGetStringValue (iniPath,'Firebird','databasename2',default))+1,1)='\' then
+N21.Caption:='Локальна база'
+else
+N21.Caption:=copy(IniGetStringValue (iniPath,'Firebird','databasename2',default),1,pos(':',IniGetStringValue (iniPath,'Firebird','databasename2',default))-1);
+}
+N14.Caption:=copy(IniGetStringValue (iniPath,'Firebird','databasename1',default),1,pos(':',IniGetStringValue (iniPath,'Firebird','databasename1',default))-1);
+N21.Caption:=copy(IniGetStringValue (iniPath,'Firebird','databasename2',default),1,pos(':',IniGetStringValue (iniPath,'Firebird','databasename2',default))-1);
+
+try
+begin
+two_parram:='1';
+IBDatabase1.Close;
+IBDatabase1.DatabaseName:=IniGetStringValue (iniPath,'Firebird','databasename'+two_parram,default);
+IBDatabase1.Params.Text:='user_name='+IniGetStringValue (iniPath,'Firebird','login'+two_parram,default);
+IBDatabase1.Params.Add('password='+IniGetStringValue (iniPath,'Firebird','password'+two_parram,default));
+IBDatabase1.Open;
+Label7.Caption:='Підключенно: '+N14.Caption;
+end;
+except
+on Exception do
+begin
+  if MessageDlg('Немає зв''язку з базою '+IBDatabase1.DatabaseName+#10#13'Підключитись до бази '+
+     IniGetStringValue (iniPath,'Firebird','databasename'+'2',default)+#10#13'                 (Yes), або вийти з програми (No)',
+    mtConfirmation, [mbYes, mbNo], 1) = mrYes then
+ begin
+two_parram:='2';
+IBDatabase1.Close;
+IBDatabase1.DatabaseName:=IniGetStringValue (iniPath,'Firebird','databasename'+two_parram,default);
+IBDatabase1.Params.Text:='user_name='+IniGetStringValue (iniPath,'Firebird','login'+two_parram,default);
+IBDatabase1.Params.Add('password='+IniGetStringValue (iniPath,'Firebird','password'+two_parram,default));
+IBDatabase1.Open;
+Label7.Caption:='Підключенно: '+N21.Caption;
+end
+else
+  begin
+  Application.Terminate;
+  end;
+end;
+end;
+
+IBTransaction1.Active:=true;
+IBTable1.Open;
+IBTable1.FieldByName('kod').Required:=false;
+IBTable2.Open;
+{end;
+except
+on Exception do begin ShowMessage('Ошибка доступу к базе даних формування'); end;
+end; }
+
+end;
+
+procedure TForm1.DBNavigator1Click(Sender: TObject; Button: TNavigateBtn);
+begin
+
+if (Button=nbInsert) then
+begin
+IBTable1.FieldByName('kod').Required:=false;
+DBEdit1.SetFocus;
+IBTable1.Insert;
+end;
+
+
+
+
+end;
+
+procedure TForm1.IBTable1AfterPost(DataSet: TDataSet);
+begin
+
+if (IBTable1.FieldByName('kod').AsInteger=92)
+or (IBTable1.FieldByName('kod').AsInteger=93)
+or (IBTable1.FieldByName('kod').AsInteger=94)
+or (IBTable1.FieldByName('kod').AsInteger=95)
+or (IBTable1.FieldByName('kod').AsInteger=96)
+or (IBTable1.FieldByName('kod').AsInteger=199)
+or (IBTable1.FieldByName('kod').AsInteger=200)
+then
+begin
+password:=InputBox('Введіть пароль для підтвердження','Пароль:','');
+ if not(password=correct_password)  then
+ begin
+ ShowMessage('Некоректний пароль, зміни не збережені');
+IBTransaction1.RollbackRetaining;
+end else begin
+IBTable1.FieldByName('kod').Required:=false;
+IBTransaction1.CommitRetaining;
+end;
+
+end else begin
+IBTable1.FieldByName('kod').Required:=false;
+IBTransaction1.CommitRetaining;
+ end;
+
+end;
+
+procedure TForm1.UPClick(Sender: TObject);
+var kod_1,kod_2:integer;
+ibquery_kod:TIBQuery;
+begin
+kod_1:=IBTable1.FieldByName('kod').AsInteger;
+
+if (Sender as TSpeedButton).Name='UP' then IBTable1.Prior;
+if (Sender as TSpeedButton).Name='DOWN' then IBTable1.Next;
+
+kod_2:=IBTable1.FieldByName('kod').AsInteger;
+
+ibquery_kod:=TIBQuery.Create(nil);
+ibquery_kod.Database:=IBDatabase1;
+ibquery_kod.Transaction:=IBTransaction1;
+
+ibquery_kod.Close;
+ibquery_kod.SQL.Text:='update DOCUMENTI set kod=0 where kod='+IntToStr(kod_2);
+ibquery_kod.Open;
+
+ibquery_kod.Close;
+ibquery_kod.SQL.Text:='update DOCUMENTI set kod='+IntToStr(kod_2)+' where kod='+IntToStr(kod_1);
+ibquery_kod.Open;
+
+ibquery_kod.Close;
+ibquery_kod.SQL.Text:='update DOCUMENTI set kod='+IntToStr(kod_1)+' where kod=0';
+ibquery_kod.Open;
+
+ibquery_kod.Free;
+IBTable1.Refresh;
+end;
+
+procedure TForm1.SpeedButton6Click(Sender: TObject);
+begin
+connect_.Popup(Form1.Left+(Sender as TSpeedButton).Left ,Form1.Top+(Sender as TSpeedButton).Top+45);
+end;
+
+procedure TForm1.N14Click(Sender: TObject);
+begin
+try
+begin
+if (Sender as TMenuItem).Name='N14' then
+begin
+two_parram:='1';
+Label7.Caption:='Підключенно: '+N14.Caption;
+end;
+if (Sender as TMenuItem).Name='N21' then
+begin
+two_parram:='2';
+Label7.Caption:='Підключенно: '+N21.Caption;
+end;
+IBDatabase1.Close;
+IBDatabase1.DatabaseName:=IniGetStringValue (iniPath,'Firebird','databasename'+two_parram,default);
+IBDatabase1.Params.Text:='user_name='+IniGetStringValue (iniPath,'Firebird','login'+two_parram,default);
+IBDatabase1.Params.Add('password='+IniGetStringValue (iniPath,'Firebird','password'+two_parram,default));
+IBDatabase1.Open;
+
+end;
+except
+on Exception do
+begin
+ShowMessage('Немає зв''язку з базою '+IBDatabase1.DatabaseName);
+if (Sender as TMenuItem).Name='N14' then
+begin
+two_parram:='2';
+Label7.Caption:='Підключенно: '+N21.Caption;
+end;
+if (Sender as TMenuItem).Name='N21' then
+begin
+two_parram:='1';
+Label7.Caption:='Підключенно: '+N14.Caption;
+end;
+IBDatabase1.Close;
+IBDatabase1.DatabaseName:=IniGetStringValue (iniPath,'Firebird','databasename'+two_parram,default);
+IBDatabase1.Params.Text:='user_name='+IniGetStringValue (iniPath,'Firebird','login'+two_parram,default);
+IBDatabase1.Params.Add('password='+IniGetStringValue (iniPath,'Firebird','password'+two_parram,default));
+IBDatabase1.Open;
+
+end;
+end;
+IBTransaction1.Active:=true;
+IBTable1.Open;
+IBTable1.FieldByName('kod').Required:=false;
+IBTable2.Open;
+
+end;
+
+procedure TForm1.Label10Click(Sender: TObject);
+begin
+ColorDialog1.Color:=Label10.Color;
+if ColorDialog1.Execute then
+begin
+Label10.Color:=ColorDialog1.Color;
+IBTable1.Edit;
+if Label10.Color<>clBlack then IBTable1.FieldByName('COLOR').AsString:=ColorToString(Label10.Color)
+else IBTable1.FieldByName('COLOR').AsString:='';
+end;
+end;
+
+procedure TForm1.Label12Click(Sender: TObject);
+begin
+ColorDialog2.Color:=Label12.Font.Color;
+if ColorDialog2.Execute then
+begin
+Label12.Font.Color:=ColorDialog2.Color;
+IBTable1.Edit;
+IBTable1.FieldByName('FONT_COLOR').AsString:=ColorToString(Label12.Font.Color);
+end;
+end;
+
+procedure TForm1.IBTable1AfterScroll(DataSet: TDataSet);
+begin
+if IBTable1.FieldByName('COLOR').AsString<>'' then
+Label10.Color:=StringToColor(IBTable1.FieldByName('COLOR').AsString)
+else
+Label10.Color:=clBlack;
+
+if IBTable1.FieldByName('FONT_COLOR').AsString<>'' then
+Label12.Font.Color:=StringToColor(IBTable1.FieldByName('FONT_COLOR').AsString)
+else
+Label12.Font.Color:=clBlack;
+end;
+
+procedure TForm1.Label15Click(Sender: TObject);
+begin
+ColorDialog3.Color:=Label15.Color;
+if ColorDialog3.Execute then
+begin
+Label15.Color:=ColorDialog3.Color;
+IBTable2.Edit;
+if Label15.Color<>clBlack then IBTable2.FieldByName('COLOR').AsString:=ColorToString(Label15.Color)
+else IBTable2.FieldByName('COLOR').AsString:='';
+end;
+end;
+
+procedure TForm1.Label17Click(Sender: TObject);
+begin
+ColorDialog4.Color:=Label17.Font.Color;
+if ColorDialog4.Execute then
+begin
+Label17.Font.Color:=ColorDialog4.Color;
+IBTable2.Edit;
+IBTable2.FieldByName('FONT_COLOR').AsString:=ColorToString(Label17.Font.Color);
+end;
+end;
+
+procedure TForm1.DBNavigator2Click(Sender: TObject; Button: TNavigateBtn);
+begin
+if (Button=nbInsert) then
+begin
+IBTable2.FieldByName('kod').Required:=false;
+DBEdit7.SetFocus;
+IBTable2.Insert;
+end;
+if (Button=nbPost) then
+begin
+IBTable2.Refresh;
+end;
+end;
+
+procedure TForm1.IBTable2AfterPost(DataSet: TDataSet);
+begin
+IBTable2.FieldByName('kod').Required:=false;
+IBTransaction1.CommitRetaining;
+end;
+
+procedure TForm1.IBTable2AfterScroll(DataSet: TDataSet);
+begin
+if IBTable2.FieldByName('COLOR').AsString<>'' then
+Label15.Color:=StringToColor(IBTable2.FieldByName('COLOR').AsString)
+else
+Label15.Color:=clBlack;
+
+if IBTable2.FieldByName('FONT_COLOR').AsString<>'' then
+Label17.Font.Color:=StringToColor(IBTable2.FieldByName('FONT_COLOR').AsString)
+else
+Label17.Font.Color:=clBlack;
+end;
+
+procedure TForm1.DBGrid2DrawColumnCell(Sender: TObject; const Rect: TRect;
+  DataCol: Integer; Column: TColumn; State: TGridDrawState);
+begin
+if (Sender as TDBGrid).DataSource.DataSet.FieldByName('color').AsString<>'' then
+begin
+(Sender as TDBGrid).Canvas.Brush.Color := StringToColor((Sender as TDBGrid).DataSource.DataSet.FieldByName('color').AsString);
+(Sender as TDBGrid).Canvas.Font.Color := StringToColor((Sender as TDBGrid).DataSource.DataSet.FieldByName('font_color').AsString);
+end;
+
+if gdSelected	in State then
+begin
+(Sender as TDBGrid).Canvas.Brush.Color := cl3DLight;
+(Sender as TDBGrid).Canvas.Font.Color := clblue;
+end;
+
+(Sender as TDBGrid).Canvas.Pen.Color := clBlack;
+(Sender as TDBGrid).Canvas.Pen.Width:=3;
+(Sender as TDBGrid).Canvas.Rectangle(Rect);
+
+(Sender as TDBGrid).DefaultDrawColumnCell(Rect, DataCol, Column, State);
+end;
+
+procedure TForm1.big1Click(Sender: TObject);
+var
+str : ansistring;
+str1 : string;
+i,j : integer;
+begin
+Memo1.Clear;
+str:='';
+str1:='';
+ str:=DbEdit4.Text;
+ for i:=1 to length(str) do
+ begin
+  str1:=str1+str[i];
+  if  str[i]=';' then
+  begin
+    Memo1.Lines.Add(str1);
+    str1:='';
+  end;
+ end;
+ if str1<>'' then Memo1.Lines.Add(str1);
+Memo1.Visible:=true;
+Memo1.Top:=107;
+Memo1.Width:=242;
+Memo1.Left:= 352;
+Memo1.Height:=250;
+end;
+
+procedure TForm1.N1Click(Sender: TObject);
+var
+str,str1 : ansistring;
+i : integer;
+
+begin
+{
+if IBTable1.FieldByName('kod').AsInteger=92 then //Добавил защиту изминения сгя украины через пароль
+password:=InputBox('Введіть пароль для підтвердження змін','Пароль:','');
+
+ if (password=correct_password) or (not(IBTable1.FieldByName('kod').AsInteger=92))  then
+ begin  }
+str:=''; str1:='';
+ for i:=0  to Memo1.Lines.Count do
+                str:=str+Memo1.Lines[i];
+ for i:=1 to length(str) do
+ begin
+  if ((str[i]<>#13) and (str[i]<>#10)  and (str[i]<>#3) ) then
+   str1:=str1+str[i];
+ end;
+
+ IBTable1.Edit;
+ DbEdit4.Text:= '';
+ DbEdit4.Text:=str1;
+ IBTable1.ApplyUpdates;
+ IBTransaction1.CommitRetaining;
+Memo1.Visible:=false;
+Memo1.Top:=272;
+Memo1.Width:=161;
+Memo1.Left:= 352;
+Memo1.Height:=97;
+
+ {end else
+ShowMessage('Некоректний пароль, зміни не збережені');   }
+
+end;
+
+
+procedure TForm1.N2Click(Sender: TObject);
+begin
+   Memo1.Visible:=false;
+Memo1.Top:=272;
+Memo1.Width:=161;
+Memo1.Left:= 352;
+Memo1.Height:=97;
+
+end;
+
+procedure TForm1.N3Click(Sender: TObject);
+begin
+Memo1.CopyToClipboard;
+end;
+
+procedure TForm1.N4Click(Sender: TObject);
+var textcopy:string;
+begin
+//textcopy:=Clipboard.AsText;
+//DBRichEdit2.SetSelText(textcopy);
+Memo1.PasteFromClipboard;
+end;
+
+end.

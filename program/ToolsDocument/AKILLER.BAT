@@ -1,0 +1,9 @@
+del *.dcu
+del *.~pas
+del *.~dfm
+del *.~ddp
+del *.ddp
+del *.dcu
+del *.dsk
+del *.cfg
+del *.dof
