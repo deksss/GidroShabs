@@ -1186,6 +1186,10 @@ begin
             '" and q.proc="' + zabezp_proc + '"');
         IBQZABEZP.Open;
 
+        if   CheckDeckList.Visible=false then
+        curCol := curCol + 2
+        else begin
+
         wdUnit := '#KanivTable2';
   tmp1 := true;
   tmp2 := wdFindStop;
@@ -1210,10 +1214,8 @@ begin
       tmp9:=0;
       if (tmp9>0) then
       WordApp.Selection.InsertRows(tmp9);
-
-
          curCol := curCol + 1;
-
+        end;
       end;
       // ------------декада-----------------
 
