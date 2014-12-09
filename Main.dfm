@@ -725,6 +725,14 @@ object Form1: TForm1
               TabOrder = 6
             end
           end
+          object CheckBoxBerezKviten: TCheckBox
+            Left = 203
+            Top = 272
+            Width = 110
+            Height = 17
+            Caption = #1041#1077#1088#1077#1079#1077#1085#1100'-'#1082#1074#1110#1090#1077#1085#1100
+            TabOrder = 6
+          end
         end
       end
       object TabSheet2: TTabSheet
