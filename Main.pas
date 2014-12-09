@@ -1429,7 +1429,7 @@ begin
       if copy(parForm, 2, 1) = '1' then
         if (CBMonList.Checked) and (CBMonPer.Checked) then
         begin
-          if curCol <> fnumcell then
+          if (curCol <> fnumcell) or (Cell(curCol, 1).Range.Text<>'') then
           begin
             RowsIns := 1;
             Cell(curCol, 1).Select;
@@ -2259,9 +2259,9 @@ begin
   if ((CBMonList.Checked) and (CBMonPer.Checked)) then
   begin
     if UtochMonPer.Checked then
-      Monperlist := 'уточнення на період IV - XII , середній '
+      Monperlist := 'уточнення на період квітень - грудень, середній '
     else
-      Monperlist := 'період IV - XII , середній ';
+      Monperlist := 'період квітень - грудень , середній ';
   end;
   // end;
   // ----kvartal------
