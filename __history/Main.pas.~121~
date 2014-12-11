@@ -522,14 +522,12 @@ begin
   tmp1 := true;
   tmp2 := wdFindContinue;
   if ((CBMonList.Checked) and (ComboMonList.ItemIndex >= 0)) then
-    tmp3 := Mon_ukr[ComboMonList.ItemIndex]
+    tmp3 := Mon_ukr[ComboMonList.ItemIndex] + ' ' + FormatDateTime
+      ('yyyy', DTProgn.Date)
   else
     tmp3 := '';
   if CheckBoxBerezKviten.Checked then
     tmp3 := tmp3 + ' і період березень-квітень';
-
-    tmp3:=tmp3 +  ' ' +   FormatDateTime
-      ('yyyy', DTProgn.Date);
   tmp4 := wdReplaceAll;
   WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
     EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
