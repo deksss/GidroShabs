@@ -116,6 +116,7 @@ type
     procedure Progn_pripliv;
     procedure Progn_gidrograf;
     procedure Progn_dnist_mon;
+    procedure Progn_bok_mon;
     procedure N110Click(Sender: TObject);
     procedure OpenFileClick(Sender: TObject);
     procedure ExportcabClick(Sender: TObject);
@@ -470,9 +471,222 @@ begin
     Progn_dnist_mon
   else if parForm = 'gyd' then
     Progn_gidrograf
+     else if parForm = 'bmp' then
+    Progn_bok_mon
   else
     Progn_pripliv;
 end;
+ procedure TForm1.Progn_bok_mon;
+var
+  curCol, fnumcell: integer;
+  dat_beg, dat_end, zabezp_proc: string;
+  ind_st, basesql, polsql: string;
+  mon_prog, year_prog, sum: integer;
+  path_signature, ss: string;
+begin
+  fnumcell := 4;
+  if CBZabezp.Text = 'середній' then
+    zabezp_proc := 'ser'
+  else
+    zabezp_proc := CBZabezp.Text;
+
+  Screen.Cursor := crHourGlass;
+  WordApp := TWordApplication.Create(Self);
+  WordApp.Connect();
+  WordApp.Visible := true;
+{$IFDEF DEBUG}
+  // WordApp.Visible := true;
+{$ENDIF}
+  // обновляем данные
+  // ibdsDescription.Close();
+  // ibdsDescription.Open();
+  // ibdsForecast.Close();
+  // ibdsForecast.Open();
+  wdUnit := putchshab + '\' + m_TemplateFile;
+  WordApp.Documents.OpenOld(wdUnit, EmptyParam, EmptyParam, EmptyParam,
+    EmptyParam, EmptyParam, EmptyParam, EmptyParam, EmptyParam, EmptyParam);
+  // -----------
+  wdUnit := putchrezult + '\' + m_ReportFileName;
+  tmp1 := false;
+  WordApp.ActiveDocument.SaveAs(wdUnit, EmptyParam, EmptyParam, EmptyParam,
+    tmp1, EmptyParam, EmptyParam, EmptyParam, EmptyParam, EmptyParam,
+    EmptyParam, EmptyParam, EmptyParam, EmptyParam, EmptyParam, EmptyParam);
+  // заменяем "заглушки" на реальный текст
+  wdUnit := '#Datename';
+  tmp1 := true;
+  tmp2 := wdFindContinue;
+  NameProgn(Datename);
+  tmp3 := Datename;
+  tmp4 := wdReplaceAll;
+  WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+    EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+  wdUnit := '#numvipusk';
+  tmp1 := true;
+  tmp2 := wdFindContinue;
+  tmp3 := EditNumberPrognoz.Text;
+  tmp4 := wdReplaceAll;
+  WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+    EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+  { } if copy(parForm, 1, 1) = '0' then
+  begin
+    wdUnit := '#Zabezp';
+    tmp1 := true;
+    tmp2 := wdFindContinue;
+    if zabezp_proc = 'ser' then
+      tmp3 := 'середньої'
+    else
+      tmp3 := zabezp_proc + ' %-вої';
+    tmp4 := wdReplaceAll;
+    WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+      EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+    // WordApp.Selection.TypeParagraph();
+
+    wdUnit := '#rikfact';
+    tmp1 := true;
+    tmp2 := wdFindContinue;
+    tmp3 := IntToStr(StrToInt(FormatDateTime('yyyy', DTProgn.Date)) - 1);
+    tmp4 := wdReplaceAll;
+    WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+      EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+  end;
+     sum:=0;
+
+        ind_st := '80021';
+        IBQZABEZP.Close;
+        IBQZABEZP.SQL.Clear;
+        IBQZABEZP.SQL.Add
+          ('select *  from q_zabezp q where q.post_index="' + ind_st +
+            '" and q.proc="' + zabezp_proc + '"');
+        IBQZABEZP.Open;
+        sum:=sum+      IBQZABEZP.FieldByName('Q' + IntToStr(ComboMonList.ItemIndex + 1) + '').Asinteger;
+   wdUnit := '#Krem';
+  tmp1 := true;
+  tmp2 := wdFindContinue;
+  tmp3 := IBQZABEZP.FieldByName('Q' + IntToStr(ComboMonList.ItemIndex + 1) + '').AsString;
+  tmp4 := wdReplaceAll;
+  WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+    EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+
+       ind_st := '80029';
+        IBQZABEZP.Close;
+        IBQZABEZP.SQL.Clear;
+        IBQZABEZP.SQL.Add
+          ('select *  from q_zabezp q where q.post_index="' + ind_st +
+            '" and q.proc="' + zabezp_proc + '"');
+        IBQZABEZP.Open;
+             sum:=sum+      IBQZABEZP.FieldByName('Q' + IntToStr(ComboMonList.ItemIndex + 1) + '').Asinteger;
+      wdUnit := '#Dniprdz';
+  tmp1 := true;
+  tmp2 := wdFindContinue;
+  tmp3 := EditNumberPrognoz.Text;
+  tmp4 := wdReplaceAll;
+  WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+    EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+
+       ind_st := '80039';
+        IBQZABEZP.Close;
+        IBQZABEZP.SQL.Clear;
+        IBQZABEZP.SQL.Add
+          ('select *  from q_zabezp q where q.post_index="' + ind_st +
+            '" and q.proc="' + zabezp_proc + '"');
+        IBQZABEZP.Open;
+             sum:=sum+      IBQZABEZP.FieldByName('Q' + IntToStr(ComboMonList.ItemIndex + 1) + '').Asinteger;
+      wdUnit := '#Dnipro';
+  tmp1 := true;
+  tmp2 := wdFindContinue;
+  tmp3 := EditNumberPrognoz.Text;
+  tmp4 := wdReplaceAll;
+  WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+    EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+
+
+      wdUnit := '#Sum';
+  tmp1 := true;
+  tmp2 := wdFindContinue;
+  tmp3 := inttostr(sum);
+  tmp4 := wdReplaceAll;
+  WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+    EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+
+
+   //...
+
+
+if (copy(Nach1, Pos('#', Nach1) + 1, (Length(Nach1))) = ComboBox2.Text) then
+    ss := copy(Nach1, 1, Pos('#', Nach1) - 1)
+  else
+    ss := copy(Nach2, 1, Pos('#', Nach2) - 1);
+  wdUnit := '#President';
+  tmp1 := true;
+  tmp2 := wdFindContinue;
+  tmp3 := ss;
+  tmp4 := wdReplaceAll;
+  WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+    EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+  // Iiaienu
+  if CheckBox1.Checked then
+  begin // 1
+    if (ComboBox2.Text = ComboBox2.Items[0]) then
+      path_signature := putchshab + '\' + 'Boss1.bmp'
+    else
+      path_signature := putchshab + '\' + 'Boss2.bmp';
+
+    wdUnit := '#Signature';
+    tmp1 := true;
+    tmp2 := wdFindStop;
+    tmp3 := '';
+    tmp4 := wdReplaceOne;
+    WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+      EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+    // aiaaaeyai oaee n map
+    wdUnit := true;
+    with (WordApp.Selection.InlineShapes.AddPicture(path_signature, EmptyParam,
+        wdUnit, EmptyParam)) do
+    begin
+      LockAspectRatio := wdUnit;
+    end;
+  end // 1
+  else
+  begin // 1
+    wdUnit := '#Signature';
+    tmp1 := true;
+    tmp2 := wdFindContinue;
+    tmp3 := '';
+    tmp4 := wdReplaceAll;
+    WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+      EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+  end; // 1
+  wdUnit := '#Name';
+  tmp1 := true;
+  tmp2 := wdFindContinue;
+  tmp3 := ComboBox2.Text;
+  tmp4 := wdReplaceAll;
+  WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+    EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+  // --------------------------------
+  wdUnit := '#dataprogn';
+  tmp1 := true;
+  tmp2 := wdFindContinue;
+  tmp3 := FormatDateTime('dd.mm.yyyy', DateProgn);
+  tmp4 := wdReplaceAll;
+  WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+    EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+  WordApp.ActiveDocument.Save;
+  WordApp.Visible := true;
+  WordApp.ShowMe;
+  WordApp.Activate;
+
+  WordApp.Free();
+{$IFNDEF DEBUG}
+  // удаляем временную карту
+  // if (FileExists(tmpMapName)) then
+  // DeleteFile(tmpMapName);
+{$ENDIF}
+  Screen.Cursor := crArrow;
+
+
+  end;
+
 
 procedure TForm1.Progn_dnist_mon;
 var
@@ -2040,6 +2254,7 @@ begin
   // ----------------------
   PanelDec.Visible := false;
   RadioGroupPROGorKon.Visible := false;
+  CheckBoxBerezKviten.Visible := false;
   CBDekeda.Checked := false;
   UtochDecada.Checked := false;
   RadioDeckList.Visible := false;
@@ -2103,6 +2318,7 @@ begin
       if parForm = 'dmp' then
       begin
         RadioGroupPROGorKon.Visible := true;
+        CheckBoxBerezKviten.Visible := true;
         PanelMon.Visible := true;
         CBMonList.Checked := true;
         UtochMonList.Visible := false;
@@ -2112,6 +2328,19 @@ begin
         CBMonPer.Visible := false;
         PanelZabezp.Visible := true;
       end
+
+      else if parForm = 'bmp' then
+      begin
+
+        PanelMon.Visible := true;
+        CBMonList.Checked := true;
+        UtochMonList.Visible := true;
+        ComboMonList.Visible := true;
+        CBMonPer.Visible:=false;
+        PanelZabezp.Visible := true;
+      end
+
+
       else if parForm = 'gyd' then
       begin
         Panel7.Visible := true;

@@ -732,6 +732,7 @@ object Form1: TForm1
             Height = 17
             Caption = #1041#1077#1088#1077#1079#1077#1085#1100'-'#1082#1074#1110#1090#1077#1085#1100
             TabOrder = 6
+            Visible = False
           end
         end
       end
@@ -744,10 +745,6 @@ object Form1: TForm1
         Font.Style = []
         ImageIndex = 1
         ParentFont = False
-        ExplicitLeft = 0
-        ExplicitTop = 0
-        ExplicitWidth = 0
-        ExplicitHeight = 0
       end
       object TabSheet3: TTabSheet
         Caption = #1055#1086#1087#1077#1088#1077#1076#1078#1077#1085#1085#1103
@@ -758,10 +755,6 @@ object Form1: TForm1
         Font.Style = []
         ImageIndex = 2
         ParentFont = False
-        ExplicitLeft = 0
-        ExplicitTop = 0
-        ExplicitWidth = 0
-        ExplicitHeight = 0
       end
       object TabSheet4: TTabSheet
         Caption = #1064#1090#1086#1088#1084
@@ -772,10 +765,6 @@ object Form1: TForm1
         Font.Style = []
         ImageIndex = 3
         ParentFont = False
-        ExplicitLeft = 0
-        ExplicitTop = 0
-        ExplicitWidth = 0
-        ExplicitHeight = 0
       end
     end
   end
