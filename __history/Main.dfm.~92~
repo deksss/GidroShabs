@@ -158,6 +158,7 @@ object Form1: TForm1
           Height = 560
           Align = alClient
           TabOrder = 1
+          ExplicitLeft = 263
           object PanelDec: TPanel
             Left = 499
             Top = 4
@@ -167,7 +168,7 @@ object Form1: TForm1
             BevelOuter = bvNone
             TabOrder = 0
             object Label3: TLabel
-              Left = 17
+              Left = 16
               Top = 58
               Width = 50
               Height = 16
@@ -182,9 +183,9 @@ object Form1: TForm1
             object UtochDecada: TCheckBox
               Left = 21
               Top = 110
-              Width = 89
+              Width = 180
               Height = 17
-              Caption = #1059#1090#1086#1095#1085#1077#1085#1085#1103'A_Oleg\'
+              Caption = #1059#1090#1086#1095#1085#1077#1085#1085#1103' '#1076#1083#1103' '#1076#1077#1082#1072#1076#1080
               Font.Charset = DEFAULT_CHARSET
               Font.Color = clWindowText
               Font.Height = -13
@@ -234,10 +235,10 @@ object Form1: TForm1
               OnChange = ComboDecMonListChange
             end
             object RadioDeckList: TRadioGroup
-              Left = 17
+              Left = 16
               Top = 133
-              Width = 208
-              Height = 113
+              Width = 192
+              Height = 92
               Caption = #1044#1077#1082#1072#1076#1080
               Font.Charset = DEFAULT_CHARSET
               Font.Color = clWindowText
@@ -249,9 +250,9 @@ object Form1: TForm1
             end
             object CheckDeckList: TCheckListBox
               Left = 16
-              Top = 152
-              Width = 209
-              Height = 90
+              Top = 133
+              Width = 193
+              Height = 92
               Flat = False
               Font.Charset = DEFAULT_CHARSET
               Font.Color = clWindowText
@@ -266,6 +267,22 @@ object Form1: TForm1
               ParentFont = False
               Style = lbOwnerDrawVariable
               TabOrder = 4
+            end
+            object CheckBUtochMonh: TCheckBox
+              Left = 72
+              Top = 57
+              Width = 105
+              Height = 17
+              Caption = #1059#1090#1086#1095#1085#1077#1085#1085#1103
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -13
+              Font.Name = 'Tahoma'
+              Font.Style = [fsBold]
+              ParentFont = False
+              TabOrder = 5
+              Visible = False
+              OnClick = ComboDecMonListChange
             end
           end
           object PanelMon: TPanel
@@ -709,6 +726,15 @@ object Form1: TForm1
               TabOrder = 6
             end
           end
+          object CheckBoxBerezKviten: TCheckBox
+            Left = 203
+            Top = 272
+            Width = 110
+            Height = 17
+            Caption = #1041#1077#1088#1077#1079#1077#1085#1100'-'#1082#1074#1110#1090#1077#1085#1100
+            TabOrder = 6
+            Visible = False
+          end
         end
       end
       object TabSheet2: TTabSheet
@@ -756,9 +782,65 @@ object Form1: TForm1
     Visible = False
     OnClick = RadioGroupPROGorKonClick
   end
+  object PanelLed: TPanel
+    Left = 581
+    Top = 330
+    Width = 401
+    Height = 206
+    TabOrder = 3
+    object Button1: TButton
+      Left = 23
+      Top = 88
+      Width = 91
+      Height = 25
+      Caption = #1056#1110#1095#1082#1072'-'#1087#1091#1085#1082#1090#1080
+      TabOrder = 0
+      OnClick = Button1Click
+    end
+    object LedChek: TCheckBox
+      Left = 0
+      Top = 12
+      Width = 169
+      Height = 17
+      Caption = #1056#1110#1074#1077#1085#1100' '#1074#1086#1076#1080' '#1085#1072#1076' '#1085#1091#1083#1077#1084' '#1087#1086#1089#1090#1072
+      TabOrder = 1
+    end
+    object DateTimePicker1: TDateTimePicker
+      Left = 22
+      Top = 28
+      Width = 91
+      Height = 21
+      Date = 41989.538638460650000000
+      Time = 41989.538638460650000000
+      TabOrder = 2
+    end
+    object CheckListBoxLED: TCheckListBox
+      Left = 176
+      Top = 50
+      Width = 193
+      Height = 92
+      Flat = False
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ItemHeight = 27
+      Items.Strings = (
+        #1088#1072#1085#1085#1110' '#1089#1090#1088#1086#1082#1080
+        #1089#1077#1088#1077#1076#1085#1110' '#1089#1090#1088#1086#1082#1080
+        #1088#1110#1079#1085#1110' '#1089#1090#1088#1086#1082#1080)
+      ParentFont = False
+      Style = lbOwnerDrawVariable
+      TabOrder = 3
+    end
+  end
   object IBDatabase1: TIBDatabase
+    Connected = True
+    DatabaseName = '192.168.1.5:/work/db/firebird/GIDRO_2007.GDB'
     Params.Strings = (
-      'user_name=SYSDBA')
+      'user_name=SYSDBA'
+      'password=dvvdendem')
     LoginPrompt = False
     DefaultTransaction = IBTransaction1
     SQLDialect = 1
@@ -766,6 +848,7 @@ object Form1: TForm1
     Top = 512
   end
   object IBTransaction1: TIBTransaction
+    Active = True
     DefaultDatabase = IBDatabase1
     Left = 16
     Top = 560

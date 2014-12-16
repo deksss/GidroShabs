@@ -5,7 +5,8 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ComCtrls, ExtCtrls, CategoryButtons, IBDatabase, DB, IBCustomDataSet,
-  IBQuery, StdCtrls, CheckLst, Menus, ImgList, ShellAPI, WordXP, DateUtils,Math;
+  IBQuery, StdCtrls, CheckLst, Menus, ImgList, ShellAPI, WordXP, DateUtils,
+  Math, Grids, DBGrids, DBCtrls ;
 
 type
   TForm1 = class(TForm)
@@ -92,6 +93,8 @@ type
     RadioGroupPROGorKon: TRadioGroup;
     CheckDeckList: TCheckListBox;
     CheckBUtochMonh: TCheckBox;
+    CheckBoxBerezKviten: TCheckBox;
+    Button1: TButton;
     procedure FormCreate(Sender: TObject);
     procedure TreeView1CustomDrawItem(Sender: TCustomTreeView; Node: TTreeNode;
       State: TCustomDrawState; var DefaultDraw: Boolean);
@@ -113,13 +116,15 @@ type
     procedure FormFileClick(Sender: TObject);
     procedure Progn_pripliv;
     procedure Progn_gidrograf;
-procedure Progn_dnist_mon;
+    procedure Progn_dnist_mon;
+    procedure Progn_bok_mon;
     procedure N110Click(Sender: TObject);
     procedure OpenFileClick(Sender: TObject);
     procedure ExportcabClick(Sender: TObject);
     procedure ExpEmailClick(Sender: TObject);
     procedure ButtonNumberPrognozClick(Sender: TObject);
     procedure RadioGroupPROGorKonClick(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -129,12 +134,13 @@ procedure Progn_dnist_mon;
 var
   Form1: TForm1;
   Cur, iniPath, two_parram, default: string;
-  putchshab, putchrezult, Datename,putchrezultcab,datemodifitext,EmailAdress: string;
+  putchshab, putchrezult, Datename, putchrezultcab, datemodifitext,
+    EmailAdress: string;
   i, c, j: integer;
   m, mb, me: integer; // ---month-begin month, end month
   d, dbeg, dend: integer; // --decada-begin decada, end decada
-  tmp_int:integer;
-  parForm,Nach1,Nach2: string;
+  tmp_int: integer;
+  parForm, Nach1, Nach2: string;
   MyTreeNode1, MyTreeNode2: TTreeNode;
   DateProgn: TDateTime;
   // ----------shabl---------
@@ -142,10 +148,10 @@ var
   wdUnit, tmp1, tmp2, tmp3, tmp4, tmp9, RowsIns: OleVariant;
   m_TemplateFile, m_ReportFileName: string;
   // ----------
-  fi : WIN32_FILE_ATTRIBUTE_DATA;
-  FileLocalCreate,FileLocalModify:FILETIME;
-FileSystemCreate,FileSystemModify:SYSTEMTIME;
-//---------------
+  fi: WIN32_FILE_ATTRIBUTE_DATA;
+  FileLocalCreate, FileLocalModify: FILETIME;
+  FileSystemCreate, FileSystemModify: SYSTEMTIME;
+  // ---------------
   { - } Mon_ukr: array [0 .. 11] of string = (
     'Січень',
     'Лютий',
@@ -198,60 +204,59 @@ FileSystemCreate,FileSystemModify:SYSTEMTIME;
     9,
     12
   );
-  progOrKon:string = 'Консульатція';
+  progOrKon: string = 'Консульатція';
 
 implementation
 
-uses den, IniFiles,MAPI;
+uses den, IniFiles, MAPI, Unit2;
 {$R *.dfm}
 
-function generateDecLabel():string;
+function generateDecLabel(): string;
 var
-str:string;
+  str: string;
 begin
-if (Form1.CheckDeckList.Checked[0]=true) then
- str:= 'першу';
-if (Form1.CheckDeckList.Checked[1]=true) then
-begin
-if str<>'' then
-  str:=str+', ';
- str:=str+ 'другу';
-end;
-if (Form1.CheckDeckList.Checked[2]=true) then begin
-if str<>'' then
-  str:=str+', ';
- str:=str+'третю';
-end;
- str:=str+' декаду';
- result:=str;
+  if (Form1.CheckDeckList.Checked[0] = true) then
+    str := 'першу';
+  if (Form1.CheckDeckList.Checked[1] = true) then
+  begin
+    if str <> '' then
+      str := str + ', ';
+    str := str + 'другу';
+  end;
+  if (Form1.CheckDeckList.Checked[2] = true) then
+  begin
+    if str <> '' then
+      str := str + ', ';
+    str := str + 'третю';
+  end;
+  str := str + ' декаду';
+  result := str;
 end;
 
-function decCount():integer;
- var n:integer;
+function decCount(): integer;
+var
+  n: integer;
 begin
-n:=0;
-  if (Form1.CheckDeckList.Checked[0]=true)
-  then
-  n:=n+1;
-   if (Form1.CheckDeckList.Checked[1]=true)
-  then
-  n:=n+1;
-   if (Form1.CheckDeckList.Checked[2]=true)
-  then
-  n:=n+1;
+  n := 0;
+  if (Form1.CheckDeckList.Checked[0] = true) then
+    n := n + 1;
+  if (Form1.CheckDeckList.Checked[1] = true) then
+    n := n + 1;
+  if (Form1.CheckDeckList.Checked[2] = true) then
+    n := n + 1;
 
-  result:=n;
+  result := n;
 end;
 
 function SendEMail(Handle: THandle; Mail: TStrings): Cardinal;
 type
-  TAttachAccessArray = array [0..0] of TMapiFileDesc;
+  TAttachAccessArray = array [0 .. 0] of TMapiFileDesc;
   PAttachAccessArray = ^TAttachAccessArray;
 var
   MapiMessage: TMapiMessage;
   Receip: TMapiRecipDesc;
   Attachments: PAttachAccessArray;
-  AttachCount: Integer;
+  AttachCount: integer;
   i1: integer;
   FileName: string;
   dwRet: Cardinal;
@@ -259,20 +264,29 @@ var
   WndList: Pointer;
 begin
   dwRet := MapiLogon(Handle, PAnsiChar(''), PAnsiChar(''),
-   MAPI_LOGON_UI or MAPI_NEW_SESSION, 0, @MAPI_Session);
+    MAPI_LOGON_UI or MAPI_NEW_SESSION, 0, @MAPI_Session);
 
-  if (dwRet <> SUCCESS_SUCCESS) then begin
-    MessageBox(Handle,PChar('Помилка: Outlook Express.'+#13#10+'Неможливо відкрити MAPI сесію.'+#13#10+'Можливо mapi.dll була пошкоджена.'+#13#10+'Зверніться к системному адміністратору.'),PChar('Error'),MB_ICONERROR or MB_OK);
-  end else begin
+  if (dwRet <> SUCCESS_SUCCESS) then
+  begin
+    MessageBox(Handle, PChar('Помилка: Outlook Express.' + #13#10 +
+          'Неможливо відкрити MAPI сесію.' + #13#10 +
+          'Можливо mapi.dll була пошкоджена.' + #13#10 +
+          'Зверніться к системному адміністратору.'), PChar('Error'),
+      MB_ICONERROR or MB_OK);
+  end
+  else
+  begin
     FillChar(MapiMessage, SizeOf(MapiMessage), #0);
     Attachments := nil;
     FillChar(Receip, SizeOf(Receip), #0);
 
-    if Mail.Values['to'] <> '' then begin
+    if Mail.Values['to'] <> '' then
+    begin
       Receip.ulReserved := 0;
       Receip.ulRecipClass := MAPI_TO;
       Receip.lpszName := StrNew(PAnsiChar(AnsiString(Mail.Values['to'])));
-      Receip.lpszAddress := StrNew(PAnsiChar(AnsiString('SMTP:' + Mail.Values['to'])));
+      Receip.lpszAddress := StrNew
+        (PAnsiChar(AnsiString('SMTP:' + Mail.Values['to'])));
       Receip.ulEIDSize := 0;
       MapiMessage.nRecipCount := 1;
       MapiMessage.lpRecips := @Receip;
@@ -280,23 +294,26 @@ begin
 
     AttachCount := 0;
 
-    for i1 := 0 to MaxInt do begin
+    for i1 := 0 to MaxInt do
+    begin
       if Mail.Values['attachment' + IntToStr(i1)] = '' then
         break;
       Inc(AttachCount);
     end;
 
-    if AttachCount > 0 then begin
+    if AttachCount > 0 then
+    begin
       GetMem(Attachments, SizeOf(TMapiFileDesc) * AttachCount);
 
-      for i1 := 0 to AttachCount - 1 do begin
+      for i1 := 0 to AttachCount - 1 do
+      begin
         FileName := Mail.Values['attachment' + IntToStr(i1)];
         Attachments[i1].ulReserved := 0;
         Attachments[i1].flFlags := 0;
         Attachments[i1].nPosition := ULONG($FFFFFFFF);
         Attachments[i1].lpszPathName := StrNew(PAnsiChar(AnsiString(FileName)));
-        Attachments[i1].lpszFileName :=
-         StrNew(PAnsiChar(AnsiString(ExtractFileName(FileName))));
+        Attachments[i1].lpszFileName := StrNew
+          (PAnsiChar(AnsiString(ExtractFileName(FileName))));
         Attachments[i1].lpFileType := nil;
       end;
       MapiMessage.nFileCount := AttachCount;
@@ -304,19 +321,21 @@ begin
     end;
 
     if Mail.Values['subject'] <> '' then
-      MapiMessage.lpszSubject := StrNew(PAnsiChar(AnsiString(Mail.Values['subject'])));
+      MapiMessage.lpszSubject := StrNew
+        (PAnsiChar(AnsiString(Mail.Values['subject'])));
     if Mail.Values['body'] <> '' then
-      MapiMessage.lpszNoteText := StrNew(PAnsiChar(AnsiString(Mail.Values['body'])));
+      MapiMessage.lpszNoteText := StrNew
+        (PAnsiChar(AnsiString(Mail.Values['body'])));
 
     WndList := DisableTaskWindows(0);
     try
-      Result := MapiSendMail(MAPI_Session, Handle,
-      MapiMessage, MAPI_DIALOG, 0);
+      result := MapiSendMail(MAPI_Session, Handle, MapiMessage, MAPI_DIALOG, 0);
     finally
-      EnableTaskWindows( WndList );
+      EnableTaskWindows(WndList);
     end;
 
-    for i1 := 0 to AttachCount - 1 do begin
+    for i1 := 0 to AttachCount - 1 do
+    begin
       StrDispose(Attachments[i1].lpszPathName);
       StrDispose(Attachments[i1].lpszFileName);
     end;
@@ -369,8 +388,10 @@ begin
       Exit;
     end
     else if (ComboDecMonList.Visible) and (ComboDecMonList.ItemIndex >= 0) then
-    //  if (RadioDeckList.ItemIndex = -1) then
-   if (CheckDeckList.Checked[0] = false) and (CheckDeckList.Checked[1] = false) and (CheckDeckList.Checked[2] = false) then
+      // if (RadioDeckList.ItemIndex = -1) then
+      if (CheckDeckList.Checked[0] = false) and
+        (CheckDeckList.Checked[1] = false) and
+        (CheckDeckList.Checked[2] = false) then
       begin
         ShowMessage('Не вибрано декаду місяця.');
         Exit;
@@ -450,12 +471,224 @@ begin
   // ------------------------------
   if parForm = 'dmp' then
     Progn_dnist_mon
-  else
-  if parForm = 'gyd' then
+  else if parForm = 'gyd' then
     Progn_gidrograf
+     else if parForm = 'bmp' then
+    Progn_bok_mon
   else
     Progn_pripliv;
 end;
+ procedure TForm1.Progn_bok_mon;
+var
+  curCol, fnumcell: integer;
+  dat_beg, dat_end, zabezp_proc: string;
+  ind_st, basesql, polsql: string;
+  mon_prog, year_prog, sum: integer;
+  path_signature, ss: string;
+begin
+  fnumcell := 4;
+  if CBZabezp.Text = 'середній' then
+    zabezp_proc := 'ser'
+  else
+    zabezp_proc := CBZabezp.Text;
+
+  Screen.Cursor := crHourGlass;
+  WordApp := TWordApplication.Create(Self);
+  WordApp.Connect();
+  WordApp.Visible := true;
+{$IFDEF DEBUG}
+  // WordApp.Visible := true;
+{$ENDIF}
+  // обновляем данные
+  // ibdsDescription.Close();
+  // ibdsDescription.Open();
+  // ibdsForecast.Close();
+  // ibdsForecast.Open();
+  wdUnit := putchshab + '\' + m_TemplateFile;
+  WordApp.Documents.OpenOld(wdUnit, EmptyParam, EmptyParam, EmptyParam,
+    EmptyParam, EmptyParam, EmptyParam, EmptyParam, EmptyParam, EmptyParam);
+  // -----------
+  wdUnit := putchrezult + '\' + m_ReportFileName;
+  tmp1 := false;
+  WordApp.ActiveDocument.SaveAs(wdUnit, EmptyParam, EmptyParam, EmptyParam,
+    tmp1, EmptyParam, EmptyParam, EmptyParam, EmptyParam, EmptyParam,
+    EmptyParam, EmptyParam, EmptyParam, EmptyParam, EmptyParam, EmptyParam);
+  // заменяем "заглушки" на реальный текст
+  wdUnit := '#Datename';
+  tmp1 := true;
+  tmp2 := wdFindContinue;
+  NameProgn(Datename);
+  tmp3 := Datename;
+  tmp4 := wdReplaceAll;
+  WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+    EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+  wdUnit := '#numvipusk';
+  tmp1 := true;
+  tmp2 := wdFindContinue;
+  tmp3 := EditNumberPrognoz.Text;
+  tmp4 := wdReplaceAll;
+  WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+    EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+  { } if copy(parForm, 1, 1) = '0' then
+  begin
+    wdUnit := '#Zabezp';
+    tmp1 := true;
+    tmp2 := wdFindContinue;
+    if zabezp_proc = 'ser' then
+      tmp3 := 'середньої'
+    else
+      tmp3 := zabezp_proc + ' %-вої';
+    tmp4 := wdReplaceAll;
+    WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+      EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+    // WordApp.Selection.TypeParagraph();
+
+    wdUnit := '#rikfact';
+    tmp1 := true;
+    tmp2 := wdFindContinue;
+    tmp3 := IntToStr(StrToInt(FormatDateTime('yyyy', DTProgn.Date)) - 1);
+    tmp4 := wdReplaceAll;
+    WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+      EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+  end;
+     sum:=0;
+
+        ind_st := '80021';
+        IBQZABEZP.Close;
+        IBQZABEZP.SQL.Clear;
+        IBQZABEZP.SQL.Add
+          ('select *  from q_zabezp q where q.post_index="' + ind_st +
+            '" and q.proc="' + zabezp_proc + '"');
+        IBQZABEZP.Open;
+        sum:=sum+      IBQZABEZP.FieldByName('Q' + IntToStr(ComboMonList.ItemIndex + 1) + '').Asinteger;
+   wdUnit := '#Krem';
+  tmp1 := true;
+  tmp2 := wdFindContinue;
+  tmp3 := IBQZABEZP.FieldByName('Q' + IntToStr(ComboMonList.ItemIndex + 1) + '').AsString;
+  tmp4 := wdReplaceAll;
+  WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+    EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+
+       ind_st := '80029';
+        IBQZABEZP.Close;
+        IBQZABEZP.SQL.Clear;
+        IBQZABEZP.SQL.Add
+          ('select *  from q_zabezp q where q.post_index="' + ind_st +
+            '" and q.proc="' + zabezp_proc + '"');
+        IBQZABEZP.Open;
+             sum:=sum+      IBQZABEZP.FieldByName('Q' + IntToStr(ComboMonList.ItemIndex + 1) + '').Asinteger;
+      wdUnit := '#Dniprdz';
+  tmp1 := true;
+  tmp2 := wdFindContinue;
+  tmp3 := EditNumberPrognoz.Text;
+  tmp4 := wdReplaceAll;
+  WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+    EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+
+       ind_st := '80039';
+        IBQZABEZP.Close;
+        IBQZABEZP.SQL.Clear;
+        IBQZABEZP.SQL.Add
+          ('select *  from q_zabezp q where q.post_index="' + ind_st +
+            '" and q.proc="' + zabezp_proc + '"');
+        IBQZABEZP.Open;
+             sum:=sum+      IBQZABEZP.FieldByName('Q' + IntToStr(ComboMonList.ItemIndex + 1) + '').Asinteger;
+      wdUnit := '#Dnipro';
+  tmp1 := true;
+  tmp2 := wdFindContinue;
+  tmp3 := EditNumberPrognoz.Text;
+  tmp4 := wdReplaceAll;
+  WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+    EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+
+
+      wdUnit := '#Sum';
+  tmp1 := true;
+  tmp2 := wdFindContinue;
+  tmp3 := inttostr(sum);
+  tmp4 := wdReplaceAll;
+  WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+    EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+
+
+   //...
+
+
+if (copy(Nach1, Pos('#', Nach1) + 1, (Length(Nach1))) = ComboBox2.Text) then
+    ss := copy(Nach1, 1, Pos('#', Nach1) - 1)
+  else
+    ss := copy(Nach2, 1, Pos('#', Nach2) - 1);
+  wdUnit := '#President';
+  tmp1 := true;
+  tmp2 := wdFindContinue;
+  tmp3 := ss;
+  tmp4 := wdReplaceAll;
+  WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+    EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+  // Iiaienu
+  if CheckBox1.Checked then
+  begin // 1
+    if (ComboBox2.Text = ComboBox2.Items[0]) then
+      path_signature := putchshab + '\' + 'Boss1.bmp'
+    else
+      path_signature := putchshab + '\' + 'Boss2.bmp';
+
+    wdUnit := '#Signature';
+    tmp1 := true;
+    tmp2 := wdFindStop;
+    tmp3 := '';
+    tmp4 := wdReplaceOne;
+    WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+      EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+    // aiaaaeyai oaee n map
+    wdUnit := true;
+    with (WordApp.Selection.InlineShapes.AddPicture(path_signature, EmptyParam,
+        wdUnit, EmptyParam)) do
+    begin
+      LockAspectRatio := wdUnit;
+    end;
+  end // 1
+  else
+  begin // 1
+    wdUnit := '#Signature';
+    tmp1 := true;
+    tmp2 := wdFindContinue;
+    tmp3 := '';
+    tmp4 := wdReplaceAll;
+    WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+      EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+  end; // 1
+  wdUnit := '#Name';
+  tmp1 := true;
+  tmp2 := wdFindContinue;
+  tmp3 := ComboBox2.Text;
+  tmp4 := wdReplaceAll;
+  WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+    EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+  // --------------------------------
+  wdUnit := '#dataprogn';
+  tmp1 := true;
+  tmp2 := wdFindContinue;
+  tmp3 := FormatDateTime('dd.mm.yyyy', DateProgn);
+  tmp4 := wdReplaceAll;
+  WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+    EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+  WordApp.ActiveDocument.Save;
+  WordApp.Visible := true;
+  WordApp.ShowMe;
+  WordApp.Activate;
+
+  WordApp.Free();
+{$IFNDEF DEBUG}
+  // удаляем временную карту
+  // if (FileExists(tmpMapName)) then
+  // DeleteFile(tmpMapName);
+{$ENDIF}
+  Screen.Cursor := crArrow;
+
+
+  end;
+
 
 procedure TForm1.Progn_dnist_mon;
 var
@@ -464,7 +697,8 @@ var
   dat_beg, dat_end, zabezp_proc, date_max_prip, max_prip: string;
   ind_st, basesql, polsql: string;
   mon_prog, year_prog: integer;
-  path_signature,ss:string;
+  path_signature, ss: string;
+  max, avg, min: integer;
 begin
   fnumcell := 4;
   if CBZabezp.Text = 'середній' then
@@ -472,18 +706,18 @@ begin
   else
     zabezp_proc := CBZabezp.Text;
   ind_st := '81921';
-   curCol := fnumcell;
-{  mb := CBmonmbeg.ItemIndex;
-  me := CBmonmend.ItemIndex;
-  dbeg := CBmondbeg.ItemIndex;
-  dend := CBmondend.ItemIndex;
-}  // ------------------------
+  curCol := fnumcell;
+  { mb := CBmonmbeg.ItemIndex;
+    me := CBmonmend.ItemIndex;
+    dbeg := CBmondbeg.ItemIndex;
+    dend := CBmondend.ItemIndex;
+  }  // ------------------------
   Screen.Cursor := crHourGlass;
   WordApp := TWordApplication.Create(Self);
   WordApp.Connect();
   WordApp.Visible := false;
 {$IFDEF DEBUG}
-   //WordApp.Visible := true;
+  // WordApp.Visible := true;
 {$ENDIF}
   // обновляем данные
   // ibdsDescription.Close();
@@ -503,10 +737,15 @@ begin
   wdUnit := '#Dateprog';
   tmp1 := true;
   tmp2 := wdFindContinue;
-    if ((CBMonList.Checked) and (ComboMonList.ItemIndex >= 0)) then
-      tmp3 := Mon_ukr[ComboMonList.ItemIndex] + ' '+FormatDateTime('yyyy', DTProgn.Date)
- else
-  tmp3 := '';
+  if ((CBMonList.Checked) and (ComboMonList.ItemIndex >= 0)) then
+    tmp3 := Mon_ukr[ComboMonList.ItemIndex]
+  else
+    tmp3 := '';
+  if CheckBoxBerezKviten.Checked then
+    tmp3 := tmp3 + ' і період березень-квітень';
+
+    tmp3:=tmp3 +  ' ' +   FormatDateTime
+      ('yyyy', DTProgn.Date);
   tmp4 := wdReplaceAll;
   WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
     EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
@@ -518,7 +757,7 @@ begin
   WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
     EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
 
-    wdUnit := '#PrognozOrKonsultaciya';
+  wdUnit := '#PrognozOrKonsultaciya';
   tmp1 := true;
   tmp2 := wdFindContinue;
   tmp3 := progOrKon;
@@ -526,18 +765,17 @@ begin
   WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
     EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
 
-
-  //--------
-    wdUnit := '#Zabezp';
-    tmp1 := true;
-    tmp2 := wdFindContinue;
-    if zabezp_proc = 'ser' then
-      tmp3 := 'середньої'
-    else
-      tmp3 := zabezp_proc + ' %-вої';
-    tmp4 := wdReplaceAll;
-    WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
-      EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+  // --------
+  wdUnit := '#Zabezp';
+  tmp1 := true;
+  tmp2 := wdFindContinue;
+  if zabezp_proc = 'ser' then
+    tmp3 := 'середньої'
+  else
+    tmp3 := zabezp_proc + ' %-вої';
+  tmp4 := wdReplaceAll;
+  WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+    EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
 
   wdUnit := '#rikfact';
   tmp1 := true;
@@ -564,89 +802,174 @@ begin
   begin
 
     // ===========================================================
-          year_prog := StrToInt(FormatDateTime('yyyy', DTProgn.Date)) - 1;
-          mon_prog := ComboMonList.ItemIndex+1;
-                if mon_prog < 10 then
-                  dat_beg := '01.0' + IntToStr(mon_prog) + '.' + IntToStr
-                    (year_prog)
-                else
-                  dat_beg := '01.' + IntToStr(mon_prog) + '.' + IntToStr
-                    (year_prog);
-                dat_end := FormatDateTime
-                  ('dd.mm.yyyy', EndOfAMonth(year_prog, mon_prog));
-          //-----------------------------------------------------------
-        IBQZABEZP.Close;
-        IBQZABEZP.SQL.Clear;
-        IBQZABEZP.SQL.Add
-          ('select Q' + IntToStr(ComboMonList.ItemIndex + 1)+'  from q_zabezp q where q.post_index="' + ind_st +
-            '" and q.proc="ser"');
-        IBQZABEZP.Open;
-            if not IBQZABEZP.FieldByName('Q' + IntToStr(ComboMonList.ItemIndex + 1)).IsNull then
-              Cell(curCol, 3).Range.Text := FormatPripliv
-                (IBQZABEZP.FieldByName('Q' + IntToStr(ComboMonList.ItemIndex + 1)).AsFloat);
-          //-----------------------------------------------------------
-        IBQZABEZP.Close;
-        IBQZABEZP.SQL.Clear;
-        IBQZABEZP.SQL.Add
-          ('select Q' + IntToStr(ComboMonList.ItemIndex + 1)+'  from q_zabezp q where q.post_index="' + ind_st +
-            '" and q.proc="qmin"');
-        IBQZABEZP.Open;
-            if not IBQZABEZP.FieldByName('Q' + IntToStr(ComboMonList.ItemIndex + 1)).IsNull then
-              Cell(curCol, 4).Range.Text := FormatPripliv
-                (IBQZABEZP.FieldByName('Q' + IntToStr(ComboMonList.ItemIndex + 1)).AsFloat);
-          //-----------------------------------------------------------
-        IBQZABEZP.Close;
-        IBQZABEZP.SQL.Clear;
-        IBQZABEZP.SQL.Add
-          ('select Q' + IntToStr(ComboMonList.ItemIndex + 1)+'  from q_zabezp q where q.post_index="' + ind_st +
-            '" and q.proc="qmax"');
-        IBQZABEZP.Open;
-            if not IBQZABEZP.FieldByName('Q' + IntToStr(ComboMonList.ItemIndex + 1)).IsNull then
-              Cell(curCol, 5).Range.Text := FormatPripliv
-                (IBQZABEZP.FieldByName('Q' + IntToStr(ComboMonList.ItemIndex + 1)).AsFloat);
-          //-----------------------------------------------------------
+    year_prog := StrToInt(FormatDateTime('yyyy', DTProgn.Date)) - 1;
+    mon_prog := ComboMonList.ItemIndex + 1;
+    if mon_prog < 10 then
+      dat_beg := '01.0' + IntToStr(mon_prog) + '.' + IntToStr(year_prog)
+    else
+      dat_beg := '01.' + IntToStr(mon_prog) + '.' + IntToStr(year_prog);
+    dat_end := FormatDateTime('dd.mm.yyyy', EndOfAMonth(year_prog, mon_prog));
+    // -----------------------------------------------------------
+    IBQZABEZP.Close;
+    IBQZABEZP.SQL.Clear;
+    IBQZABEZP.SQL.Add('select Q' + IntToStr(ComboMonList.ItemIndex + 1) +
+        '  from q_zabezp q where q.post_index="' + ind_st +
+        '" and q.proc="ser"');
+    IBQZABEZP.Open;
+    if not IBQZABEZP.FieldByName('Q' + IntToStr(ComboMonList.ItemIndex + 1))
+      .IsNull then
+      Cell(curCol, 3).Range.Text := FormatPripliv
+        (IBQZABEZP.FieldByName('Q' + IntToStr(ComboMonList.ItemIndex + 1))
+          .AsFloat);
+    // -----------------------------------------------------------
+    IBQZABEZP.Close;
+    IBQZABEZP.SQL.Clear;
+    IBQZABEZP.SQL.Add('select Q' + IntToStr(ComboMonList.ItemIndex + 1) +
+        '  from q_zabezp q where q.post_index="' + ind_st +
+        '" and q.proc="qmin"');
+    IBQZABEZP.Open;
+    if not IBQZABEZP.FieldByName('Q' + IntToStr(ComboMonList.ItemIndex + 1))
+      .IsNull then
+      Cell(curCol, 4).Range.Text := FormatPripliv
+        (IBQZABEZP.FieldByName('Q' + IntToStr(ComboMonList.ItemIndex + 1))
+          .AsFloat);
+    // -----------------------------------------------------------
+    IBQZABEZP.Close;
+    IBQZABEZP.SQL.Clear;
+    IBQZABEZP.SQL.Add('select Q' + IntToStr(ComboMonList.ItemIndex + 1) +
+        '  from q_zabezp q where q.post_index="' + ind_st +
+        '" and q.proc="qmax"');
+    IBQZABEZP.Open;
+    if not IBQZABEZP.FieldByName('Q' + IntToStr(ComboMonList.ItemIndex + 1))
+      .IsNull then
+      Cell(curCol, 5).Range.Text := FormatPripliv
+        (IBQZABEZP.FieldByName('Q' + IntToStr(ComboMonList.ItemIndex + 1))
+          .AsFloat);
+    // -----------------------------------------------------------
 
-        IBQZABEZP.Close;
-        IBQZABEZP.SQL.Clear;
-        IBQZABEZP.SQL.Add
-          ('select *  from q_zabezp q where q.post_index="' + ind_st +
-            '" and q.proc="' + zabezp_proc + '"');
-        IBQZABEZP.Open;
-            if not IBQZABEZP.FieldByName('Q' + IntToStr(ComboMonList.ItemIndex + 1)).IsNull then
-              Cell(curCol, 6).Range.Text := FormatPripliv
-                (IBQZABEZP.FieldByName('Q' + IntToStr(ComboMonList.ItemIndex + 1)).AsFloat);
-          //-----------------------------------------------------------
-              IBQPripliv.Close;
-              IBQPripliv.SQL.Clear;
-              IBQPripliv.SQL.Add
-                ('select AVG(qq_middprev) as QQ from GYDRO_4_5' +
-                  ' where (date_ch>="' + dat_beg + '" and date_ch<="' +
-                  dat_end + '")and post_index="' + ind_st + '"');
-              IBQPripliv.Open;
-              if not IBQPripliv.FieldByName('QQ').IsNull then
-                Cell(curCol + c, 7).Range.Text := FormatPripliv
-                  (IBQPripliv.FieldByName('QQ').AsFloat);
-            // -------------------
- end;
+    IBQZABEZP.Close;
+    IBQZABEZP.SQL.Clear;
+    IBQZABEZP.SQL.Add
+      ('select *  from q_zabezp q where q.post_index="' + ind_st +
+        '" and q.proc="' + zabezp_proc + '"');
+    IBQZABEZP.Open;
+    if not IBQZABEZP.FieldByName('Q' + IntToStr(ComboMonList.ItemIndex + 1))
+      .IsNull then
+      Cell(curCol, 6).Range.Text := FormatPripliv
+        (IBQZABEZP.FieldByName('Q' + IntToStr(ComboMonList.ItemIndex + 1))
+          .AsFloat);
+    // -----------------------------------------------------------
+    IBQPripliv.Close;
+    IBQPripliv.SQL.Clear;
+    IBQPripliv.SQL.Add('select AVG(qq_middprev) as QQ from GYDRO_4_5' +
+        ' where (date_ch>="' + dat_beg + '" and date_ch<="' + dat_end +
+        '")and post_index="' + ind_st + '"');
+    IBQPripliv.Open;
+    if not IBQPripliv.FieldByName('QQ').IsNull then
+      Cell(curCol + c, 7).Range.Text := FormatPripliv
+        (IBQPripliv.FieldByName('QQ').AsFloat);
+    // -------------------
+
+    /// Period
+    if CheckBoxBerezKviten.Checked then
+    begin
+      RowsIns := 1;
+      Cell(curCol, 1).Select;
+      WordApp.Selection.InsertRowsBelow(RowsIns);
+      curCol := curCol + 1;
+
+      year_prog := StrToInt(FormatDateTime('yyyy', DTProgn.Date)) - 1;
+      dat_beg := '01.03' + '.' + IntToStr(year_prog);
+      dat_end := FormatDateTime('dd.mm.yyyy', EndOfAMonth(year_prog, 4));
+      // -----------------------------------------------------------
+      IBQZABEZP.Close;
+      IBQZABEZP.SQL.Clear;
+      IBQZABEZP.SQL.Add('select avg(q) as q from (select Q3 as q from  q_zabezp q where q.post_index=81921'+
+            ' and q.proc="ser"'+
+            ' union'+
+            ' select Q4 as q from  q_zabezp q where q.post_index=81921'+
+            ' and q.proc="ser") as q');
+      IBQZABEZP.Open;
+      if not IBQZABEZP.FieldByName('Q')
+        .IsNull then
+        Cell(curCol, 3).Range.Text := FormatPripliv
+          (IBQZABEZP.FieldByName('Q')
+            .AsFloat);
+      // -----------------------------------------------------------
+      IBQZABEZP.Close;
+      IBQZABEZP.SQL.Clear;
+      IBQZABEZP.SQL.Add('select min(q) as q from (select Q3 as q from  q_zabezp q where q.post_index=81921'+
+            ' and q.proc="qmin"'+
+            ' union'+
+            ' select Q4 as q from  q_zabezp q where q.post_index=81921'+
+            ' and q.proc="qmin") as q');
+      IBQZABEZP.Open;
+      if not IBQZABEZP.FieldByName('Q' )
+        .IsNull then
+        Cell(curCol, 4).Range.Text := FormatPripliv
+          (IBQZABEZP.FieldByName('Q')
+            .AsFloat);
+      // -----------------------------------------------------------
+      IBQZABEZP.Close;
+      IBQZABEZP.SQL.Clear;
+      IBQZABEZP.SQL.Add('select max(q) as q from (select Q3 as q from  q_zabezp q where q.post_index=81921'+
+            ' and q.proc="qmax"'+
+            ' union'+
+            ' select Q4 as q from  q_zabezp q where q.post_index=81921'+
+            ' and q.proc="qmax") as q');
+      IBQZABEZP.Open;
+      if not IBQZABEZP.FieldByName('Q')
+        .IsNull then
+        Cell(curCol, 5).Range.Text := FormatPripliv
+          (IBQZABEZP.FieldByName('Q')
+            .AsFloat);
+      // -----------------------------------------------------------
+
+      IBQZABEZP.Close;
+      IBQZABEZP.SQL.Clear;
+      IBQZABEZP.SQL.Add('select *  from q_zabezp q where q.post_index="' +
+          ind_st + '" and q.proc="' + zabezp_proc + '"');
+      IBQZABEZP.Open;
+      if (not IBQZABEZP.FieldByName('Q3')
+        .IsNull) and (not IBQZABEZP.FieldByName('Q4')
+        .IsNull) then
+        avg:= IBQZABEZP.FieldByName('Q3')
+            .AsInteger+ IBQZABEZP.FieldByName('Q4')
+            .AsInteger;
+        Cell(curCol, 6).Range.Text :=inttostr(avg);
+      // -----------------------------------------------------------
+      IBQPripliv.Close;
+      IBQPripliv.SQL.Clear;
+      IBQPripliv.SQL.Add('select AVG(qq_middprev) as QQ from GYDRO_4_5' +
+          ' where (date_ch>="' + dat_beg + '" and date_ch<="' + dat_end +
+          '")and post_index="' + ind_st + '"');
+      IBQPripliv.Open;
+      if not IBQPripliv.FieldByName('QQ').IsNull then
+        Cell(curCol + c, 7).Range.Text := FormatPripliv
+          (IBQPripliv.FieldByName('QQ').AsFloat);
+
+    end;
+  end;
 
   // ==============================================================================
-    if (Copy(Nach1,Pos('#',Nach1)+1,(Length(Nach1)))=ComboBox2.Text) then
-              ss:= Copy(Nach1,1,Pos('#',Nach1)-1)
-              else
-               ss:= Copy(Nach2,1,Pos('#',Nach2)-1);
-    wdUnit := '#President';
-    tmp1 := true;
-    tmp2 := wdFindContinue;
-    tmp3 := ss;
-    tmp4 := wdReplaceAll;
-    WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
-      EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
-//  Ïîäïèñü
-   if CheckBox1.Checked then
- begin     //1
-  if (ComboBox2.Text=ComboBox2.Items[0]) then  path_signature:=putchshab+'\'+ 'Boss1.bmp'
+  if (copy(Nach1, Pos('#', Nach1) + 1, (Length(Nach1))) = ComboBox2.Text) then
+    ss := copy(Nach1, 1, Pos('#', Nach1) - 1)
   else
-    path_signature:=putchshab+'\'+ 'Boss2.bmp';
+    ss := copy(Nach2, 1, Pos('#', Nach2) - 1);
+  wdUnit := '#President';
+  tmp1 := true;
+  tmp2 := wdFindContinue;
+  tmp3 := ss;
+  tmp4 := wdReplaceAll;
+  WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+    EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+  // Ïîäïèñü
+  if CheckBox1.Checked then
+  begin // 1
+    if (ComboBox2.Text = ComboBox2.Items[0]) then
+      path_signature := putchshab + '\' + 'Boss1.bmp'
+    else
+      path_signature := putchshab + '\' + 'Boss2.bmp';
 
     wdUnit := '#Signature';
     tmp1 := true;
@@ -655,16 +978,16 @@ begin
     tmp4 := wdReplaceOne;
     WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
       EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
-    //äîáàâëÿåì ôàéë ñ map
-        wdUnit := true;
-        with(WordApp.Selection.InlineShapes
-          .AddPicture(path_signature, EmptyParam, wdUnit, EmptyParam))do
-        begin
-            LockAspectRatio := wdUnit;
-        end;
-  end  //1
-   else
-   begin  //1
+    // äîáàâëÿåì ôàéë ñ map
+    wdUnit := true;
+    with (WordApp.Selection.InlineShapes.AddPicture(path_signature, EmptyParam,
+        wdUnit, EmptyParam)) do
+    begin
+      LockAspectRatio := wdUnit;
+    end;
+  end // 1
+  else
+  begin // 1
     wdUnit := '#Signature';
     tmp1 := true;
     tmp2 := wdFindContinue;
@@ -672,15 +995,15 @@ begin
     tmp4 := wdReplaceAll;
     WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
       EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
-  end;  //1
-    wdUnit := '#Name';
-    tmp1 := true;
-    tmp2 := wdFindContinue;
-    tmp3 := ComboBox2.Text;
-    tmp4 := wdReplaceAll;
-    WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
-     EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
-  //------------------------
+  end; // 1
+  wdUnit := '#Name';
+  tmp1 := true;
+  tmp2 := wdFindContinue;
+  tmp3 := ComboBox2.Text;
+  tmp4 := wdReplaceAll;
+  WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+    EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+  // ------------------------
   wdUnit := '#dataprogn';
   tmp1 := true;
   tmp2 := wdFindContinue;
@@ -690,7 +1013,7 @@ begin
     EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
   WordApp.ActiveDocument.Save;
   WordApp.Visible := true;
-    WordApp.ShowMe;
+  WordApp.ShowMe;
   WordApp.Activate;
   WordApp.Free();
 {$IFNDEF DEBUG}
@@ -701,7 +1024,6 @@ begin
   Screen.Cursor := crArrow;
 end;
 
-
 procedure TForm1.Progn_gidrograf;
 var
   curCol, curColNS, fnumcell: integer;
@@ -709,7 +1031,7 @@ var
   dat_beg, dat_end, zabezp_proc: string;
   ind_st, basesql, polsql: string;
   mon_prog, year_prog: integer;
-  path_signature,ss:string;
+  path_signature, ss: string;
 begin
   fnumcell := 4;
   if CBZabezp.Text = 'середній' then
@@ -854,7 +1176,7 @@ begin
                 else
                   dat_end := '10.' + IntToStr(mon_prog) + '.' + IntToStr
                     (year_prog);
-                Cell(curCol, 1).Range.Text := Mon_ukr[m] + ',' + Dec_ukr[d];
+                Cell(curCol, 1).Range.Text := Mon_ukr[m] + ', ' + Dec_ukr[d];
               end;
             1:
               begin
@@ -871,7 +1193,7 @@ begin
                   dat_end := '20.' + IntToStr(mon_prog) + '.' + IntToStr
                     (year_prog);
                 if ((m = mb) and (d = dbeg)) then
-                  Cell(curCol, 1).Range.Text := Mon_ukr[m] + ',' + Dec_ukr[d]
+                  Cell(curCol, 1).Range.Text := Mon_ukr[m] + ', ' + Dec_ukr[d]
                 else
                   Cell(curCol, 1).Range.Text := '                ' + Dec_ukr[d];
               end;
@@ -886,9 +1208,9 @@ begin
                 dat_end := FormatDateTime
                   ('dd.mm.yyyy', EndOfAMonth(year_prog, mon_prog));
                 if ((m = mb) and (d = dbeg)) then
-                  Cell(curCol, 1).Range.Text := Mon_ukr[m] + ',' + Dec_ukr[d]
+                  Cell(curCol, 1).Range.Text := Mon_ukr[m] + ', ' + Dec_ukr[d]
                 else
-                Cell(curCol, 1).Range.Text := '                ' + Dec_ukr[d];
+                  Cell(curCol, 1).Range.Text := '                ' + Dec_ukr[d];
               end;
           end;
           IBQPripliv.Close;
@@ -976,23 +1298,24 @@ begin
   end;
   // ----------------------------------------------------------------------------
   // ==============================================================================
-      if (Copy(Nach1,Pos('#',Nach1)+1,(Length(Nach1)))=ComboBox2.Text) then
-              ss:= Copy(Nach1,1,Pos('#',Nach1)-1)
-              else
-               ss:= Copy(Nach2,1,Pos('#',Nach2)-1);
-    wdUnit := '#President';
-    tmp1 := true;
-    tmp2 := wdFindContinue;
-    tmp3 := ss;
-    tmp4 := wdReplaceAll;
-    WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
-      EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
-//  Ïîäïèñü
-   if CheckBox1.Checked then
- begin     //1
-  if (ComboBox2.Text=ComboBox2.Items[0]) then  path_signature:=putchshab+'\'+ 'Boss1.bmp'
+  if (copy(Nach1, Pos('#', Nach1) + 1, (Length(Nach1))) = ComboBox2.Text) then
+    ss := copy(Nach1, 1, Pos('#', Nach1) - 1)
   else
-    path_signature:=putchshab+'\'+ 'Boss2.bmp';
+    ss := copy(Nach2, 1, Pos('#', Nach2) - 1);
+  wdUnit := '#President';
+  tmp1 := true;
+  tmp2 := wdFindContinue;
+  tmp3 := ss;
+  tmp4 := wdReplaceAll;
+  WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+    EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+  // Ïîäïèñü
+  if CheckBox1.Checked then
+  begin // 1
+    if (ComboBox2.Text = ComboBox2.Items[0]) then
+      path_signature := putchshab + '\' + 'Boss1.bmp'
+    else
+      path_signature := putchshab + '\' + 'Boss2.bmp';
 
     wdUnit := '#Signature';
     tmp1 := true;
@@ -1001,16 +1324,16 @@ begin
     tmp4 := wdReplaceOne;
     WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
       EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
-    //äîáàâëÿåì ôàéë ñ map
-        wdUnit := true;
-        with(WordApp.Selection.InlineShapes
-          .AddPicture(path_signature, EmptyParam, wdUnit, EmptyParam))do
-        begin
-            LockAspectRatio := wdUnit;
-        end;
-  end  //1
-   else
-   begin  //1
+    // äîáàâëÿåì ôàéë ñ map
+    wdUnit := true;
+    with (WordApp.Selection.InlineShapes.AddPicture(path_signature, EmptyParam,
+        wdUnit, EmptyParam)) do
+    begin
+      LockAspectRatio := wdUnit;
+    end;
+  end // 1
+  else
+  begin // 1
     wdUnit := '#Signature';
     tmp1 := true;
     tmp2 := wdFindContinue;
@@ -1018,15 +1341,15 @@ begin
     tmp4 := wdReplaceAll;
     WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
       EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
-  end;  //1
-    wdUnit := '#Name';
-    tmp1 := true;
-    tmp2 := wdFindContinue;
-    tmp3 := ComboBox2.Text;
-    tmp4 := wdReplaceAll;
-    WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
-     EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
-    //---------------------------------------
+  end; // 1
+  wdUnit := '#Name';
+  tmp1 := true;
+  tmp2 := wdFindContinue;
+  tmp3 := ComboBox2.Text;
+  tmp4 := wdReplaceAll;
+  WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+    EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+  // ---------------------------------------
   wdUnit := '#dataprogn';
   tmp1 := true;
   tmp2 := wdFindContinue;
@@ -1036,7 +1359,7 @@ begin
     EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
   WordApp.ActiveDocument.Save;
   WordApp.Visible := true;
-    WordApp.ShowMe;
+  WordApp.ShowMe;
   WordApp.Activate;
   WordApp.Free();
 {$IFNDEF DEBUG}
@@ -1053,7 +1376,7 @@ var
   dat_beg, dat_end, zabezp_proc: string;
   ind_st, basesql, polsql: string;
   mon_prog, year_prog: integer;
-  path_signature,ss:string;
+  path_signature, ss: string;
 begin
   fnumcell := 4;
   if CBZabezp.Text = 'середній' then
@@ -1130,30 +1453,29 @@ begin
   WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
     EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
 
-    //new b
+  // new b
 
-        wdUnit := '#DateTable';
-    tmp1 := true;
-    tmp2 := wdFindStop;
-    tmp3 := '';
-    tmp4 := wdReplaceOne;
-    WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
-      EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+  wdUnit := '#DateTable';
+  tmp1 := true;
+  tmp2 := wdFindStop;
+  tmp3 := '';
+  tmp4 := wdReplaceOne;
+  WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+    EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
 
- if CheckDeckList.Visible=true then
-      tmp9:=decCount()-1
-      else
-      tmp9:=0;
-      if (tmp9>0) then begin
-        if CheckBUtochMonh.Checked=true then
-      tmp9:=  tmp9+1;
-      WordApp.Selection.InsertRows(tmp9);
-         curCol := curCol + 1;
-      end;
+  if CheckDeckList.Visible = true then
+    tmp9 := decCount() - 1
+  else
+    tmp9 := 0;
+  if (tmp9 > 0) then
+  begin
+    if CheckBUtochMonh.Checked = true then
+      tmp9 := tmp9 + 1;
+    WordApp.Selection.InsertRows(tmp9);
+    curCol := curCol + 1;
+  end;
 
-
-
-    //new e
+  // new e
   // вставляем данные в таблицу, при этом удаляем ненужные столбцы
   // после областей Херсонская=23 и Черновецкая=12 пропускаем 1 строку
   wdUnit := wdCharacter;
@@ -1164,7 +1486,6 @@ begin
     // ===========================================================
     for j := 0 to 1 do
     begin
-
 
       if j = 0 then
       begin
@@ -1191,45 +1512,46 @@ begin
             '" and q.proc="' + zabezp_proc + '"');
         IBQZABEZP.Open;
 
-        if   CheckDeckList.Visible=false then
-        curCol := curCol + 2
-        else begin
+        if CheckDeckList.Visible = false then
+          curCol := curCol + 2
+        else
+        begin
 
-        wdUnit := '#KanivTable2';
-  tmp1 := true;
-  tmp2 := wdFindStop;
-  tmp3 := '';
-  tmp4 := wdReplaceOne;
-  WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
-    EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+          wdUnit := '#KanivTable2';
+          tmp1 := true;
+          tmp2 := wdFindStop;
+          tmp3 := '';
+          tmp4 := wdReplaceOne;
+          WordApp.Selection.Find.ExecuteOld
+            (wdUnit, EmptyParam, tmp1, EmptyParam, EmptyParam, EmptyParam,
+            tmp1, tmp2, EmptyParam, tmp3, tmp4);
 
-    //new b
+          // new b
 
-        wdUnit := '#KanivTable2';
-    tmp1 := true;
-    tmp2 := wdFindStop;
-    tmp3 := '';
-    tmp4 := wdReplaceOne;
-    WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
-      EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+          wdUnit := '#KanivTable2';
+          tmp1 := true;
+          tmp2 := wdFindStop;
+          tmp3 := '';
+          tmp4 := wdReplaceOne;
+          WordApp.Selection.Find.ExecuteOld
+            (wdUnit, EmptyParam, tmp1, EmptyParam, EmptyParam, EmptyParam,
+            tmp1, tmp2, EmptyParam, tmp3, tmp4);
 
-      if CheckDeckList.Visible=true then
-      tmp9:=decCount()-1
-      else
-      tmp9:=0;
-      if (tmp9>0) then begin
-        if CheckBUtochMonh.Checked=true then
-      tmp9:=  tmp9+1;
-      WordApp.Selection.InsertRows(tmp9);
-         curCol := curCol + 1;
-      end;
+          if CheckDeckList.Visible = true then
+            tmp9 := decCount() - 1
+          else
+            tmp9 := 0;
+          if (tmp9 > 0) then
+          begin
+            if CheckBUtochMonh.Checked = true then
+              tmp9 := tmp9 + 1;
+            WordApp.Selection.InsertRows(tmp9);
+            curCol := curCol + 1;
+          end;
 
         end;
       end;
       // ------------декада-----------------
-
-
-
 
       if copy(parForm, 1, 1) = '1' then
         if CBDekeda.Checked then
@@ -1237,28 +1559,31 @@ begin
           if ((ComboDecMonList.ItemIndex >= 0) and
               (CheckDeckList.ItemIndex >= 0)) then
           begin
-          if Form1.CheckDeckList.Checked[0]=true then  begin
-            Cell(curCol, 1).Range.Text := Mon_ukr[ComboDecMonList.ItemIndex]
-              + ', ' + Dec_ukr[0];
-               curCol := curCol + 1;
-          end;
-               if Form1.CheckDeckList.Checked[1]=true then  begin
-            Cell(curCol, 1).Range.Text := Mon_ukr[ComboDecMonList.ItemIndex]
-              + ', ' + Dec_ukr[1];
-                curCol := curCol + 1;
-               end;
-               if Form1.CheckDeckList.Checked[2]=true then begin
-            Cell(curCol, 1).Range.Text := Mon_ukr[ComboDecMonList.ItemIndex]
-              + ', ' + Dec_ukr[2];
-                curCol := curCol + 1;
-               end;
-               if CheckBUtochMonh.Checked then begin
-                   Cell(curCol, 1).Range.Text := Mon_ukr[ComboDecMonList.ItemIndex];
-                curCol := curCol + 1;
-               end;
+            if Form1.CheckDeckList.Checked[0] = true then
+            begin
+              Cell(curCol, 1).Range.Text := Mon_ukr[ComboDecMonList.ItemIndex]
+                + ', ' + Dec_ukr[0];
+              curCol := curCol + 1;
+            end;
+            if Form1.CheckDeckList.Checked[1] = true then
+            begin
+              Cell(curCol, 1).Range.Text := Mon_ukr[ComboDecMonList.ItemIndex]
+                + ', ' + Dec_ukr[1];
+              curCol := curCol + 1;
+            end;
+            if Form1.CheckDeckList.Checked[2] = true then
+            begin
+              Cell(curCol, 1).Range.Text := Mon_ukr[ComboDecMonList.ItemIndex]
+                + ', ' + Dec_ukr[2];
+              curCol := curCol + 1;
+            end;
+            if CheckBUtochMonh.Checked then
+            begin
+              Cell(curCol, 1).Range.Text := Mon_ukr[ComboDecMonList.ItemIndex];
+              curCol := curCol + 1;
+            end;
           end;
         end;
-
 
       // ---------місяць-----------
       if copy(parForm, 2, 1) = '1' then
@@ -1429,7 +1754,7 @@ begin
       if copy(parForm, 2, 1) = '1' then
         if (CBMonList.Checked) and (CBMonPer.Checked) then
         begin
-          if curCol <> fnumcell then
+          if (curCol <> fnumcell) or (Cell(curCol, 1).Range.Text <> '') then
           begin
             RowsIns := 1;
             Cell(curCol, 1).Select;
@@ -1455,9 +1780,9 @@ begin
         end;
       // -------utoch-------------
       {
-      if (UtochDecada.Checked) or (UtochMonList.Checked) or
+        if (UtochDecada.Checked) or (UtochMonList.Checked) or
         (UtochMonPer.Checked) or (UtochKvart.Checked) then
-      begin
+        begin
         RowsIns := 1;
         Cell(curCol, 1).Select;
         WordApp.Selection.InsertRowsBelow(RowsIns);
@@ -1468,31 +1793,32 @@ begin
         tmp3 := true;
         WordApp.Selection.EndKey(tmp2, tmp3);
         WordApp.Selection.Cells.Merge;
-      end;
-          }
+        end;
+        }
     end;
     // ------------------------------------
     // ======================================================================
   end;
   // ----------------------------------------------------------------------------
   // ==============================================================================
-      if (Copy(Nach1,Pos('#',Nach1)+1,(Length(Nach1)))=ComboBox2.Text) then
-              ss:= Copy(Nach1,1,Pos('#',Nach1)-1)
-              else
-               ss:= Copy(Nach2,1,Pos('#',Nach2)-1);
-    wdUnit := '#President';
-    tmp1 := true;
-    tmp2 := wdFindContinue;
-    tmp3 := ss;
-    tmp4 := wdReplaceAll;
-    WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
-      EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
-//  Ïîäïèñü
-   if CheckBox1.Checked then
- begin     //1
-  if (ComboBox2.Text=ComboBox2.Items[0]) then  path_signature:=putchshab+'\'+ 'Boss1.bmp'
+  if (copy(Nach1, Pos('#', Nach1) + 1, (Length(Nach1))) = ComboBox2.Text) then
+    ss := copy(Nach1, 1, Pos('#', Nach1) - 1)
   else
-    path_signature:=putchshab+'\'+ 'Boss2.bmp';
+    ss := copy(Nach2, 1, Pos('#', Nach2) - 1);
+  wdUnit := '#President';
+  tmp1 := true;
+  tmp2 := wdFindContinue;
+  tmp3 := ss;
+  tmp4 := wdReplaceAll;
+  WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+    EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+  // Ïîäïèñü
+  if CheckBox1.Checked then
+  begin // 1
+    if (ComboBox2.Text = ComboBox2.Items[0]) then
+      path_signature := putchshab + '\' + 'Boss1.bmp'
+    else
+      path_signature := putchshab + '\' + 'Boss2.bmp';
 
     wdUnit := '#Signature';
     tmp1 := true;
@@ -1501,16 +1827,16 @@ begin
     tmp4 := wdReplaceOne;
     WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
       EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
-    //äîáàâëÿåì ôàéë ñ map
-        wdUnit := true;
-        with(WordApp.Selection.InlineShapes
-          .AddPicture(path_signature, EmptyParam, wdUnit, EmptyParam))do
-        begin
-            LockAspectRatio := wdUnit;
-        end;
-  end  //1
-   else
-   begin  //1
+    // äîáàâëÿåì ôàéë ñ map
+    wdUnit := true;
+    with (WordApp.Selection.InlineShapes.AddPicture(path_signature, EmptyParam,
+        wdUnit, EmptyParam)) do
+    begin
+      LockAspectRatio := wdUnit;
+    end;
+  end // 1
+  else
+  begin // 1
     wdUnit := '#Signature';
     tmp1 := true;
     tmp2 := wdFindContinue;
@@ -1518,15 +1844,15 @@ begin
     tmp4 := wdReplaceAll;
     WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
       EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
-  end;  //1
-    wdUnit := '#Name';
-    tmp1 := true;
-    tmp2 := wdFindContinue;
-    tmp3 := ComboBox2.Text;
-    tmp4 := wdReplaceAll;
-    WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
-     EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
-   //--------------------------------
+  end; // 1
+  wdUnit := '#Name';
+  tmp1 := true;
+  tmp2 := wdFindContinue;
+  tmp3 := ComboBox2.Text;
+  tmp4 := wdReplaceAll;
+  WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+    EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+  // --------------------------------
   wdUnit := '#dataprogn';
   tmp1 := true;
   tmp2 := wdFindContinue;
@@ -1550,9 +1876,10 @@ end;
 
 procedure TForm1.RadioGroupPROGorKonClick(Sender: TObject);
 begin
-if RadioGroupPROGorKon.ItemIndex = 0 then
-progOrKon:='Консультація' else
-progOrKon:='Прогноз';
+  if RadioGroupPROGorKon.ItemIndex = 0 then
+    progOrKon := 'Консультація'
+  else
+    progOrKon := 'Прогноз';
 end;
 
 procedure TForm1.OpenFileClick(Sender: TObject);
@@ -1576,52 +1903,66 @@ end;
 
 procedure TForm1.ExpEmailClick(Sender: TObject);
 var
-  mail,mail_1: TStringList;
-  i,i1,da_i:integer;
-  str,str_temp,str_temp1:string;
-  FileName:string;
+  Mail, mail_1: TStringList;
+  i, i1, da_i: integer;
+  str, str_temp, str_temp1: string;
+  FileName: string;
 begin
-i1:=0;
-mail := TStringList.Create;
-mail.Clear;
-mail_1:=TStringList.Create;
-mail_1.Clear;
-try
-begin
-    mail.values['to'] := EmailAdress;
-    mail.values['subject'] := 'Прогноз погоди.';
-    mail.values['body'] := 'Укр.ГМЦ';
-    mail.values['attachment0'] := putchrezult + '\' + m_ReportFileName;
-    SendEMail(Handle, mail);
-end;
-except
-on Exception do begin ShowMessage('Помилка відкриття поштової програми.'); exit; end;
-end;
-mail.Free;
-mail_1.Free;
+  i1 := 0;
+  Mail := TStringList.Create;
+  Mail.Clear;
+  mail_1 := TStringList.Create;
+  mail_1.Clear;
+  try
+    begin
+      Mail.Values['to'] := EmailAdress;
+      Mail.Values['subject'] := 'Прогноз погоди.';
+      Mail.Values['body'] := 'Укр.ГМЦ';
+      Mail.Values['attachment0'] := putchrezult + '\' + m_ReportFileName;
+      SendEMail(Handle, Mail);
+    end;
+  except
+    on Exception do
+    begin
+      ShowMessage('Помилка відкриття поштової програми.');
+      Exit;
+    end;
+  end;
+  Mail.Free;
+  mail_1.Free;
 end;
 
 procedure TForm1.ExportcabClick(Sender: TObject);
 begin
-if FileExists(putchrezult + '\' + m_ReportFileName) then
+  if FileExists(putchrezult + '\' + m_ReportFileName) then
+  begin
+    CopyFile(PChar(putchrezult + '\' + m_ReportFileName), PChar
+        (putchrezultcab + '\' + m_ReportFileName), false);
+    if FileExists(putchrezultcab + '\' + m_ReportFileName) then
+      ShowMessage('Файл відправлено у кабінет !');
+  end
+  else
+    ShowMessage('Файл для відправлення в кабінет відсутній, сформуйте його!');
+end;
+
+procedure TForm1.Button1Click(Sender: TObject);
 begin
-CopyFile(PChar(putchrezult + '\' + m_ReportFileName),PChar(putchrezultcab + '\' + m_ReportFileName),false);
-if FileExists(putchrezultcab + '\' + m_ReportFileName) then ShowMessage('Файл відправлено у кабінет !');
-end else ShowMessage('Файл для відправлення в кабінет відсутній, сформуйте його!');
+form2.Show ;
 end;
 
 procedure TForm1.ButtonNumberPrognozClick(Sender: TObject);
 var
- IBsetNum: TIBQuery;
+  IBsetNum: TIBQuery;
 begin
-       IBsetNum := TIBQuery.Create(nil);
-   IBsetNum.Database := IBDatabase1;
-    IBsetNum.Transaction := IBTransaction1;
-   IBsetNum.Close;
-    IBsetNum.SQL.Text :=
-'UPDATE PROGNPERIOD  SET NUMVIPUSK =' + EditNumberPrognoz.text +
-'WHERE NPERIOD ='+ inttostr(TreeView1.Selected.StateIndex);
+  IBsetNum := TIBQuery.Create(nil);
+  IBsetNum.Database := IBDatabase1;
+  IBsetNum.Transaction := IBTransaction1;
+  IBsetNum.Close;
+  IBsetNum.SQL.Text :=
+    'UPDATE PROGNPERIOD  SET NUMVIPUSK =' + EditNumberPrognoz.Text +
+    'WHERE NPERIOD =' + IntToStr(TreeView1.Selected.StateIndex);
   IBsetNum.Open;
+
 end;
 
 procedure TForm1.CBDekedaClick(Sender: TObject);
@@ -1657,7 +1998,7 @@ procedure TForm1.ComboDecMonListChange(Sender: TObject);
 begin
   // NameProgn(parForm);
 
-  CheckBUtochMonh.Visible:=true;
+  CheckBUtochMonh.Visible := true;
 end;
 
 procedure TForm1.ComboMonListChange(Sender: TObject);
@@ -1668,17 +2009,17 @@ end;
 procedure TForm1.FormCreate(Sender: TObject);
 var
   nobj: integer;
-  obj,s1: string;
+  obj, s1: string;
   IBPrognObj, IBPrognPeriod: TIBQuery;
 begin
   Cur := GetCurrentDir;
   iniPath := Cur + '\options.ini';
 
   N110.Caption := copy(IniGetStringValue(iniPath, 'Firebird', 'databasename1',
-      default), 1, pos(':', IniGetStringValue(iniPath, 'Firebird',
+      default), 1, Pos(':', IniGetStringValue(iniPath, 'Firebird',
         'databasename1', default)) - 1);
   N210.Caption := copy(IniGetStringValue(iniPath, 'Firebird', 'databasename2',
-      default), 1, pos(':', IniGetStringValue(iniPath, 'Firebird',
+      default), 1, Pos(':', IniGetStringValue(iniPath, 'Firebird',
         'databasename2', default)) - 1);
 
   try
@@ -1728,34 +2069,34 @@ begin
     default);
   putchrezult := IniGetStringValue(iniPath, 'Options', 'result' + two_parram,
     default);
-  putchrezultcab := IniGetStringValue(iniPath, 'Options', 'cabinet' + two_parram,
-    default);
-  //-------------
-   Nach1 :=  IniGetStringValue(iniPath, 'Options', 'Nach1', default);
-   Nach2 :=  IniGetStringValue(iniPath, 'Options', 'Nach2', default);
+  putchrezultcab := IniGetStringValue
+    (iniPath, 'Options', 'cabinet' + two_parram, default);
+  // -------------
+  Nach1 := IniGetStringValue(iniPath, 'Options', 'Nach1', default);
+  Nach2 := IniGetStringValue(iniPath, 'Options', 'Nach2', default);
 
- for i:=1 to Length(Nach1) do
- if Nach1[i]='_' then
- begin
-   Delete(Nach1,i,1);
-   Insert(' ',Nach1,i);
- end;
- for i:=1 to Length(Nach2) do
- if Nach2[i]='_' then
- begin
-   Delete(Nach2,i,1);
-   Insert(' ',Nach2,i);
- end;
+  for i := 1 to Length(Nach1) do
+    if Nach1[i] = '_' then
+    begin
+      Delete(Nach1, i, 1);
+      Insert(' ', Nach1, i);
+    end;
+  for i := 1 to Length(Nach2) do
+    if Nach2[i] = '_' then
+    begin
+      Delete(Nach2, i, 1);
+      Insert(' ', Nach2, i);
+    end;
 
   ComboBox2.Clear;
- begin
- s1:= Copy(Nach1,Pos('#',Nach1)+1,(Length(Nach1)));
-ComboBox2.Text:= s1;
-ComboBox2.Items.Append(s1);
- s1:= Copy(Nach2,Pos('#',Nach2)+1,(Length(Nach2)));
-ComboBox2.Items.Append(s1);
+  begin
+    s1 := copy(Nach1, Pos('#', Nach1) + 1, (Length(Nach1)));
+    ComboBox2.Text := s1;
+    ComboBox2.Items.Append(s1);
+    s1 := copy(Nach2, Pos('#', Nach2) + 1, (Length(Nach2)));
+    ComboBox2.Items.Append(s1);
 
- end;
+  end;
 
   // -----------------------------
   DTProgn.Date := now();
@@ -1920,7 +2261,8 @@ begin
   end;
   // ----------------------
   PanelDec.Visible := false;
-  RadioGroupPROGorKon.Visible:=false;
+  RadioGroupPROGorKon.Visible := false;
+  CheckBoxBerezKviten.Visible := false;
   CBDekeda.Checked := false;
   UtochDecada.Checked := false;
   RadioDeckList.Visible := false;
@@ -1967,7 +2309,7 @@ begin
   if TreeView1.Selected.Level = 1 then
   begin
     Panel5.Visible := true;
-    PanelNumberPrognoz.Visible:=true;
+    PanelNumberPrognoz.Visible := true;
     // -----------------------
     IBViewForm := TIBQuery.Create(nil);
     IBViewForm.Database := IBDatabase1;
@@ -1983,28 +2325,41 @@ begin
       // ------------------------------------------------------------------------
       if parForm = 'dmp' then
       begin
-      RadioGroupPROGorKon.Visible:=true;
-          PanelMon.Visible := true;
-          CBMonList.Checked := true;
-          UtochMonList.Visible := false;
-          ComboMonList.Visible := true;
-          UtochMonPer.Visible := false;
-          CBMonPer.Checked := false;
-          CBMonPer.Visible := false;
-          PanelZabezp.Visible := true;
-     end
-      else
-      if parForm = 'gyd' then
+        RadioGroupPROGorKon.Visible := true;
+        CheckBoxBerezKviten.Visible := true;
+        PanelMon.Visible := true;
+        CBMonList.Checked := true;
+        UtochMonList.Visible := false;
+        ComboMonList.Visible := true;
+        UtochMonPer.Visible := false;
+        CBMonPer.Checked := false;
+        CBMonPer.Visible := false;
+        PanelZabezp.Visible := true;
+      end
+
+      else if parForm = 'bmp' then
+      begin
+
+        PanelMon.Visible := true;
+        CBMonList.Checked := true;
+        UtochMonList.Visible := true;
+        ComboMonList.Visible := true;
+        CBMonPer.Visible:=false;
+        PanelZabezp.Visible := true;
+      end
+
+
+      else if parForm = 'gyd' then
       begin
         Panel7.Visible := true;
         CBmondbeg.Visible := true;
         CBmonmbeg.Visible := true;
         CBmondend.Visible := true;
         CBmonmend.Visible := true;
-        CBmondbeg.ItemIndex:=0;
-        CBmonmbeg.ItemIndex:=0;
-        CBmondend.ItemIndex:=2;
-        CBmonmend.ItemIndex:=0;
+        CBmondbeg.ItemIndex := 0;
+        CBmonmbeg.ItemIndex := 0;
+        CBmondend.ItemIndex := 2;
+        CBmonmend.ItemIndex := 0;
       end
       else
       begin
@@ -2064,25 +2419,30 @@ begin
         end;
       end;
       // -----------------
-      EditNumberPrognoz.Text:=  IBViewForm.FieldByName('NUMVIPUSK').AsString;
+      EditNumberPrognoz.Text := IBViewForm.FieldByName('NUMVIPUSK').AsString;
       m_TemplateFile := IBViewForm.FieldByName('NAME_SHABLON').AsString;
       m_ReportFileName := IBViewForm.FieldByName('RESULT_FILENAME').AsString;
-      NFile.Caption :=
-        'Назва файлу результату:         ' + m_ReportFileName;
+      NFile.Caption := 'Назва файлу результату:         ' + m_ReportFileName;
       NameDirect.Caption := 'Назва дерикторії результату:    ' + putchrezult;
-      NameDirectCab.Caption:='Назва дерикторії для кабінету:    '+putchrezultcab;
-      //---------------------
-      if FileExists(putchrezult+'\'+m_ReportFileName) then
+      NameDirectCab.Caption :=
+        'Назва дерикторії для кабінету:    ' + putchrezultcab;
+      // ---------------------
+      if FileExists(putchrezult + '\' + m_ReportFileName) then
       begin
-      GetFileAttributesEx(PChar(putchrezult+'\'+m_ReportFileName), GetFileExInfoStandard, @fi);//Заносимо назву файла у змінну @fi
-FileTimeToLocalFileTime(fi.ftLastWriteTime,FileLocalModify);
-FileTimeToSystemTime(FileLocalModify,FileSystemModify);
-datemodifitext:=FormatDateTime('dd.mm.yyyy р. hh:mm:ss годин', SystemTimeToDateTime(FileSystemModify));
-  DeteModifi.Caption:='Дата модифікації:    '+datemodifitext;
-      end else    DeteModifi.Caption:='Дата модифікації:';
-  // -----------------------------
-  EmailAdress:=IBViewForm.FieldByName('EMAIL').AsString;
-  NameEmailadress.Caption:='Адреси електронної пошти:         '+EmailAdress;
+        GetFileAttributesEx(PChar(putchrezult + '\' + m_ReportFileName),
+          GetFileExInfoStandard, @fi); // Заносимо назву файла у змінну @fi
+        FileTimeToLocalFileTime(fi.ftLastWriteTime, FileLocalModify);
+        FileTimeToSystemTime(FileLocalModify, FileSystemModify);
+        datemodifitext := FormatDateTime('dd.mm.yyyy р. hh:mm:ss годин',
+          SystemTimeToDateTime(FileSystemModify));
+        DeteModifi.Caption := 'Дата модифікації:    ' + datemodifitext;
+      end
+      else
+        DeteModifi.Caption := 'Дата модифікації:';
+      // -----------------------------
+      EmailAdress := IBViewForm.FieldByName('EMAIL').AsString;
+      NameEmailadress.Caption :=
+        'Адреси електронної пошти:         ' + EmailAdress;
     end;
     IBViewForm.Free;
   end;
@@ -2134,12 +2494,13 @@ begin
     default);
   putchrezult := IniGetStringValue(iniPath, 'Options', 'result' + two_parram,
     default);
-  putchrezultcab := IniGetStringValue(iniPath, 'Options', 'cabinet' + two_parram,
-    default);
-//---------------------
-FileTimeToLocalFileTime(fi.ftLastWriteTime,FileLocalModify);
-FileTimeToSystemTime(FileLocalModify,FileSystemModify);
-datemodifitext:=FormatDateTime('dd.mm.yyyy р. hh:mm:ss годин', SystemTimeToDateTime(FileSystemModify));
+  putchrezultcab := IniGetStringValue
+    (iniPath, 'Options', 'cabinet' + two_parram, default);
+  // ---------------------
+  FileTimeToLocalFileTime(fi.ftLastWriteTime, FileLocalModify);
+  FileTimeToSystemTime(FileLocalModify, FileSystemModify);
+  datemodifitext := FormatDateTime('dd.mm.yyyy р. hh:mm:ss годин',
+    SystemTimeToDateTime(FileSystemModify));
   // -----------------------------
   TreeView1.Items.Clear;
   // -----------------------------
@@ -2219,31 +2580,29 @@ begin
   // if copy(idparam, 1, 1) = '1' then
   // begin
   if ((CBDekeda.Checked) and (ComboDecMonList.ItemIndex >= 0) and
-     // (RadioDeckList.ItemIndex >= 0)) then
-     (CheckDeckList.ItemIndex >= 0)) then
+    // (RadioDeckList.ItemIndex >= 0)) then
+      (CheckDeckList.ItemIndex >= 0)) then
   begin
-  //  if UtochDecada.Checked then
- //     Decklist := 'уточнення на ' + Dec_ukr_str[RadioDeckList.ItemIndex]
-    //    + ' ' + Mon_ukr_str[ComboDecMonList.ItemIndex] + ''
- //     Decklist := 'на ' +  generateDecLabel()
-//   + ' ' + Mon_ukr_str[ComboDecMonList.ItemIndex] + ' (уточнення)'
-//    else
-  //    Decklist := 'на ' + Dec_ukr_str[RadioDeckList.ItemIndex]
-  //      + ' ' + Mon_ukr_str[ComboDecMonList.ItemIndex] + '';
-        Decklist := 'на ' + generateDecLabel()
-          + ' ' + Mon_ukr_str[ComboDecMonList.ItemIndex] + '';
+    // if UtochDecada.Checked then
+    // Decklist := 'уточнення на ' + Dec_ukr_str[RadioDeckList.ItemIndex]
+    // + ' ' + Mon_ukr_str[ComboDecMonList.ItemIndex] + ''
+    // Decklist := 'на ' +  generateDecLabel()
+    // + ' ' + Mon_ukr_str[ComboDecMonList.ItemIndex] + ' (уточнення)'
+    // else
+    // Decklist := 'на ' + Dec_ukr_str[RadioDeckList.ItemIndex]
+    // + ' ' + Mon_ukr_str[ComboDecMonList.ItemIndex] + '';
+    Decklist := 'на ' + generateDecLabel() + ' ' + Mon_ukr_str
+      [ComboDecMonList.ItemIndex] + '';
   end;
 
+  if ((CBDekeda.Checked) and (ComboDecMonList.ItemIndex >= 0) and
 
-    if ((CBDekeda.Checked) and (ComboDecMonList.ItemIndex >= 0) and
-
-     (CheckDeckList.ItemIndex >= 0)) then
+      (CheckDeckList.ItemIndex >= 0)) then
   begin
-        Decklist := 'на ' + generateDecLabel()
-          + ' ' + Mon_ukr_str[ComboDecMonList.ItemIndex] + ' та уточнення на '+Mon_ukr[ComboDecMonList.ItemIndex] ;
+    Decklist := 'на ' + generateDecLabel() + ' ' + Mon_ukr_str
+      [ComboDecMonList.ItemIndex] + ' та уточнення на ' + Mon_ukr
+      [ComboDecMonList.ItemIndex];
   end;
-
-
 
   // end;
   // ----month------
@@ -2259,9 +2618,9 @@ begin
   if ((CBMonList.Checked) and (CBMonPer.Checked)) then
   begin
     if UtochMonPer.Checked then
-      Monperlist := 'уточнення на період IV - XII , середній '
+      Monperlist := 'уточнення на період квітень - грудень, середній '
     else
-      Monperlist := 'період IV - XII , середній ';
+      Monperlist := 'період квітень - грудень , середній ';
   end;
   // end;
   // ----kvartal------
@@ -2334,9 +2693,9 @@ begin
   // --------------
   if result <> '' then
     result := result + ' ' + FormatDateTime('yyyy', DTProgn.Date) + 'р.';
-      if UtochDecada.Checked then
-      result:=result+' (уточнення)'
-  // =====================================================
+  if UtochDecada.Checked then
+    result := result + ' (уточнення)'
+    // =====================================================
 
 end;
 

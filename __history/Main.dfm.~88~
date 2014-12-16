@@ -158,7 +158,6 @@ object Form1: TForm1
           Height = 560
           Align = alClient
           TabOrder = 1
-          ExplicitLeft = 263
           object PanelDec: TPanel
             Left = 499
             Top = 4
@@ -782,68 +781,9 @@ object Form1: TForm1
     Visible = False
     OnClick = RadioGroupPROGorKonClick
   end
-  object PanelLed: TPanel
-    Left = 268
-    Top = 81
-    Width = 431
-    Height = 241
-    TabOrder = 3
-    Visible = False
-    object Button1: TButton
-      Left = 23
-      Top = 88
-      Width = 91
-      Height = 25
-      Caption = #1056#1110#1095#1082#1072'-'#1087#1091#1085#1082#1090#1080
-      TabOrder = 0
-      OnClick = Button1Click
-    end
-    object LedChek: TCheckBox
-      Left = 22
-      Top = 10
-      Width = 169
-      Height = 17
-      Caption = #1056#1110#1074#1077#1085#1100' '#1074#1086#1076#1080' '#1085#1072#1076' '#1085#1091#1083#1077#1084' '#1087#1086#1089#1090#1072
-      TabOrder = 1
-      OnClick = LedChekClick
-    end
-    object DateTimePicker1: TDateTimePicker
-      Left = 22
-      Top = 28
-      Width = 91
-      Height = 21
-      Date = 41989.538638460650000000
-      Time = 41989.538638460650000000
-      TabOrder = 2
-      Visible = False
-    end
-    object CheckListBoxLED: TCheckListBox
-      Left = 176
-      Top = 50
-      Width = 193
-      Height = 92
-      Flat = False
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -16
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ItemHeight = 27
-      Items.Strings = (
-        #1088#1072#1085#1085#1110' '#1089#1090#1088#1086#1082#1080
-        #1089#1077#1088#1077#1076#1085#1110' '#1089#1090#1088#1086#1082#1080
-        #1088#1110#1079#1085#1110' '#1089#1090#1088#1086#1082#1080)
-      ParentFont = False
-      Style = lbOwnerDrawVariable
-      TabOrder = 3
-    end
-  end
   object IBDatabase1: TIBDatabase
-    Connected = True
-    DatabaseName = '192.168.1.5:/work/db/firebird/GIDRO_2007.GDB'
     Params.Strings = (
-      'user_name=SYSDBA'
-      'password=dvvdendem')
+      'user_name=SYSDBA')
     LoginPrompt = False
     DefaultTransaction = IBTransaction1
     SQLDialect = 1
@@ -851,7 +791,6 @@ object Form1: TForm1
     Top = 512
   end
   object IBTransaction1: TIBTransaction
-    Active = True
     DefaultDatabase = IBDatabase1
     Left = 16
     Top = 560
