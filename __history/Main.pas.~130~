@@ -6,7 +6,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ComCtrls, ExtCtrls, CategoryButtons, IBDatabase, DB, IBCustomDataSet,
   IBQuery, StdCtrls, CheckLst, Menus, ImgList, ShellAPI, WordXP, DateUtils,
-  Math;
+  Math, Grids, DBGrids, DBCtrls ;
 
 type
   TForm1 = class(TForm)
@@ -94,6 +94,22 @@ type
     CheckDeckList: TCheckListBox;
     CheckBUtochMonh: TCheckBox;
     CheckBoxBerezKviten: TCheckBox;
+    ButtonRiverPost: TButton;
+    PanelLedPov: TPanel;
+    DateTimePicker1: TDateTimePicker;
+    LedChek: TCheckBox;
+    CheckListBoxLED: TCheckListBox;
+    LabelHar: TLabel;
+    CheckListBoxPo1: TCheckListBox;
+    ButtonBas: TButton;
+    CheckListBoxPO2: TCheckListBox;
+    ButtonVodoshov: TButton;
+    Button1: TButton;
+    Label5: TLabel;
+    Label6: TLabel;
+    Label9: TLabel;
+    CheckBoxText: TCheckBox;
+    CheckBoxProgn: TCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure TreeView1CustomDrawItem(Sender: TCustomTreeView; Node: TTreeNode;
       State: TCustomDrawState; var DefaultDraw: Boolean);
@@ -123,6 +139,8 @@ type
     procedure ExpEmailClick(Sender: TObject);
     procedure ButtonNumberPrognozClick(Sender: TObject);
     procedure RadioGroupPROGorKonClick(Sender: TObject);
+    procedure ButtonRiverPostClick(Sender: TObject);
+    procedure LedChekClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -206,7 +224,7 @@ var
 
 implementation
 
-uses den, IniFiles, MAPI;
+uses den, IniFiles, MAPI, Unit2;
 {$R *.dfm}
 
 function generateDecLabel(): string;
@@ -476,7 +494,14 @@ begin
   else
     Progn_pripliv;
 end;
- procedure TForm1.Progn_bok_mon;
+ procedure TForm1.LedChekClick(Sender: TObject);
+begin
+if LedChek.Checked then
+DateTimePicker1.Visible:=true else
+ DateTimePicker1.Visible:=false;
+end;
+
+procedure TForm1.Progn_bok_mon;
 var
   curCol, fnumcell: integer;
   dat_beg, dat_end, zabezp_proc: string;
@@ -1943,6 +1968,11 @@ begin
     ShowMessage('Файл для відправлення в кабінет відсутній, сформуйте його!');
 end;
 
+procedure TForm1.ButtonRiverPostClick(Sender: TObject);
+begin
+form2.Show ;
+end;
+
 procedure TForm1.ButtonNumberPrognozClick(Sender: TObject);
 var
   IBsetNum: TIBQuery;
@@ -1955,6 +1985,7 @@ begin
     'UPDATE PROGNPERIOD  SET NUMVIPUSK =' + EditNumberPrognoz.Text +
     'WHERE NPERIOD =' + IntToStr(TreeView1.Selected.StateIndex);
   IBsetNum.Open;
+
 end;
 
 procedure TForm1.CBDekedaClick(Sender: TObject);
@@ -2140,6 +2171,10 @@ begin
   // ---------------------------
   FormClear();
   TreeView1.FullExpand;
+
+  CheckListBoxLED.Checked[0]:=true;
+   CheckListBoxLED.Checked[1]:=true;
+    CheckListBoxLED.Checked[2]:=true;
 end;
 
 procedure TForm1.TreeView1Click(Sender: TObject);
@@ -2253,6 +2288,7 @@ begin
   end;
   // ----------------------
   PanelDec.Visible := false;
+   RadioGroupPROGorKon.Visible :=false;
   RadioGroupPROGorKon.Visible := false;
   CheckBoxBerezKviten.Visible := false;
   CBDekeda.Checked := false;
@@ -2315,8 +2351,25 @@ begin
     begin
       parForm := IBViewForm.FieldByName('PARAM').AsString;
       // ------------------------------------------------------------------------
+
+       if (parForm = 'le1') or (parForm = 'le2') or (parForm ='le3') or (parForm ='le4') then
+      begin
+      PanelLed.Visible := true;
+
+        CheckBoxBerezKviten.Visible := false;
+        PanelMon.Visible := false;
+        CBMonList.Checked := false;
+        UtochMonList.Visible := false;
+        ComboMonList.Visible := false;
+        UtochMonPer.Visible := false;
+        CBMonPer.Checked := false;
+        CBMonPer.Visible := false;
+        PanelZabezp.Visible := false;
+      end
+       else
       if parForm = 'dmp' then
       begin
+          PanelLed.Visible :=  false;
         RadioGroupPROGorKon.Visible := true;
         CheckBoxBerezKviten.Visible := true;
         PanelMon.Visible := true;
@@ -2331,7 +2384,7 @@ begin
 
       else if parForm = 'bmp' then
       begin
-
+                            PanelLed.Visible  := false;
         PanelMon.Visible := true;
         CBMonList.Checked := true;
         UtochMonList.Visible := true;
@@ -2343,6 +2396,7 @@ begin
 
       else if parForm = 'gyd' then
       begin
+          PanelLed.Visible := false;
         Panel7.Visible := true;
         CBmondbeg.Visible := true;
         CBmonmbeg.Visible := true;
@@ -2358,6 +2412,7 @@ begin
         // ----decada------
         if copy(parForm, 1, 1) = '1' then
         begin
+            PanelLed.Visible  := false;
           PanelDec.Visible := true;
           CBDekeda.Checked := true;
           RadioDeckList.Visible := true;
@@ -2367,6 +2422,7 @@ begin
         end
         else
         begin
+            PanelLed.Visible  := false;
           PanelDec.Visible := false;
           CBDekeda.Checked := false;
           UtochDecada.Checked := false;
@@ -2376,6 +2432,7 @@ begin
         // ----month------
         if copy(parForm, 2, 1) = '1' then
         begin
+            PanelLed.Visible := false;
           PanelMon.Visible := true;
           CBMonList.Checked := true;
           CBMonPer.Visible := true;
@@ -2386,6 +2443,7 @@ begin
         end
         else
         begin
+            PanelLed.Visible := false;
           PanelMon.Visible := false;
           CBMonList.Checked := false;
           UtochMonList.Checked := false;
@@ -2397,6 +2455,7 @@ begin
         // ----kvartal------
         if copy(parForm, 3, 1) = '1' then
         begin
+            PanelLed.Visible := false;
           PanelKvart.Visible := true;
           CBKvartList.Checked := true;
           RadioKvartList.Visible := true;
@@ -2404,6 +2463,7 @@ begin
         end
         else
         begin
+            PanelLed.Visible := false;
           PanelKvart.Visible := false;
           CBKvartList.Checked := false;
           UtochKvart.Checked := false;

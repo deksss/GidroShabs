@@ -94,11 +94,22 @@ type
     CheckDeckList: TCheckListBox;
     CheckBUtochMonh: TCheckBox;
     CheckBoxBerezKviten: TCheckBox;
-    Button1: TButton;
-    PanelLed: TPanel;
+    ButtonRiverPost: TButton;
+    PanelLedPov: TPanel;
     DateTimePicker1: TDateTimePicker;
     LedChek: TCheckBox;
     CheckListBoxLED: TCheckListBox;
+    LabelHar: TLabel;
+    CheckListBoxPo1: TCheckListBox;
+    ButtonBas: TButton;
+    CheckListBoxPO2: TCheckListBox;
+    ButtonVodoshov: TButton;
+    ButtonProgPunkt: TButton;
+    Label5: TLabel;
+    Label6: TLabel;
+    Label9: TLabel;
+    CheckBoxText: TCheckBox;
+    CheckBoxProgn: TCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure TreeView1CustomDrawItem(Sender: TCustomTreeView; Node: TTreeNode;
       State: TCustomDrawState; var DefaultDraw: Boolean);
@@ -119,6 +130,10 @@ type
     procedure N5Click(Sender: TObject);
     procedure FormFileClick(Sender: TObject);
     procedure Progn_pripliv;
+     procedure led;
+      procedure po1;
+       procedure po2;
+        procedure po3;
     procedure Progn_gidrograf;
     procedure Progn_dnist_mon;
     procedure Progn_bok_mon;
@@ -128,7 +143,7 @@ type
     procedure ExpEmailClick(Sender: TObject);
     procedure ButtonNumberPrognozClick(Sender: TObject);
     procedure RadioGroupPROGorKonClick(Sender: TObject);
-    procedure Button1Click(Sender: TObject);
+    procedure ButtonRiverPostClick(Sender: TObject);
     procedure LedChekClick(Sender: TObject);
   private
     { Private declarations }
@@ -489,6 +504,57 @@ if LedChek.Checked then
 DateTimePicker1.Visible:=true else
  DateTimePicker1.Visible:=false;
 end;
+
+
+
+procedure TForm1.led;
+var
+  curCol, fnumcell: integer;
+  dat_beg, dat_end, zabezp_proc: string;
+  ind_st, basesql, polsql: string;
+  mon_prog, year_prog, sum: integer;
+  path_signature, ss: string;
+begin
+ curCol:=1;
+
+end;
+
+procedure TForm1.po1;
+var
+  curCol, fnumcell: integer;
+  dat_beg, dat_end, zabezp_proc: string;
+  ind_st, basesql, polsql: string;
+  mon_prog, year_prog, sum: integer;
+  path_signature, ss: string;
+begin
+ curCol:=1;
+
+end;
+
+procedure TForm1.po2;
+var
+  curCol, fnumcell: integer;
+  dat_beg, dat_end, zabezp_proc: string;
+  ind_st, basesql, polsql: string;
+  mon_prog, year_prog, sum: integer;
+  path_signature, ss: string;
+begin
+ curCol:=1;
+
+end;
+
+procedure TForm1.po3;
+var
+  curCol, fnumcell: integer;
+  dat_beg, dat_end, zabezp_proc: string;
+  ind_st, basesql, polsql: string;
+  mon_prog, year_prog, sum: integer;
+  path_signature, ss: string;
+begin
+ curCol:=1;
+
+end;
+
 
 procedure TForm1.Progn_bok_mon;
 var
@@ -1957,7 +2023,7 @@ begin
     ShowMessage('Файл для відправлення в кабінет відсутній, сформуйте його!');
 end;
 
-procedure TForm1.Button1Click(Sender: TObject);
+procedure TForm1.ButtonRiverPostClick(Sender: TObject);
 begin
 form2.Show ;
 end;
@@ -1971,8 +2037,9 @@ begin
   IBsetNum.Transaction := IBTransaction1;
   IBsetNum.Close;
   IBsetNum.SQL.Text :=
-    'UPDATE PROGNPERIOD  SET NUMVIPUSK =' + EditNumberPrognoz.Text +
-    'WHERE NPERIOD =' + IntToStr(TreeView1.Selected.StateIndex);
+    'UPDATE PROGNPERIOD  SET NUMVIPUSK =' + EditNumberPrognoz.Text ;
+    //+
+  //  'WHERE NPERIOD =' + IntToStr(TreeView1.Selected.StateIndex);
   IBsetNum.Open;
 
 end;
@@ -2164,6 +2231,14 @@ begin
   CheckListBoxLED.Checked[0]:=true;
    CheckListBoxLED.Checked[1]:=true;
     CheckListBoxLED.Checked[2]:=true;
+
+    CheckListBoxPo1.Checked[0]:=true;
+   CheckListBoxPo1.Checked[1]:=true;
+    CheckListBoxPo1.Checked[2]:=true;
+
+    CheckListBoxPo2.Checked[0]:=true;
+   CheckListBoxPo2.Checked[1]:=true;
+    CheckListBoxPo2.Checked[2]:=true;
 end;
 
 procedure TForm1.TreeView1Click(Sender: TObject);
@@ -2343,7 +2418,7 @@ begin
 
        if (parForm = 'le1') or (parForm = 'le2') or (parForm ='le3') or (parForm ='le4') then
       begin
-      PanelLed.Visible := true;
+      PanelLedPov.Visible := true;
 
         CheckBoxBerezKviten.Visible := false;
         PanelMon.Visible := false;
@@ -2354,11 +2429,96 @@ begin
         CBMonPer.Checked := false;
         CBMonPer.Visible := false;
         PanelZabezp.Visible := false;
+          CheckListBoxLED.Visible:=true;
+          CheckListBoxPo1.Visible := false;
+           CheckListBoxPo2.Visible := false;
+           ButtonRiverPost.Visible:=true;
+           ButtonProgPunkt.Visible:=false;
+           ButtonBas.Visible:=false;
+           ButtonVodoshov.Visible:=false;
+           CheckBoxProgn.Visible:=false;
+           CheckBoxText.Visible:=false;
+           CheckBoxText.Visible:=false;
+
+         end
+       else
+      if parForm = 'po1' then
+      begin
+         PanelLedPov.Visible := true;
+            CheckBoxBerezKviten.Visible := false;
+        PanelMon.Visible := false;
+        CBMonList.Checked := false;
+        UtochMonList.Visible := false;
+        ComboMonList.Visible := false;
+        UtochMonPer.Visible := false;
+        CBMonPer.Checked := false;
+        CBMonPer.Visible := false;
+        PanelZabezp.Visible := false;
+          CheckListBoxLED.Visible:=false;
+          CheckListBoxPo1.Visible := true;
+           CheckListBoxPo2.Visible := false;
+           ButtonRiverPost.Visible:=true;
+           ButtonProgPunkt.Visible:=false;
+           ButtonVodoshov.Visible:=false;
+           ButtonBas.Visible:=true;
+               CheckBoxProgn.Visible:=false;
+                 CheckBoxText.Visible:=true;
       end
+
+       else
+      if parForm = 'po2' then
+      begin
+         PanelLedPov.Visible := true;
+            CheckBoxBerezKviten.Visible := false;
+        PanelMon.Visible := false;
+        CBMonList.Checked := false;
+        UtochMonList.Visible := false;
+        ComboMonList.Visible := false;
+        UtochMonPer.Visible := false;
+        CBMonPer.Checked := false;
+        CBMonPer.Visible := false;
+        PanelZabezp.Visible := true;
+          CheckListBoxLED.Visible:=false;
+          CheckListBoxPo1.Visible := false;
+           CheckListBoxPo2.Visible := true;
+           ButtonRiverPost.Visible:=true;
+           ButtonProgPunkt.Visible:=false;
+           ButtonVodoshov.Visible:=true;
+
+           ButtonBas.Visible:=true;
+               CheckBoxProgn.Visible:=false;
+                 CheckBoxText.Visible:=false;
+      end
+
+             else
+      if parForm = 'po3' then
+      begin
+         PanelLedPov.Visible := true;
+            CheckBoxBerezKviten.Visible := false;
+        PanelMon.Visible := false;
+        CBMonList.Checked := false;
+        UtochMonList.Visible := false;
+        ComboMonList.Visible := false;
+        UtochMonPer.Visible := false;
+        CBMonPer.Checked := false;
+        CBMonPer.Visible := false;
+        PanelZabezp.Visible := true;
+          CheckListBoxLED.Visible:=false;
+          CheckListBoxPo1.Visible := false;
+           CheckListBoxPo2.Visible := true;
+           ButtonRiverPost.Visible:=true;
+           ButtonProgPunkt.Visible:=false;
+           ButtonVodoshov.Visible:=false;
+
+           ButtonBas.Visible:=false;
+               CheckBoxProgn.Visible:=true;
+                 CheckBoxText.Visible:=true;
+      end
+
        else
       if parForm = 'dmp' then
       begin
-          PanelLed.Visible :=  false;
+          PanelLedPov.Visible :=  false;
         RadioGroupPROGorKon.Visible := true;
         CheckBoxBerezKviten.Visible := true;
         PanelMon.Visible := true;
@@ -2373,7 +2533,7 @@ begin
 
       else if parForm = 'bmp' then
       begin
-                            PanelLed.Visible  := false;
+                            PanelLedPov.Visible  := false;
         PanelMon.Visible := true;
         CBMonList.Checked := true;
         UtochMonList.Visible := true;
@@ -2385,7 +2545,7 @@ begin
 
       else if parForm = 'gyd' then
       begin
-          PanelLed.Visible := false;
+          PanelLedPov.Visible := false;
         Panel7.Visible := true;
         CBmondbeg.Visible := true;
         CBmonmbeg.Visible := true;
@@ -2401,7 +2561,7 @@ begin
         // ----decada------
         if copy(parForm, 1, 1) = '1' then
         begin
-            PanelLed.Visible  := false;
+            PanelLedPov.Visible  := false;
           PanelDec.Visible := true;
           CBDekeda.Checked := true;
           RadioDeckList.Visible := true;
@@ -2411,7 +2571,7 @@ begin
         end
         else
         begin
-            PanelLed.Visible  := false;
+            PanelLedPov.Visible  := false;
           PanelDec.Visible := false;
           CBDekeda.Checked := false;
           UtochDecada.Checked := false;
@@ -2421,7 +2581,7 @@ begin
         // ----month------
         if copy(parForm, 2, 1) = '1' then
         begin
-            PanelLed.Visible := false;
+            PanelLedPov.Visible := false;
           PanelMon.Visible := true;
           CBMonList.Checked := true;
           CBMonPer.Visible := true;
@@ -2432,7 +2592,7 @@ begin
         end
         else
         begin
-            PanelLed.Visible := false;
+            PanelLedPov.Visible := false;
           PanelMon.Visible := false;
           CBMonList.Checked := false;
           UtochMonList.Checked := false;
@@ -2444,7 +2604,7 @@ begin
         // ----kvartal------
         if copy(parForm, 3, 1) = '1' then
         begin
-            PanelLed.Visible := false;
+            PanelLedPov.Visible := false;
           PanelKvart.Visible := true;
           CBKvartList.Checked := true;
           RadioKvartList.Visible := true;
@@ -2452,7 +2612,7 @@ begin
         end
         else
         begin
-            PanelLed.Visible := false;
+          PanelLedPov.Visible := false;
           PanelKvart.Visible := false;
           CBKvartList.Checked := false;
           UtochKvart.Checked := false;

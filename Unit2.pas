@@ -25,8 +25,17 @@ type
     IBDataSetLEDLATE: TIBStringField;
     IBQ: TIBQuery;
     Label1: TLabel;
-    procedure FormCreate(Sender: TObject);
+    IBQueryForLKP: TIBQuery;
+    IBDataSetLEDCHK_RESULT: TStringField;
+    IBQueryForLKPCC_NAME: TWideStringField;
+    IBQueryForLKPCC_INDEX: TIntegerField;
     procedure Button1Click(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure IBDataSetLEDCHK_RESULTGetText(Sender: TField; var Text: string;
+      DisplayText: Boolean);
+    procedure IBDataSetLEDCHK_RESULTChange(Sender: TField);
+    procedure IBQueryForLKPCC_NAMEGetText(Sender: TField; var Text: string;
+      DisplayText: Boolean);
   private
     { Private declarations }
   public
@@ -45,9 +54,58 @@ begin
 //Form1.IBDatabase1.ApplyUpdates(IBDataSetLED);
 end;
 
-procedure TForm2.FormCreate(Sender: TObject);
+procedure TForm2.FormShow(Sender: TObject);
 begin
+IBQueryForLKP.Close;
+IBQueryForLKP.Open;
+IBQueryForLKP.Close;
 IBDataSetLED.Open;
+end;
+
+procedure TForm2.IBDataSetLEDCHK_RESULTChange(Sender: TField);
+begin
+{if not Sender.IsNull then
+ begin
+  if Sender.Value ='Бєлгідромет' then
+      text:='Yes'
+       else
+  if Sender.Value ='Півн.Зах.Гідромет' then
+       text:='No'
+       else
+          Text := Sender.Value;
+  end;       }
+end;
+
+procedure TForm2.IBDataSetLEDCHK_RESULTGetText(Sender: TField; var Text: string;
+  DisplayText: Boolean);
+begin
+if not Sender.IsNull then
+ begin
+  if Sender.Value ='Бєлгідромет' then
+      text:='Так'
+       else
+  if Sender.Value ='Півн.Зах.Гідромет' then
+       text:='Ні'
+       else
+          Text := Sender.Value;
+  end;
+end;
+
+
+
+procedure TForm2.IBQueryForLKPCC_NAMEGetText(Sender: TField; var Text: string;
+  DisplayText: Boolean);
+begin
+ if not Sender.IsNull then
+ begin
+  if Sender.Value ='Бєлгідромет' then
+     text:='Так'
+       else
+  if Sender.Value ='Півн.Зах.Гідромет' then
+        text:='Ні'
+       else
+       text:='Ні'
+  end;
 end;
 
 end.

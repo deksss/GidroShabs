@@ -16,6 +16,27 @@ object Form1: TForm1
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
+  object Label5: TLabel
+    Left = 672
+    Top = 440
+    Width = 31
+    Height = 13
+    Caption = 'Label5'
+  end
+  object Label6: TLabel
+    Left = 776
+    Top = 248
+    Width = 31
+    Height = 13
+    Caption = 'Label6'
+  end
+  object Label9: TLabel
+    Left = 640
+    Top = 456
+    Width = 29
+    Height = 13
+    Caption = #1058#1077#1082#1089#1090
+  end
   object Panel1: TPanel
     Left = 0
     Top = 0
@@ -128,7 +149,7 @@ object Form1: TForm1
         object TreeView1: TTreeView
           Left = 0
           Top = 0
-          Width = 257
+          Width = 273
           Height = 560
           Align = alLeft
           AutoExpand = True
@@ -152,9 +173,9 @@ object Form1: TForm1
           OnCustomDrawItem = TreeView1CustomDrawItem
         end
         object Panel3: TPanel
-          Left = 257
+          Left = 273
           Top = 0
-          Width = 761
+          Width = 745
           Height = 560
           Align = alClient
           TabOrder = 1
@@ -437,7 +458,7 @@ object Form1: TForm1
             end
           end
           object PanelZabezp: TPanel
-            Left = 3
+            Left = 5
             Top = 5
             Width = 249
             Height = 50
@@ -478,8 +499,8 @@ object Form1: TForm1
             end
           end
           object Panel7: TPanel
-            Left = 2
-            Top = 55
+            Left = 4
+            Top = 54
             Width = 250
             Height = 197
             BevelKind = bkTile
@@ -725,6 +746,163 @@ object Form1: TForm1
               TabOrder = 6
             end
           end
+          object CheckBoxBerezKviten: TCheckBox
+            Left = 203
+            Top = 272
+            Width = 110
+            Height = 17
+            Caption = #1041#1077#1088#1077#1079#1077#1085#1100'-'#1082#1074#1110#1090#1077#1085#1100
+            TabOrder = 6
+            Visible = False
+          end
+          object PanelLedPov: TPanel
+            Left = 243
+            Top = -1
+            Width = 485
+            Height = 246
+            BevelKind = bkTile
+            BevelOuter = bvNone
+            TabOrder = 7
+            Visible = False
+            object LabelHar: TLabel
+              Left = 288
+              Top = 16
+              Width = 147
+              Height = 13
+              Caption = #1041#1072#1075#1072#1090#1086#1088#1110#1095#1085#1110' '#1093#1072#1088#1072#1082#1090#1077#1088#1080#1089#1090#1080#1082#1080':'
+            end
+            object ButtonRiverPost: TButton
+              Left = 24
+              Top = 67
+              Width = 89
+              Height = 37
+              Caption = #1056#1110#1095#1082#1072'-'#1087#1091#1085#1082#1090#1080
+              TabOrder = 0
+              OnClick = ButtonRiverPostClick
+            end
+            object LedChek: TCheckBox
+              Left = 22
+              Top = 10
+              Width = 195
+              Height = 17
+              Caption = #1056#1110#1074#1077#1085#1100' '#1074#1086#1076#1080' '#1089#1084' '#1085#1072#1076' '#1085#1091#1083#1077#1084' '#1087#1086#1089#1090#1072
+              TabOrder = 1
+              OnClick = LedChekClick
+            end
+            object DateTimePicker1: TDateTimePicker
+              Left = 22
+              Top = 28
+              Width = 91
+              Height = 21
+              Date = 41989.538638460650000000
+              Time = 41989.538638460650000000
+              TabOrder = 2
+              Visible = False
+            end
+            object CheckListBoxLED: TCheckListBox
+              Left = 264
+              Top = 35
+              Width = 193
+              Height = 92
+              Flat = False
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ItemHeight = 27
+              Items.Strings = (
+                #1088#1072#1085#1085#1110' '#1089#1090#1088#1086#1082#1080
+                #1089#1077#1088#1077#1076#1085#1110' '#1089#1090#1088#1086#1082#1080
+                #1088#1110#1079#1085#1110' '#1089#1090#1088#1086#1082#1080)
+              ParentFont = False
+              Style = lbOwnerDrawVariable
+              TabOrder = 3
+            end
+            object CheckListBoxPo1: TCheckListBox
+              Left = 264
+              Top = 37
+              Width = 193
+              Height = 92
+              Flat = False
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ItemHeight = 27
+              Items.Strings = (
+                #1085#1072#1081#1085#1080#1078#1095#1080#1081
+                #1089#1077#1088#1077#1076#1085#1110#1081
+                #1085#1072#1081#1074#1080#1097#1080#1081)
+              ParentFont = False
+              Style = lbOwnerDrawVariable
+              TabOrder = 4
+            end
+            object ButtonBas: TButton
+              Left = 23
+              Top = 120
+              Width = 91
+              Height = 37
+              Caption = #1041#1072#1089#1077#1081#1085#1080
+              TabOrder = 5
+              OnClick = ButtonRiverPostClick
+            end
+            object CheckListBoxPO2: TCheckListBox
+              Left = 264
+              Top = 37
+              Width = 193
+              Height = 92
+              Flat = False
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ItemHeight = 27
+              Items.Strings = (
+                #1085#1072#1081#1084#1077#1085#1096#1110
+                #1089#1077#1088#1077#1076#1085#1110
+                #1085#1072#1081#1073#1110#1083#1100#1110#1096#1110)
+              ParentFont = False
+              Style = lbOwnerDrawVariable
+              TabOrder = 6
+            end
+            object ButtonVodoshov: TButton
+              Left = 136
+              Top = 121
+              Width = 88
+              Height = 36
+              Caption = #1042#1086#1076#1086#1089#1093#1086#1074#1080#1097#1072
+              TabOrder = 7
+            end
+            object ButtonProgPunkt: TButton
+              Left = 135
+              Top = 67
+              Width = 88
+              Height = 37
+              Caption = #1055#1088#1086#1075#1085#1086#1079#1087#1091#1085#1082#1090#1080
+              TabOrder = 8
+            end
+            object CheckBoxText: TCheckBox
+              Left = 264
+              Top = 163
+              Width = 195
+              Height = 17
+              Caption = #1058#1077#1082#1089#1090
+              TabOrder = 9
+              OnClick = LedChekClick
+            end
+            object CheckBoxProgn: TCheckBox
+              Left = 264
+              Top = 204
+              Width = 195
+              Height = 17
+              Caption = #1051#1100#1086#1076#1086#1074#1080#1081' '#1087#1088#1086#1075#1085#1086#1079' '#1086#1095#1080#1097#1077#1085#1085#1103
+              TabOrder = 10
+              OnClick = LedChekClick
+            end
+          end
         end
       end
       object TabSheet2: TTabSheet
@@ -760,9 +938,9 @@ object Form1: TForm1
     end
   end
   object RadioGroupPROGorKon: TRadioGroup
-    Left = 274
+    Left = 300
     Top = 328
-    Width = 185
+    Width = 159
     Height = 49
     ItemIndex = 0
     Items.Strings = (
@@ -773,8 +951,10 @@ object Form1: TForm1
     OnClick = RadioGroupPROGorKonClick
   end
   object IBDatabase1: TIBDatabase
+    DatabaseName = '192.168.1.5:/work/db/firebird/GIDRO_2007.GDB'
     Params.Strings = (
-      'user_name=SYSDBA')
+      'user_name=SYSDBA'
+      'password=dvvdendem')
     LoginPrompt = False
     DefaultTransaction = IBTransaction1
     SQLDialect = 1

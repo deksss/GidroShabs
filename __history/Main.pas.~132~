@@ -6,7 +6,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ComCtrls, ExtCtrls, CategoryButtons, IBDatabase, DB, IBCustomDataSet,
   IBQuery, StdCtrls, CheckLst, Menus, ImgList, ShellAPI, WordXP, DateUtils,
-  Math;
+  Math, Grids, DBGrids, DBCtrls ;
 
 type
   TForm1 = class(TForm)
@@ -94,6 +94,22 @@ type
     CheckDeckList: TCheckListBox;
     CheckBUtochMonh: TCheckBox;
     CheckBoxBerezKviten: TCheckBox;
+    ButtonRiverPost: TButton;
+    PanelLedPov: TPanel;
+    DateTimePicker1: TDateTimePicker;
+    LedChek: TCheckBox;
+    CheckListBoxLED: TCheckListBox;
+    LabelHar: TLabel;
+    CheckListBoxPo1: TCheckListBox;
+    ButtonBas: TButton;
+    CheckListBoxPO2: TCheckListBox;
+    ButtonVodoshov: TButton;
+    ButtonProgPunkt: TButton;
+    Label5: TLabel;
+    Label6: TLabel;
+    Label9: TLabel;
+    CheckBoxText: TCheckBox;
+    CheckBoxProgn: TCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure TreeView1CustomDrawItem(Sender: TCustomTreeView; Node: TTreeNode;
       State: TCustomDrawState; var DefaultDraw: Boolean);
@@ -116,12 +132,15 @@ type
     procedure Progn_pripliv;
     procedure Progn_gidrograf;
     procedure Progn_dnist_mon;
+    procedure Progn_bok_mon;
     procedure N110Click(Sender: TObject);
     procedure OpenFileClick(Sender: TObject);
     procedure ExportcabClick(Sender: TObject);
     procedure ExpEmailClick(Sender: TObject);
     procedure ButtonNumberPrognozClick(Sender: TObject);
     procedure RadioGroupPROGorKonClick(Sender: TObject);
+    procedure ButtonRiverPostClick(Sender: TObject);
+    procedure LedChekClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -205,7 +224,7 @@ var
 
 implementation
 
-uses den, IniFiles, MAPI;
+uses den, IniFiles, MAPI, Unit2;
 {$R *.dfm}
 
 function generateDecLabel(): string;
@@ -470,9 +489,229 @@ begin
     Progn_dnist_mon
   else if parForm = 'gyd' then
     Progn_gidrograf
+     else if parForm = 'bmp' then
+    Progn_bok_mon
   else
     Progn_pripliv;
 end;
+ procedure TForm1.LedChekClick(Sender: TObject);
+begin
+if LedChek.Checked then
+DateTimePicker1.Visible:=true else
+ DateTimePicker1.Visible:=false;
+end;
+
+procedure TForm1.Progn_bok_mon;
+var
+  curCol, fnumcell: integer;
+  dat_beg, dat_end, zabezp_proc: string;
+  ind_st, basesql, polsql: string;
+  mon_prog, year_prog, sum: integer;
+  path_signature, ss: string;
+begin
+  fnumcell := 4;
+  if CBZabezp.Text = 'середній' then
+    zabezp_proc := 'ser'
+  else
+    zabezp_proc := CBZabezp.Text;
+
+  Screen.Cursor := crHourGlass;
+  WordApp := TWordApplication.Create(Self);
+  WordApp.Connect();
+  WordApp.Visible := true;
+{$IFDEF DEBUG}
+  // WordApp.Visible := true;
+{$ENDIF}
+  // обновляем данные
+  // ibdsDescription.Close();
+  // ibdsDescription.Open();
+  // ibdsForecast.Close();
+  // ibdsForecast.Open();
+  wdUnit := putchshab + '\' + m_TemplateFile;
+  WordApp.Documents.OpenOld(wdUnit, EmptyParam, EmptyParam, EmptyParam,
+    EmptyParam, EmptyParam, EmptyParam, EmptyParam, EmptyParam, EmptyParam);
+  // -----------
+  wdUnit := putchrezult + '\' + m_ReportFileName;
+  tmp1 := false;
+  WordApp.ActiveDocument.SaveAs(wdUnit, EmptyParam, EmptyParam, EmptyParam,
+    tmp1, EmptyParam, EmptyParam, EmptyParam, EmptyParam, EmptyParam,
+    EmptyParam, EmptyParam, EmptyParam, EmptyParam, EmptyParam, EmptyParam);
+  // заменяем "заглушки" на реальный текст
+  wdUnit := '#Datename';
+  tmp1 := true;
+  tmp2 := wdFindContinue;
+  NameProgn(Datename);
+  tmp3 := Datename;
+  tmp4 := wdReplaceAll;
+  WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+    EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+  wdUnit := '#numvipusk';
+  tmp1 := true;
+  tmp2 := wdFindContinue;
+  tmp3 := EditNumberPrognoz.Text;
+  tmp4 := wdReplaceAll;
+  WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+    EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+  { } if copy(parForm, 1, 1) = '0' then
+  begin
+    wdUnit := '#Zabezp';
+    tmp1 := true;
+    tmp2 := wdFindContinue;
+    if zabezp_proc = 'ser' then
+      tmp3 := 'середньої'
+    else
+      tmp3 := zabezp_proc + ' %-вої';
+    tmp4 := wdReplaceAll;
+    WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+      EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+    // WordApp.Selection.TypeParagraph();
+
+    wdUnit := '#rikfact';
+    tmp1 := true;
+    tmp2 := wdFindContinue;
+    tmp3 := IntToStr(StrToInt(FormatDateTime('yyyy', DTProgn.Date)) - 1);
+    tmp4 := wdReplaceAll;
+    WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+      EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+  end;
+     sum:=0;
+
+        ind_st := '80021';
+        IBQZABEZP.Close;
+        IBQZABEZP.SQL.Clear;
+        IBQZABEZP.SQL.Add
+          ('select *  from q_zabezp q where q.post_index="' + ind_st +
+            '" and q.proc="' + zabezp_proc + '"');
+        IBQZABEZP.Open;
+        sum:=sum+      IBQZABEZP.FieldByName('Q' + IntToStr(ComboMonList.ItemIndex + 1) + '').Asinteger;
+   wdUnit := '#Krem';
+  tmp1 := true;
+  tmp2 := wdFindContinue;
+  tmp3 := IBQZABEZP.FieldByName('Q' + IntToStr(ComboMonList.ItemIndex + 1) + '').AsString;
+  tmp4 := wdReplaceAll;
+  WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+    EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+
+       ind_st := '80029';
+        IBQZABEZP.Close;
+        IBQZABEZP.SQL.Clear;
+        IBQZABEZP.SQL.Add
+          ('select *  from q_zabezp q where q.post_index="' + ind_st +
+            '" and q.proc="' + zabezp_proc + '"');
+        IBQZABEZP.Open;
+             sum:=sum+      IBQZABEZP.FieldByName('Q' + IntToStr(ComboMonList.ItemIndex + 1) + '').Asinteger;
+      wdUnit := '#Dniprdz';
+  tmp1 := true;
+  tmp2 := wdFindContinue;
+  tmp3 := EditNumberPrognoz.Text;
+  tmp4 := wdReplaceAll;
+  WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+    EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+
+       ind_st := '80039';
+        IBQZABEZP.Close;
+        IBQZABEZP.SQL.Clear;
+        IBQZABEZP.SQL.Add
+          ('select *  from q_zabezp q where q.post_index="' + ind_st +
+            '" and q.proc="' + zabezp_proc + '"');
+        IBQZABEZP.Open;
+             sum:=sum+      IBQZABEZP.FieldByName('Q' + IntToStr(ComboMonList.ItemIndex + 1) + '').Asinteger;
+      wdUnit := '#Dnipro';
+  tmp1 := true;
+  tmp2 := wdFindContinue;
+  tmp3 := EditNumberPrognoz.Text;
+  tmp4 := wdReplaceAll;
+  WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+    EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+
+
+      wdUnit := '#Sum';
+  tmp1 := true;
+  tmp2 := wdFindContinue;
+  tmp3 := inttostr(sum);
+  tmp4 := wdReplaceAll;
+  WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+    EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+
+
+   //...
+
+
+if (copy(Nach1, Pos('#', Nach1) + 1, (Length(Nach1))) = ComboBox2.Text) then
+    ss := copy(Nach1, 1, Pos('#', Nach1) - 1)
+  else
+    ss := copy(Nach2, 1, Pos('#', Nach2) - 1);
+  wdUnit := '#President';
+  tmp1 := true;
+  tmp2 := wdFindContinue;
+  tmp3 := ss;
+  tmp4 := wdReplaceAll;
+  WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+    EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+  // Iiaienu
+  if CheckBox1.Checked then
+  begin // 1
+    if (ComboBox2.Text = ComboBox2.Items[0]) then
+      path_signature := putchshab + '\' + 'Boss1.bmp'
+    else
+      path_signature := putchshab + '\' + 'Boss2.bmp';
+
+    wdUnit := '#Signature';
+    tmp1 := true;
+    tmp2 := wdFindStop;
+    tmp3 := '';
+    tmp4 := wdReplaceOne;
+    WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+      EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+    // aiaaaeyai oaee n map
+    wdUnit := true;
+    with (WordApp.Selection.InlineShapes.AddPicture(path_signature, EmptyParam,
+        wdUnit, EmptyParam)) do
+    begin
+      LockAspectRatio := wdUnit;
+    end;
+  end // 1
+  else
+  begin // 1
+    wdUnit := '#Signature';
+    tmp1 := true;
+    tmp2 := wdFindContinue;
+    tmp3 := '';
+    tmp4 := wdReplaceAll;
+    WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+      EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+  end; // 1
+  wdUnit := '#Name';
+  tmp1 := true;
+  tmp2 := wdFindContinue;
+  tmp3 := ComboBox2.Text;
+  tmp4 := wdReplaceAll;
+  WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+    EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+  // --------------------------------
+  wdUnit := '#dataprogn';
+  tmp1 := true;
+  tmp2 := wdFindContinue;
+  tmp3 := FormatDateTime('dd.mm.yyyy', DateProgn);
+  tmp4 := wdReplaceAll;
+  WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+    EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+  WordApp.ActiveDocument.Save;
+  WordApp.Visible := true;
+  WordApp.ShowMe;
+  WordApp.Activate;
+
+  WordApp.Free();
+{$IFNDEF DEBUG}
+  // удаляем временную карту
+  // if (FileExists(tmpMapName)) then
+  // DeleteFile(tmpMapName);
+{$ENDIF}
+  Screen.Cursor := crArrow;
+
+
+  end;
+
 
 procedure TForm1.Progn_dnist_mon;
 var
@@ -1729,6 +1968,11 @@ begin
     ShowMessage('Файл для відправлення в кабінет відсутній, сформуйте його!');
 end;
 
+procedure TForm1.ButtonRiverPostClick(Sender: TObject);
+begin
+form2.Show ;
+end;
+
 procedure TForm1.ButtonNumberPrognozClick(Sender: TObject);
 var
   IBsetNum: TIBQuery;
@@ -1741,6 +1985,7 @@ begin
     'UPDATE PROGNPERIOD  SET NUMVIPUSK =' + EditNumberPrognoz.Text +
     'WHERE NPERIOD =' + IntToStr(TreeView1.Selected.StateIndex);
   IBsetNum.Open;
+
 end;
 
 procedure TForm1.CBDekedaClick(Sender: TObject);
@@ -1926,6 +2171,18 @@ begin
   // ---------------------------
   FormClear();
   TreeView1.FullExpand;
+
+  CheckListBoxLED.Checked[0]:=true;
+   CheckListBoxLED.Checked[1]:=true;
+    CheckListBoxLED.Checked[2]:=true;
+
+    CheckListBoxPo1.Checked[0]:=true;
+   CheckListBoxPo1.Checked[1]:=true;
+    CheckListBoxPo1.Checked[2]:=true;
+
+    CheckListBoxPo2.Checked[0]:=true;
+   CheckListBoxPo2.Checked[1]:=true;
+    CheckListBoxPo2.Checked[2]:=true;
 end;
 
 procedure TForm1.TreeView1Click(Sender: TObject);
@@ -2039,7 +2296,9 @@ begin
   end;
   // ----------------------
   PanelDec.Visible := false;
+   RadioGroupPROGorKon.Visible :=false;
   RadioGroupPROGorKon.Visible := false;
+  CheckBoxBerezKviten.Visible := false;
   CBDekeda.Checked := false;
   UtochDecada.Checked := false;
   RadioDeckList.Visible := false;
@@ -2100,9 +2359,112 @@ begin
     begin
       parForm := IBViewForm.FieldByName('PARAM').AsString;
       // ------------------------------------------------------------------------
+
+       if (parForm = 'le1') or (parForm = 'le2') or (parForm ='le3') or (parForm ='le4') then
+      begin
+      PanelLedPov.Visible := true;
+
+        CheckBoxBerezKviten.Visible := false;
+        PanelMon.Visible := false;
+        CBMonList.Checked := false;
+        UtochMonList.Visible := false;
+        ComboMonList.Visible := false;
+        UtochMonPer.Visible := false;
+        CBMonPer.Checked := false;
+        CBMonPer.Visible := false;
+        PanelZabezp.Visible := false;
+          CheckListBoxLED.Visible:=true;
+          CheckListBoxPo1.Visible := false;
+           CheckListBoxPo2.Visible := false;
+           ButtonRiverPost.Visible:=true;
+           ButtonProgPunkt.Visible:=false;
+           ButtonBas.Visible:=false;
+           ButtonVodoshov.Visible:=false;
+           CheckBoxProgn.Visible:=false;
+           CheckBoxText.Visible:=false;
+           CheckBoxText.Visible:=false;
+
+         end
+       else
+      if parForm = 'po1' then
+      begin
+         PanelLedPov.Visible := true;
+            CheckBoxBerezKviten.Visible := false;
+        PanelMon.Visible := false;
+        CBMonList.Checked := false;
+        UtochMonList.Visible := false;
+        ComboMonList.Visible := false;
+        UtochMonPer.Visible := false;
+        CBMonPer.Checked := false;
+        CBMonPer.Visible := false;
+        PanelZabezp.Visible := false;
+          CheckListBoxLED.Visible:=false;
+          CheckListBoxPo1.Visible := true;
+           CheckListBoxPo2.Visible := false;
+           ButtonRiverPost.Visible:=true;
+           ButtonProgPunkt.Visible:=false;
+           ButtonVodoshov.Visible:=false;
+           ButtonBas.Visible:=true;
+               CheckBoxProgn.Visible:=false;
+                 CheckBoxText.Visible:=true;
+      end
+
+       else
+      if parForm = 'po2' then
+      begin
+         PanelLedPov.Visible := true;
+            CheckBoxBerezKviten.Visible := false;
+        PanelMon.Visible := false;
+        CBMonList.Checked := false;
+        UtochMonList.Visible := false;
+        ComboMonList.Visible := false;
+        UtochMonPer.Visible := false;
+        CBMonPer.Checked := false;
+        CBMonPer.Visible := false;
+        PanelZabezp.Visible := true;
+          CheckListBoxLED.Visible:=false;
+          CheckListBoxPo1.Visible := false;
+           CheckListBoxPo2.Visible := true;
+           ButtonRiverPost.Visible:=true;
+           ButtonProgPunkt.Visible:=false;
+           ButtonVodoshov.Visible:=true;
+
+           ButtonBas.Visible:=true;
+               CheckBoxProgn.Visible:=false;
+                 CheckBoxText.Visible:=false;
+      end
+
+             else
+      if parForm = 'po3' then
+      begin
+         PanelLedPov.Visible := true;
+            CheckBoxBerezKviten.Visible := false;
+        PanelMon.Visible := false;
+        CBMonList.Checked := false;
+        UtochMonList.Visible := false;
+        ComboMonList.Visible := false;
+        UtochMonPer.Visible := false;
+        CBMonPer.Checked := false;
+        CBMonPer.Visible := false;
+        PanelZabezp.Visible := true;
+          CheckListBoxLED.Visible:=false;
+          CheckListBoxPo1.Visible := false;
+           CheckListBoxPo2.Visible := true;
+           ButtonRiverPost.Visible:=true;
+           ButtonProgPunkt.Visible:=false;
+           ButtonVodoshov.Visible:=false;
+
+           ButtonBas.Visible:=false;
+               CheckBoxProgn.Visible:=true;
+                 CheckBoxText.Visible:=true;
+      end
+
+       else
       if parForm = 'dmp' then
       begin
+          PanelLedPov.Visible :=  false;
         RadioGroupPROGorKon.Visible := true;
+        CheckBoxBerezKviten.Visible := true;
         PanelMon.Visible := true;
         CBMonList.Checked := true;
         UtochMonList.Visible := false;
@@ -2112,8 +2474,22 @@ begin
         CBMonPer.Visible := false;
         PanelZabezp.Visible := true;
       end
+
+      else if parForm = 'bmp' then
+      begin
+                            PanelLedPov.Visible  := false;
+        PanelMon.Visible := true;
+        CBMonList.Checked := true;
+        UtochMonList.Visible := true;
+        ComboMonList.Visible := true;
+        CBMonPer.Visible:=false;
+        PanelZabezp.Visible := true;
+      end
+
+
       else if parForm = 'gyd' then
       begin
+          PanelLedPov.Visible := false;
         Panel7.Visible := true;
         CBmondbeg.Visible := true;
         CBmonmbeg.Visible := true;
@@ -2129,6 +2505,7 @@ begin
         // ----decada------
         if copy(parForm, 1, 1) = '1' then
         begin
+            PanelLedPov.Visible  := false;
           PanelDec.Visible := true;
           CBDekeda.Checked := true;
           RadioDeckList.Visible := true;
@@ -2138,6 +2515,7 @@ begin
         end
         else
         begin
+            PanelLedPov.Visible  := false;
           PanelDec.Visible := false;
           CBDekeda.Checked := false;
           UtochDecada.Checked := false;
@@ -2147,6 +2525,7 @@ begin
         // ----month------
         if copy(parForm, 2, 1) = '1' then
         begin
+            PanelLedPov.Visible := false;
           PanelMon.Visible := true;
           CBMonList.Checked := true;
           CBMonPer.Visible := true;
@@ -2157,6 +2536,7 @@ begin
         end
         else
         begin
+            PanelLedPov.Visible := false;
           PanelMon.Visible := false;
           CBMonList.Checked := false;
           UtochMonList.Checked := false;
@@ -2168,6 +2548,7 @@ begin
         // ----kvartal------
         if copy(parForm, 3, 1) = '1' then
         begin
+            PanelLedPov.Visible := false;
           PanelKvart.Visible := true;
           CBKvartList.Checked := true;
           RadioKvartList.Visible := true;
@@ -2175,6 +2556,7 @@ begin
         end
         else
         begin
+          PanelLedPov.Visible := false;
           PanelKvart.Visible := false;
           CBKvartList.Checked := false;
           UtochKvart.Checked := false;

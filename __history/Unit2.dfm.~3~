@@ -11,7 +11,7 @@ object Form2: TForm2
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
-  OnShow = FormShow
+  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   object PanelLED: TPanel
@@ -122,7 +122,6 @@ object Form2: TForm2
     Left = 392
     Top = 184
     object IBDataSetLEDPOST_INDEX: TIBStringField
-      DisplayLabel = #1030#1085#1076#1077#1082#1089' '#1087#1086#1089#1090#1072
       FieldName = 'POST_INDEX'
       Origin = 'CAT_POSTM.POST_INDEX'
       ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
@@ -135,20 +134,6 @@ object Form2: TForm2
       DisplayWidth = 1
       FieldName = 'CHEKED'
       Origin = 'PROGNOZ_LED.CHEKED'
-      Visible = False
-    end
-    object IBDataSetLEDCHK_RESULT: TStringField
-      DisplayLabel = #1044#1086' '#1087#1088#1086#1075#1085#1086#1079#1091'?'
-      DisplayWidth = 10
-      FieldKind = fkLookup
-      FieldName = 'CHK_RESULT'
-      LookupDataSet = IBQueryForLKP
-      LookupKeyFields = 'CC_INDEX'
-      LookupResultField = 'CC_NAME'
-      KeyFields = 'CHEKED'
-      OnChange = IBDataSetLEDCHK_RESULTChange
-      OnGetText = IBDataSetLEDCHK_RESULTGetText
-      Lookup = True
     end
     object IBDataSetLEDCPM_NAME: TIBStringField
       DisplayLabel = #1053#1072#1079#1074#1072' '#1087#1086#1089#1090#1072
@@ -197,22 +182,5 @@ object Form2: TForm2
   object IBQ: TIBQuery
     Left = 208
     Top = 320
-  end
-  object IBQueryForLKP: TIBQuery
-    Database = Form1.IBDatabase1
-    Transaction = Form1.IBTransaction1
-    SQL.Strings = (
-      
-        'select cc_index, cc_name from cat_classnw where cc_index=2 or (c' +
-        'c_index=6)')
-    Left = 336
-    Top = 328
-    object IBQueryForLKPCC_NAME: TWideStringField
-      FieldName = 'CC_NAME'
-      OnGetText = IBQueryForLKPCC_NAMEGetText
-    end
-    object IBQueryForLKPCC_INDEX: TIntegerField
-      FieldName = 'CC_INDEX'
-    end
   end
 end
