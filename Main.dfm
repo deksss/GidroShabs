@@ -149,7 +149,7 @@ object Form1: TForm1
         object TreeView1: TTreeView
           Left = 0
           Top = 0
-          Width = 273
+          Width = 280
           Height = 560
           Align = alLeft
           AutoExpand = True
@@ -173,9 +173,9 @@ object Form1: TForm1
           OnCustomDrawItem = TreeView1CustomDrawItem
         end
         object Panel3: TPanel
-          Left = 273
+          Left = 280
           Top = 0
-          Width = 745
+          Width = 738
           Height = 560
           Align = alClient
           TabOrder = 1
@@ -846,7 +846,7 @@ object Form1: TForm1
               Height = 37
               Caption = #1041#1072#1089#1077#1081#1085#1080
               TabOrder = 5
-              OnClick = ButtonRiverPostClick
+              OnClick = ButtonBasClick
             end
             object CheckListBoxPO2: TCheckListBox
               Left = 264
@@ -875,6 +875,7 @@ object Form1: TForm1
               Height = 36
               Caption = #1042#1086#1076#1086#1089#1093#1086#1074#1080#1097#1072
               TabOrder = 7
+              OnClick = ButtonVodoshovClick
             end
             object ButtonProgPunkt: TButton
               Left = 135
@@ -883,6 +884,7 @@ object Form1: TForm1
               Height = 37
               Caption = #1055#1088#1086#1075#1085#1086#1079#1087#1091#1085#1082#1090#1080
               TabOrder = 8
+              OnClick = ButtonProgPunktClick
             end
             object CheckBoxText: TCheckBox
               Left = 264
@@ -951,6 +953,7 @@ object Form1: TForm1
     OnClick = RadioGroupPROGorKonClick
   end
   object IBDatabase1: TIBDatabase
+    Connected = True
     DatabaseName = '192.168.1.5:/work/db/firebird/GIDRO_2007.GDB'
     Params.Strings = (
       'user_name=SYSDBA'
@@ -962,6 +965,7 @@ object Form1: TForm1
     Top = 512
   end
   object IBTransaction1: TIBTransaction
+    Active = True
     DefaultDatabase = IBDatabase1
     Left = 16
     Top = 560

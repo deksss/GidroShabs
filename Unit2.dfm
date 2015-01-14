@@ -3,7 +3,7 @@ object Form2: TForm2
   Top = 0
   Caption = #1050#1072#1090#1072#1083#1086#1075' '#1089#1090#1072#1085#1094#1110#1081' '#1076#1083#1103' '#1087#1088#1086#1075#1085#1086#1079#1091' "'#1051#1100#1086#1076#1086#1074#1080#1081'" '
   ClientHeight = 575
-  ClientWidth = 725
+  ClientWidth = 860
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -11,24 +11,17 @@ object Form2: TForm2
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  OnClose = FormClose
+  OnCreate = FormCreate
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object PanelLED: TPanel
     Left = 8
     Top = 8
-    Width = 709
+    Width = 833
     Height = 534
     TabOrder = 0
-    object Label1: TLabel
-      Left = 32
-      Top = 8
-      Width = 436
-      Height = 13
-      Caption = 
-        #1044#1083#1103' '#1090#1086#1075#1086' '#1097#1086#1073' '#1087#1091#1085#1082#1090' '#1085#1077' '#1087#1086#1090#1088#1072#1087#1080#1074' '#1076#1086' '#1087#1088#1086#1075#1085#1086#1079#1091', '#1079#1072#1083#1080#1096#1090#1077' '#1087#1086#1083#1077' "'#1044#1083#1103' '#1087#1088 +
-        #1086#1075#1085#1086#1079#1091'" - '#1087#1091#1089#1090#1080#1084
-    end
     object DBNavigator1: TDBNavigator
       Left = 217
       Top = 509
@@ -40,7 +33,7 @@ object Form2: TForm2
     object DBGrid1: TDBGrid
       Left = 0
       Top = 40
-      Width = 713
+      Width = 825
       Height = 463
       DataSource = DataSourceLED
       TabOrder = 1
@@ -67,6 +60,7 @@ object Form2: TForm2
     Height = 25
     Caption = #1047#1072#1082#1088#1080#1090#1080' '#1073#1077#1079' '#1079#1073#1077#1088#1077#1078#1077#1085#1085#1103
     TabOrder = 2
+    OnClick = Button2Click
   end
   object IBDataSetLED: TIBDataSet
     Database = Form1.IBDatabase1
@@ -115,28 +109,11 @@ object Form2: TForm2
       '  CHEKED = :CHEKED,'
       '  EARLY = :EARLY,'
       '  LATE = :LATE,'
-      '  MIDDLE = :MIDDLE,'
-      '  POST_INDEX = :POST_INDEX'
+      '  MIDDLE = :MIDDLE'
       'where'
       '  POST_INDEX = :OLD_POST_INDEX')
-    Left = 392
-    Top = 184
-    object IBDataSetLEDPOST_INDEX: TIBStringField
-      DisplayLabel = #1030#1085#1076#1077#1082#1089' '#1087#1086#1089#1090#1072
-      FieldName = 'POST_INDEX'
-      Origin = 'CAT_POSTM.POST_INDEX'
-      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
-      Required = True
-      FixedChar = True
-      Size = 5
-    end
-    object IBDataSetLEDCHEKED: TSmallintField
-      DisplayLabel = #1044#1086' '#1087#1088#1086#1075#1085#1086#1079#1091
-      DisplayWidth = 1
-      FieldName = 'CHEKED'
-      Origin = 'PROGNOZ_LED.CHEKED'
-      Visible = False
-    end
+    Left = 368
+    Top = 176
     object IBDataSetLEDCHK_RESULT: TStringField
       DisplayLabel = #1044#1086' '#1087#1088#1086#1075#1085#1086#1079#1091'?'
       DisplayWidth = 10
@@ -146,16 +123,13 @@ object Form2: TForm2
       LookupKeyFields = 'CC_INDEX'
       LookupResultField = 'CC_NAME'
       KeyFields = 'CHEKED'
-      OnChange = IBDataSetLEDCHK_RESULTChange
       OnGetText = IBDataSetLEDCHK_RESULTGetText
       Lookup = True
     end
-    object IBDataSetLEDCPM_NAME: TIBStringField
-      DisplayLabel = #1053#1072#1079#1074#1072' '#1087#1086#1089#1090#1072
-      DisplayWidth = 20
-      FieldName = 'CPM_NAME'
-      Origin = 'CAT_POSTM.CPM_NAME'
-      Size = 30
+    object IBDataSetLEDCHEKED: TSmallintField
+      DisplayLabel = #1044#1086' '#1087#1088#1086#1075#1085#1086#1079#1091
+      DisplayWidth = 1
+      FieldName = 'CHEKED'
     end
     object IBDataSetLEDCR_NAME: TIBStringField
       DisplayLabel = #1053#1072#1079#1074#1072' '#1088#1110#1095#1082#1080
@@ -164,25 +138,35 @@ object Form2: TForm2
       Origin = 'CAT_RIVER.CR_NAME'
       Size = 30
     end
+    object IBDataSetLEDPOST_INDEX: TIBStringField
+      FieldName = 'POST_INDEX'
+      Origin = 'CAT_POSTM.POST_INDEX'
+      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
+      Required = True
+      FixedChar = True
+      Size = 5
+    end
+    object IBDataSetLEDCPM_NAME: TIBStringField
+      FieldName = 'CPM_NAME'
+      Origin = 'CAT_POSTM.CPM_NAME'
+      Size = 30
+    end
     object IBDataSetLEDEARLY: TIBStringField
-      DisplayLabel = #1056#1072#1085#1085#1110' '#1089#1090#1088#1086#1082#1080
-      DisplayWidth = 15
+      DisplayWidth = 10
       FieldName = 'EARLY'
       Origin = 'PROGNOZ_LED.EARLY'
       FixedChar = True
       Size = 50
     end
     object IBDataSetLEDMIDDLE: TIBStringField
-      DisplayLabel = #1057#1077#1088#1077#1076#1085#1110' '#1089#1090#1088#1086#1082#1080
-      DisplayWidth = 15
+      DisplayWidth = 10
       FieldName = 'MIDDLE'
       Origin = 'PROGNOZ_LED.MIDDLE'
       FixedChar = True
       Size = 50
     end
     object IBDataSetLEDLATE: TIBStringField
-      DisplayLabel = #1055#1110#1079#1085#1110' '#1089#1090#1088#1086#1082#1080
-      DisplayWidth = 15
+      DisplayWidth = 10
       FieldName = 'LATE'
       Origin = 'PROGNOZ_LED.LATE'
       FixedChar = True
@@ -191,8 +175,8 @@ object Form2: TForm2
   end
   object DataSourceLED: TDataSource
     DataSet = IBDataSetLED
-    Left = 224
-    Top = 41
+    Left = 368
+    Top = 113
   end
   object IBQ: TIBQuery
     Left = 208
@@ -201,6 +185,7 @@ object Form2: TForm2
   object IBQueryForLKP: TIBQuery
     Database = Form1.IBDatabase1
     Transaction = Form1.IBTransaction1
+    Active = True
     SQL.Strings = (
       
         'select cc_index, cc_name from cat_classnw where cc_index=2 or (c' +
@@ -214,5 +199,286 @@ object Form2: TForm2
     object IBQueryForLKPCC_INDEX: TIntegerField
       FieldName = 'CC_INDEX'
     end
+  end
+  object IBDataSetPovBas: TIBDataSet
+    Database = Form1.IBDatabase1
+    Transaction = Form1.IBTransaction1
+    DeleteSQL.Strings = (
+      'delete from PROGNOZ_POV'
+      'where'
+      '  INDEX_OBJ = :OLD_INDEX_OBJ and'
+      '  PROGNOZ_NAME = :OLD_PROGNOZ_NAME and'
+      '  TYPE_OBJ = :OLD_TYPE_OBJ')
+    InsertSQL.Strings = (
+      'insert into PROGNOZ_POV'
+      '  (CHEKED, INDEX_OBJ, PROGNOZ_NAME, TYPE_OBJ)'
+      'values'
+      '  (:CHEKED, :INDEX_OBJ, :PROGNOZ_NAME, :TYPE_OBJ)')
+    RefreshSQL.Strings = (
+      'Select '
+      '  INDEX_OBJ,'
+      '  PROGNOZ_NAME,'
+      '  TYPE_OBJ'
+      'from PROGNOZ_POV '
+      'where'
+      '  INDEX_OBJ = :INDEX_OBJ and'
+      '  PROGNOZ_NAME = :PROGNOZ_NAME and'
+      '  TYPE_OBJ = :TYPE_OBJ')
+    SelectSQL.Strings = (
+      'select '
+      'INDEX_OBJ, '
+      '    CHEKED, '
+      '   CP_NAME, PROGNOZ_NAME, TYPE_OBJ '
+      'from PROGNOZ_POV p, CAT_POOL c '
+      
+        'where  c.POOL_ID  = p.INDEX_OBJ   and type_obj=:type_obj and pro' +
+        'gnoz_name=:prognoz_name')
+    ModifySQL.Strings = (
+      'update PROGNOZ_POV'
+      'set'
+      '  CHEKED = :CHEKED'
+      'where'
+      '  INDEX_OBJ = :OLD_INDEX_OBJ and'
+      '  PROGNOZ_NAME = :OLD_PROGNOZ_NAME and'
+      '  TYPE_OBJ = :OLD_TYPE_OBJ')
+    Left = 456
+    Top = 176
+    object StringField2: TStringField
+      DisplayLabel = #1044#1086' '#1087#1088#1086#1075#1085#1086#1079#1091'?'
+      DisplayWidth = 10
+      FieldKind = fkLookup
+      FieldName = 'CHK_RESULT'
+      LookupDataSet = IBQueryForLKP
+      LookupKeyFields = 'CC_INDEX'
+      LookupResultField = 'CC_NAME'
+      KeyFields = 'CHEKED'
+      OnGetText = StringField2GetText
+      Lookup = True
+    end
+    object IBDataSetPovBasCHEKED: TSmallintField
+      DisplayLabel = #1044#1086' '#1074#1080#1087#1091#1089#1082#1091'?'
+      FieldName = 'CHEKED'
+    end
+    object IBDataSetPovBasINDEX_OBJ: TIntegerField
+      DisplayLabel = #1030#1085#1076#1077#1082#1089
+      FieldName = 'INDEX_OBJ'
+      Origin = 'PROGNOZ_POV.INDEX_OBJ'
+      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
+      Required = True
+    end
+    object IBDataSetPovBasCP_NAME: TIBStringField
+      DisplayLabel = #1053#1072#1079#1074#1072' '#1073#1072#1089#1077#1081#1085#1072
+      FieldName = 'CP_NAME'
+      Origin = 'CAT_POOL.CP_NAME'
+      Size = 30
+    end
+    object IBDataSetPovBasPROGNOZ_NAME: TIntegerField
+      FieldName = 'PROGNOZ_NAME'
+      Origin = 'PROGNOZ_POV.PROGNOZ_NAME'
+      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
+      Required = True
+    end
+    object IBDataSetPovBasTYPE_OBJ: TIntegerField
+      FieldName = 'TYPE_OBJ'
+      Origin = 'PROGNOZ_POV.TYPE_OBJ'
+      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
+      Required = True
+    end
+  end
+  object DataSourceVD: TDataSource
+    DataSet = IBDataSetPovVd
+    Left = 536
+    Top = 113
+  end
+  object DataSourceBAS: TDataSource
+    DataSet = IBDataSetPovBas
+    Left = 456
+    Top = 113
+  end
+  object IBDataSetPovSt: TIBDataSet
+    Database = Form1.IBDatabase1
+    Transaction = Form1.IBTransaction1
+    DeleteSQL.Strings = (
+      'delete from PROGNOZ_POV'
+      'where'
+      '  CHEKED = :OLD_CHEKED and'
+      '  INDEX_OBJ = :OLD_INDEX_OBJ and'
+      '  PROGNOZ_NAME = :OLD_PROGNOZ_NAME and'
+      '  TYPE_OBJ = :OLD_TYPE_OBJ')
+    InsertSQL.Strings = (
+      'insert into PROGNOZ_POV'
+      '  (CHEKED, INDEX_OBJ, PROGNOZ_NAME, TYPE_OBJ)'
+      'values'
+      '  (:CHEKED, :INDEX_OBJ, :PROGNOZ_NAME, :TYPE_OBJ)')
+    RefreshSQL.Strings = (
+      'Select '
+      '  CHEKED,'
+      '  INDEX_OBJ,'
+      '  PROGNOZ_NAME,'
+      '  TYPE_OBJ'
+      'from PROGNOZ_POV '
+      'where'
+      '  CHEKED = :CHEKED and'
+      '  INDEX_OBJ = :INDEX_OBJ and'
+      '  PROGNOZ_NAME = :PROGNOZ_NAME and'
+      '  TYPE_OBJ = :TYPE_OBJ')
+    SelectSQL.Strings = (
+      'select '
+      ' INDEX_OBJ, '
+      '   CHEKED,'
+      '   cpm_name, '
+      '   CR_NAME, type_obj, PROGNOZ_NAME '
+      'from PROGNOZ_POV p,cat_postm c, cat_river r '
+      'where  c.POST_INDEX  = p.INDEX_OBJ and c.river_id=r.river_id  '
+      ' and type_obj = :type_obj'
+      'and prognoz_name=:prognoz_name')
+    ModifySQL.Strings = (
+      'update PROGNOZ_POV'
+      'set'
+      '  CHEKED = :CHEKED'
+      'where'
+      '  INDEX_OBJ = :OLD_INDEX_OBJ and'
+      '  PROGNOZ_NAME = :OLD_PROGNOZ_NAME and'
+      '  TYPE_OBJ = :OLD_TYPE_OBJ')
+    Left = 632
+    Top = 176
+    object IBDataSetPovStCHEKED: TSmallintField
+      FieldName = 'CHEKED'
+      Origin = 'PROGNOZ_POV.CHEKED'
+      Visible = False
+    end
+    object IBDataSetPovStChk_result: TStringField
+      DisplayLabel = #1044#1086' '#1087#1088#1086#1075#1085#1086#1079#1091'?'
+      FieldKind = fkLookup
+      FieldName = 'Chk_result'
+      LookupDataSet = IBQueryForLKP
+      LookupKeyFields = 'CC_INDEX'
+      LookupResultField = 'CC_NAME'
+      KeyFields = 'CHEKED'
+      OnGetText = IBDataSetPovStChk_resultGetText
+      Lookup = True
+    end
+    object IBDataSetPovStcpm_name: TWideStringField
+      DisplayLabel = #1053#1072#1079#1074#1072' '#1087#1086#1089#1090#1072
+      FieldName = 'cpm_name'
+    end
+    object IBDataSetPovStCR_NAME: TWideStringField
+      DisplayLabel = #1056#1110#1095#1082#1072
+      FieldName = 'CR_NAME'
+    end
+    object IBDataSetPovStINDEX_OBJ: TIntegerField
+      DisplayLabel = #1030#1085#1076#1077#1082#1089
+      FieldName = 'INDEX_OBJ'
+      Origin = 'PROGNOZ_POV.INDEX_OBJ'
+      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
+      Required = True
+    end
+    object IBDataSetPovStTYPE_OBJ: TIntegerField
+      FieldName = 'TYPE_OBJ'
+      Origin = 'PROGNOZ_POV.TYPE_OBJ'
+      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
+      Required = True
+      Visible = False
+    end
+    object IBDataSetPovStPROGNOZ_NAME: TIntegerField
+      FieldName = 'PROGNOZ_NAME'
+      Origin = 'PROGNOZ_POV.PROGNOZ_NAME'
+      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
+      Required = True
+      Visible = False
+    end
+  end
+  object IBDataSetPovVd: TIBDataSet
+    Database = Form1.IBDatabase1
+    Transaction = Form1.IBTransaction1
+    DeleteSQL.Strings = (
+      'delete from PROGNOZ_POV'
+      'where'
+      '  CHEKED = :OLD_CHEKED and'
+      '  INDEX_OBJ = :OLD_INDEX_OBJ and'
+      '  PROGNOZ_NAME = :OLD_PROGNOZ_NAME and'
+      '  TYPE_OBJ = :OLD_TYPE_OBJ')
+    InsertSQL.Strings = (
+      'insert into PROGNOZ_POV'
+      '  (CHEKED, INDEX_OBJ, PROGNOZ_NAME, TYPE_OBJ)'
+      'values'
+      '  (:CHEKED, :INDEX_OBJ, :PROGNOZ_NAME, :TYPE_OBJ)')
+    RefreshSQL.Strings = (
+      'Select '
+      '  CHEKED,'
+      '  INDEX_OBJ,'
+      '  PROGNOZ_NAME,'
+      '  TYPE_OBJ'
+      'from PROGNOZ_POV '
+      'where'
+      '  CHEKED = :CHEKED and'
+      '  INDEX_OBJ = :INDEX_OBJ and'
+      '  PROGNOZ_NAME = :PROGNOZ_NAME and'
+      '  TYPE_OBJ = :TYPE_OBJ')
+    SelectSQL.Strings = (
+      'select '
+      ' INDEX_OBJ, '
+      '   CHEKED,'
+      '   CR_NAME, type_obj, PROGNOZ_NAME '
+      'from PROGNOZ_POV p, cat_river r '
+      'where  r.RIVER_ID  = p.INDEX_OBJ '
+      ' and type_obj = :type_obj'
+      'and prognoz_name=:prognoz_name')
+    ModifySQL.Strings = (
+      'update PROGNOZ_POV'
+      'set'
+      '  CHEKED = :CHEKED'
+      'where'
+      '  INDEX_OBJ = :OLD_INDEX_OBJ and'
+      '  PROGNOZ_NAME = :OLD_PROGNOZ_NAME and'
+      '  TYPE_OBJ = :OLD_TYPE_OBJ')
+    Left = 544
+    Top = 176
+    object IBDataSetPovVdCHEKED: TSmallintField
+      FieldName = 'CHEKED'
+      Origin = 'PROGNOZ_POV.CHEKED'
+      Visible = False
+    end
+    object IBDataSetPovVdCR_NAME: TWideStringField
+      DisplayLabel = #1042#1086#1076#1086#1089#1093#1086#1074#1080#1097#1077
+      FieldName = 'CR_NAME'
+      Size = 100
+    end
+    object IBDataSetPovVdINDEX_OBJ: TIntegerField
+      DisplayLabel = #1030#1085#1076#1077#1082#1089
+      FieldName = 'INDEX_OBJ'
+      Origin = 'PROGNOZ_POV.INDEX_OBJ'
+      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
+      Required = True
+    end
+    object IBDataSetPovVdChk_result: TStringField
+      DisplayLabel = #1044#1086' '#1087#1088#1086#1075#1085#1086#1079#1091'?'
+      FieldKind = fkLookup
+      FieldName = 'Chk_result'
+      LookupDataSet = IBQueryForLKP
+      LookupKeyFields = 'CC_INDEX'
+      LookupResultField = 'CC_NAME'
+      KeyFields = 'CHEKED'
+      Lookup = True
+    end
+    object IBDataSetPovVdTYPE_OBJ: TIntegerField
+      FieldName = 'TYPE_OBJ'
+      Origin = 'PROGNOZ_POV.TYPE_OBJ'
+      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
+      Required = True
+      Visible = False
+    end
+    object IBDataSetPovVdPROGNOZ_NAME: TIntegerField
+      FieldName = 'PROGNOZ_NAME'
+      Origin = 'PROGNOZ_POV.PROGNOZ_NAME'
+      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
+      Required = True
+      Visible = False
+    end
+  end
+  object DataSourceST: TDataSource
+    DataSet = IBDataSetPovSt
+    Left = 624
+    Top = 113
   end
 end

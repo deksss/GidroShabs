@@ -16,26 +16,62 @@ type
     DataSourceLED: TDataSource;
     Button1: TButton;
     Button2: TButton;
-    IBDataSetLEDPOST_INDEX: TIBStringField;
     IBDataSetLEDCHEKED: TSmallintField;
-    IBDataSetLEDCPM_NAME: TIBStringField;
     IBDataSetLEDCR_NAME: TIBStringField;
-    IBDataSetLEDEARLY: TIBStringField;
-    IBDataSetLEDMIDDLE: TIBStringField;
-    IBDataSetLEDLATE: TIBStringField;
     IBQ: TIBQuery;
-    Label1: TLabel;
     IBQueryForLKP: TIBQuery;
     IBDataSetLEDCHK_RESULT: TStringField;
     IBQueryForLKPCC_NAME: TWideStringField;
     IBQueryForLKPCC_INDEX: TIntegerField;
+    IBDataSetPovBas: TIBDataSet;
+    StringField2: TStringField;
+    IBDataSetLEDPOST_INDEX: TIBStringField;
+    IBDataSetLEDCPM_NAME: TIBStringField;
+    IBDataSetLEDEARLY: TIBStringField;
+    IBDataSetLEDMIDDLE: TIBStringField;
+    IBDataSetLEDLATE: TIBStringField;
+    DataSourceVD: TDataSource;
+    DataSourceBAS: TDataSource;
+    IBDataSetPovBasCHEKED: TSmallintField;
+    IBDataSetPovBasINDEX_OBJ: TIntegerField;
+    IBDataSetPovBasCP_NAME: TIBStringField;
+    IBDataSetPovSt: TIBDataSet;
+    IBDataSetPovStCHEKED: TSmallintField;
+    IBDataSetPovStINDEX_OBJ: TIntegerField;
+    IBDataSetPovStPROGNOZ_NAME: TIntegerField;
+    IBDataSetPovStTYPE_OBJ: TIntegerField;
+    IBDataSetPovStChk_result: TStringField;
+    IBDataSetPovStcpm_name: TWideStringField;
+    IBDataSetPovStCR_NAME: TWideStringField;
+    IBDataSetPovVd: TIBDataSet;
+    IBDataSetPovVdCHEKED: TSmallintField;
+    IBDataSetPovVdCR_NAME: TWideStringField;
+    IBDataSetPovVdINDEX_OBJ: TIntegerField;
+    IBDataSetPovVdChk_result: TStringField;
+    IBDataSetPovVdTYPE_OBJ: TIntegerField;
+    IBDataSetPovVdPROGNOZ_NAME: TIntegerField;
+    DataSourceST: TDataSource;
+    IBDataSetPovBasPROGNOZ_NAME: TIntegerField;
+    IBDataSetPovBasTYPE_OBJ: TIntegerField;
     procedure Button1Click(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure IBDataSetLEDCHK_RESULTGetText(Sender: TField; var Text: string;
       DisplayText: Boolean);
-    procedure IBDataSetLEDCHK_RESULTChange(Sender: TField);
     procedure IBQueryForLKPCC_NAMEGetText(Sender: TField; var Text: string;
       DisplayText: Boolean);
+    procedure FormCreate(Sender: TObject);
+    procedure StringField1GetText(Sender: TField; var Text: string;
+      DisplayText: Boolean);
+    procedure IBDataSetPovStChk_resultGetText(Sender: TField;
+      var Text: string; DisplayText: Boolean);
+    procedure IBDataSetPovBasBeforeInsert(DataSet: TDataSet);
+    procedure StringField2GetText(Sender: TField; var Text: string;
+      DisplayText: Boolean);
+    procedure Button2Click(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+
+
+
   private
     { Private declarations }
   public
@@ -51,7 +87,34 @@ implementation
 
 procedure TForm2.Button1Click(Sender: TObject);
 begin
-//Form1.IBDatabase1.ApplyUpdates(IBDataSetLED);
+Form1.IBTransaction1.CommitRetaining;
+end;
+
+procedure TForm2.Button2Click(Sender: TObject);
+begin
+ Form1.IBTransaction1.Rollback ;
+end;
+
+procedure TForm2.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+   Form1.IBTransaction1.CommitRetaining;
+   IBDataSetLED.Close;
+   IBDataSetPovBas.Close;
+   IBDataSetPovSt.Close;
+   IBDataSetPovVd.Close;
+end;
+
+procedure TForm2.FormCreate(Sender: TObject);
+var
+  IBsetNum: TIBQuery;
+begin
+  IBsetNum := TIBQuery.Create(nil);
+  IBsetNum.Database := Form1.IBDatabase1;
+  IBsetNum.Transaction := Form1.IBTransaction1;
+  IBsetNum.Close;
+  IBsetNum.SQL.Text :=
+    'UPDATE PROGNOZ_LED  SET CHEKED = 2' ;
+  IBsetNum.Open;
 end;
 
 procedure TForm2.FormShow(Sender: TObject);
@@ -60,20 +123,6 @@ IBQueryForLKP.Close;
 IBQueryForLKP.Open;
 IBQueryForLKP.Close;
 IBDataSetLED.Open;
-end;
-
-procedure TForm2.IBDataSetLEDCHK_RESULTChange(Sender: TField);
-begin
-{if not Sender.IsNull then
- begin
-  if Sender.Value ='Бєлгідромет' then
-      text:='Yes'
-       else
-  if Sender.Value ='Півн.Зах.Гідромет' then
-       text:='No'
-       else
-          Text := Sender.Value;
-  end;       }
 end;
 
 procedure TForm2.IBDataSetLEDCHK_RESULTGetText(Sender: TField; var Text: string;
@@ -93,6 +142,32 @@ end;
 
 
 
+
+
+
+
+
+
+procedure TForm2.IBDataSetPovBasBeforeInsert(DataSet: TDataSet);
+begin
+//if IBDataSetPovVd.FieldByName()
+end;
+
+procedure TForm2.IBDataSetPovStChk_resultGetText(Sender: TField;
+  var Text: string; DisplayText: Boolean);
+begin
+if not Sender.IsNull then
+ begin
+  if Sender.Value ='Бєлгідромет' then
+      text:='Так'
+       else
+  if Sender.Value ='Півн.Зах.Гідромет' then
+       text:='Ні'
+       else
+          Text := Sender.Value;
+  end;
+end;
+
 procedure TForm2.IBQueryForLKPCC_NAMEGetText(Sender: TField; var Text: string;
   DisplayText: Boolean);
 begin
@@ -105,6 +180,36 @@ begin
         text:='Ні'
        else
        text:='Ні'
+  end;
+end;
+
+procedure TForm2.StringField1GetText(Sender: TField; var Text: string;
+  DisplayText: Boolean);
+begin
+if not Sender.IsNull then
+ begin
+  if Sender.Value ='Бєлгідромет' then
+      text:='Так'
+       else
+  if Sender.Value ='Півн.Зах.Гідромет' then
+       text:='Ні'
+       else
+          Text := Sender.Value;
+  end;
+end;
+
+procedure TForm2.StringField2GetText(Sender: TField; var Text: string;
+  DisplayText: Boolean);
+begin
+ if not Sender.IsNull then
+ begin
+  if Sender.Value ='Бєлгідромет' then
+      text:='Так'
+       else
+  if Sender.Value ='Півн.Зах.Гідромет' then
+       text:='Ні'
+       else
+          Text := Sender.Value;
   end;
 end;
 
