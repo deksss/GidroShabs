@@ -53,11 +53,10 @@ type
     DataSourceST: TDataSource;
     IBDataSetPovBasPROGNOZ_NAME: TIntegerField;
     IBDataSetPovBasTYPE_OBJ: TIntegerField;
+    DataSource1: TDataSource;
+    DBGrid2: TDBGrid;
     procedure Button1Click(Sender: TObject);
-    procedure FormShow(Sender: TObject);
     procedure IBDataSetLEDCHK_RESULTGetText(Sender: TField; var Text: string;
-      DisplayText: Boolean);
-    procedure IBQueryForLKPCC_NAMEGetText(Sender: TField; var Text: string;
       DisplayText: Boolean);
     procedure FormCreate(Sender: TObject);
     procedure StringField1GetText(Sender: TField; var Text: string;
@@ -69,6 +68,11 @@ type
       DisplayText: Boolean);
     procedure Button2Click(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure IBQueryForLKPCC_NAMEValidate(Sender: TField);
+    procedure IBQueryForLKPCC_NAMESetText(Sender: TField; const Text: string);
+    procedure IBQueryForLKPCC_NAMEChange(Sender: TField);
+    procedure IBQueryForLKPCC_NAMEGetText(Sender: TField; var Text: string;
+      DisplayText: Boolean);
 
 
 
@@ -115,14 +119,8 @@ begin
   IBsetNum.SQL.Text :=
     'UPDATE PROGNOZ_LED  SET CHEKED = 2' ;
   IBsetNum.Open;
-end;
-
-procedure TForm2.FormShow(Sender: TObject);
-begin
-IBQueryForLKP.Close;
+  IBQueryForLKP.Close;
 IBQueryForLKP.Open;
-IBQueryForLKP.Close;
-IBDataSetLED.Open;
 end;
 
 procedure TForm2.IBDataSetLEDCHK_RESULTGetText(Sender: TField; var Text: string;
@@ -168,18 +166,61 @@ if not Sender.IsNull then
   end;
 end;
 
+procedure TForm2.IBQueryForLKPCC_NAMEChange(Sender: TField);
+begin
+    if not Sender.IsNull then
+ begin
+  if Sender.Value ='Бєлгідромет' then
+     sender.value:='Так'
+       else
+  if Sender.Value ='Півн.Зах.Гідромет' then
+       sender.value:='Ні'
+       else
+       sender.value:='Ні'
+  end;
+end;
+
 procedure TForm2.IBQueryForLKPCC_NAMEGetText(Sender: TField; var Text: string;
   DisplayText: Boolean);
 begin
- if not Sender.IsNull then
+  if not Sender.IsNull then
  begin
   if Sender.Value ='Бєлгідромет' then
      text:='Так'
        else
   if Sender.Value ='Півн.Зах.Гідромет' then
-        text:='Ні'
+       text:='Ні'
        else
        text:='Ні'
+  end;
+end;
+
+procedure TForm2.IBQueryForLKPCC_NAMESetText(Sender: TField;
+  const Text: string);
+begin
+ if not Sender.IsNull then
+ begin
+  if Sender.Value ='Бєлгідромет' then
+     sender.value:='Так'
+       else
+  if Sender.Value ='Півн.Зах.Гідромет' then
+       sender.value:='Ні'
+       else
+       sender.value:='Ні'
+  end;
+end;
+
+procedure TForm2.IBQueryForLKPCC_NAMEValidate(Sender: TField);
+begin
+ if not Sender.IsNull then
+ begin
+  if Sender.Value ='Бєлгідромет' then
+    sender.value:='Так'
+       else
+  if Sender.Value ='Півн.Зах.Гідромет' then
+       sender.value:='Ні'
+       else
+      sender.value:='Ні'
   end;
 end;
 

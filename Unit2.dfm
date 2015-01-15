@@ -13,7 +13,6 @@ object Form2: TForm2
   OldCreateOrder = False
   OnClose = FormClose
   OnCreate = FormCreate
-  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object PanelLED: TPanel
@@ -23,8 +22,8 @@ object Form2: TForm2
     Height = 534
     TabOrder = 0
     object DBNavigator1: TDBNavigator
-      Left = 217
-      Top = 509
+      Left = 281
+      Top = 501
       Width = 240
       Height = 25
       DataSource = DataSourceLED
@@ -34,9 +33,22 @@ object Form2: TForm2
       Left = 0
       Top = 40
       Width = 825
-      Height = 463
+      Height = 321
       DataSource = DataSourceLED
       TabOrder = 1
+      TitleFont.Charset = DEFAULT_CHARSET
+      TitleFont.Color = clWindowText
+      TitleFont.Height = -11
+      TitleFont.Name = 'Tahoma'
+      TitleFont.Style = []
+    end
+    object DBGrid2: TDBGrid
+      Left = 472
+      Top = 367
+      Width = 320
+      Height = 120
+      DataSource = DataSource1
+      TabOrder = 2
       TitleFont.Charset = DEFAULT_CHARSET
       TitleFont.Color = clWindowText
       TitleFont.Height = -11
@@ -185,19 +197,22 @@ object Form2: TForm2
   object IBQueryForLKP: TIBQuery
     Database = Form1.IBDatabase1
     Transaction = Form1.IBTransaction1
-    Active = True
+    AutoCalcFields = False
     SQL.Strings = (
       
         'select cc_index, cc_name from cat_classnw where cc_index=2 or (c' +
         'c_index=6)')
     Left = 336
     Top = 328
-    object IBQueryForLKPCC_NAME: TWideStringField
-      FieldName = 'CC_NAME'
-      OnGetText = IBQueryForLKPCC_NAMEGetText
-    end
     object IBQueryForLKPCC_INDEX: TIntegerField
       FieldName = 'CC_INDEX'
+    end
+    object IBQueryForLKPCC_NAME: TWideStringField
+      FieldName = 'CC_NAME'
+      OnChange = IBQueryForLKPCC_NAMEChange
+      OnGetText = IBQueryForLKPCC_NAMEGetText
+      OnSetText = IBQueryForLKPCC_NAMESetText
+      OnValidate = IBQueryForLKPCC_NAMEValidate
     end
   end
   object IBDataSetPovBas: TIBDataSet
@@ -480,5 +495,10 @@ object Form2: TForm2
     DataSet = IBDataSetPovSt
     Left = 624
     Top = 113
+  end
+  object DataSource1: TDataSource
+    DataSet = IBQueryForLKP
+    Left = 696
+    Top = 544
   end
 end
