@@ -917,6 +917,10 @@ object Form1: TForm1
         Font.Style = []
         ImageIndex = 1
         ParentFont = False
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
       end
       object TabSheet3: TTabSheet
         Caption = #1055#1086#1087#1077#1088#1077#1076#1078#1077#1085#1085#1103
@@ -927,6 +931,10 @@ object Form1: TForm1
         Font.Style = []
         ImageIndex = 2
         ParentFont = False
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
       end
       object TabSheet4: TTabSheet
         Caption = #1064#1090#1086#1088#1084
@@ -937,6 +945,10 @@ object Form1: TForm1
         Font.Style = []
         ImageIndex = 3
         ParentFont = False
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
       end
     end
   end
@@ -954,6 +966,8 @@ object Form1: TForm1
     OnClick = RadioGroupPROGorKonClick
   end
   object IBDatabase1: TIBDatabase
+    Connected = True
+    DatabaseName = '192.168.1.5:/work/db/firebird/GIDRO_2007.GDB'
     Params.Strings = (
       'user_name=SYSDBA'
       'password=dvvdendem')
@@ -964,6 +978,7 @@ object Form1: TForm1
     Top = 512
   end
   object IBTransaction1: TIBTransaction
+    Active = True
     DefaultDatabase = IBDatabase1
     Left = 16
     Top = 560

@@ -2020,10 +2020,9 @@ begin
   if (copy(parForm, 1, 2) = 'le') then
   begin
     form2.DBGrid1.DataSource := form2.DataSourceLED;
-    form2.DBNavigator1.DataSource:= form2.DataSourceLED;
     form2.IBDataSetLED.Close;
     form2.IBDataSetLED.Open;
-
+    form2.DBNavigator1.DataSource:= form2.DataSourceLED;
   end
   else
   begin
@@ -2046,7 +2045,7 @@ begin
   form2.IBDataSetPovVd.ParamByName('prognoz_name').Asinteger := StrToInt
     ((copy(parForm, 3, 1)));
   form2.DBGrid1.DataSource := form2.DataSourceVD;
-   form2.DBNavigator1.DataSource:=  form2.DataSourceVD;
+   form2.DBNavigator1.DataSource:=     form2.DataSourceVD;
   form2.IBDataSetPovVd.Open;
   form2.Show;
 end;
@@ -2061,7 +2060,7 @@ begin
 
   form2.IBDataSetPovBas.Open;
   form2.DBGrid1.DataSource := form2.DataSourceBAS;
-    form2.DBNavigator1.DataSource:=  form2.DataSourceBAS;
+    form2.DBNavigator1.DataSource:=   form2.DataSourceBAS;
   form2.Show;
 end;
 
@@ -2298,7 +2297,7 @@ begin
   IBsetNum.SQL.Text := 'UPDATE PROGNOZ_POV SET CHEKED = 2';
 
   IBsetNum.Open;
-      //   ShowMessage('done');
+
 end;
 
 procedure TForm1.TreeView1Click(Sender: TObject);

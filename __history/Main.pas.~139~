@@ -6,7 +6,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ComCtrls, ExtCtrls, CategoryButtons, IBDatabase, DB, IBCustomDataSet,
   IBQuery, StdCtrls, CheckLst, Menus, ImgList, ShellAPI, WordXP, DateUtils,
-  Math, Grids, DBGrids, DBCtrls;
+  Math, Grids, DBGrids, DBCtrls ;
 
 type
   TForm1 = class(TForm)
@@ -130,10 +130,10 @@ type
     procedure N5Click(Sender: TObject);
     procedure FormFileClick(Sender: TObject);
     procedure Progn_pripliv;
-    procedure led;
-    procedure po1;
-    procedure po2;
-    procedure po3;
+     procedure led;
+      procedure po1;
+       procedure po2;
+        procedure po3;
     procedure Progn_gidrograf;
     procedure Progn_dnist_mon;
     procedure Progn_bok_mon;
@@ -496,19 +496,19 @@ begin
     Progn_dnist_mon
   else if parForm = 'gyd' then
     Progn_gidrograf
-  else if parForm = 'bmp' then
+     else if parForm = 'bmp' then
     Progn_bok_mon
   else
     Progn_pripliv;
 end;
-
-procedure TForm1.LedChekClick(Sender: TObject);
+ procedure TForm1.LedChekClick(Sender: TObject);
 begin
-  if LedChek.Checked then
-    DateTimePicker1.Visible := true
-  else
-    DateTimePicker1.Visible := false;
+if LedChek.Checked then
+DateTimePicker1.Visible:=true else
+ DateTimePicker1.Visible:=false;
 end;
+
+
 
 procedure TForm1.led;
 var
@@ -518,7 +518,7 @@ var
   mon_prog, year_prog, sum: integer;
   path_signature, ss: string;
 begin
-  curCol := 1;
+ curCol:=1;
 
 end;
 
@@ -530,7 +530,7 @@ var
   mon_prog, year_prog, sum: integer;
   path_signature, ss: string;
 begin
-  curCol := 1;
+ curCol:=1;
 
 end;
 
@@ -542,7 +542,7 @@ var
   mon_prog, year_prog, sum: integer;
   path_signature, ss: string;
 begin
-  curCol := 1;
+ curCol:=1;
 
 end;
 
@@ -554,9 +554,10 @@ var
   mon_prog, year_prog, sum: integer;
   path_signature, ss: string;
 begin
-  curCol := 1;
+ curCol:=1;
 
 end;
+
 
 procedure TForm1.Progn_bok_mon;
 var
@@ -631,50 +632,33 @@ begin
     WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
       EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
   end;
-  sum := 0;
+     sum:=0;
 
-  ind_st := '80021';
-  IBQZABEZP.Close;
-  IBQZABEZP.SQL.Clear;
-  IBQZABEZP.SQL.Add('select *  from q_zabezp q where q.post_index="' + ind_st +
-      '" and q.proc="' + zabezp_proc + '"');
-  IBQZABEZP.Open;
-  sum := sum + IBQZABEZP.FieldByName('Q' + IntToStr(ComboMonList.ItemIndex + 1)
-      + '').Asinteger;
-  wdUnit := '#Krem';
+        ind_st := '80021';
+        IBQZABEZP.Close;
+        IBQZABEZP.SQL.Clear;
+        IBQZABEZP.SQL.Add
+          ('select *  from q_zabezp q where q.post_index="' + ind_st +
+            '" and q.proc="' + zabezp_proc + '"');
+        IBQZABEZP.Open;
+        sum:=sum+      IBQZABEZP.FieldByName('Q' + IntToStr(ComboMonList.ItemIndex + 1) + '').Asinteger;
+   wdUnit := '#Krem';
   tmp1 := true;
   tmp2 := wdFindContinue;
-  tmp3 := IBQZABEZP.FieldByName('Q' + IntToStr(ComboMonList.ItemIndex + 1) + '')
-    .AsString;
+  tmp3 := IBQZABEZP.FieldByName('Q' + IntToStr(ComboMonList.ItemIndex + 1) + '').AsString;
   tmp4 := wdReplaceAll;
   WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
     EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
 
-  ind_st := '80029';
-  IBQZABEZP.Close;
-  IBQZABEZP.SQL.Clear;
-  IBQZABEZP.SQL.Add('select *  from q_zabezp q where q.post_index="' + ind_st +
-      '" and q.proc="' + zabezp_proc + '"');
-  IBQZABEZP.Open;
-  sum := sum + IBQZABEZP.FieldByName('Q' + IntToStr(ComboMonList.ItemIndex + 1)
-      + '').Asinteger;
-  wdUnit := '#Dniprdz';
-  tmp1 := true;
-  tmp2 := wdFindContinue;
-  tmp3 := EditNumberPrognoz.Text;
-  tmp4 := wdReplaceAll;
-  WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
-    EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
-
-  ind_st := '80039';
-  IBQZABEZP.Close;
-  IBQZABEZP.SQL.Clear;
-  IBQZABEZP.SQL.Add('select *  from q_zabezp q where q.post_index="' + ind_st +
-      '" and q.proc="' + zabezp_proc + '"');
-  IBQZABEZP.Open;
-  sum := sum + IBQZABEZP.FieldByName('Q' + IntToStr(ComboMonList.ItemIndex + 1)
-      + '').Asinteger;
-  wdUnit := '#Dnipro';
+       ind_st := '80029';
+        IBQZABEZP.Close;
+        IBQZABEZP.SQL.Clear;
+        IBQZABEZP.SQL.Add
+          ('select *  from q_zabezp q where q.post_index="' + ind_st +
+            '" and q.proc="' + zabezp_proc + '"');
+        IBQZABEZP.Open;
+             sum:=sum+      IBQZABEZP.FieldByName('Q' + IntToStr(ComboMonList.ItemIndex + 1) + '').Asinteger;
+      wdUnit := '#Dniprdz';
   tmp1 := true;
   tmp2 := wdFindContinue;
   tmp3 := EditNumberPrognoz.Text;
@@ -682,18 +666,36 @@ begin
   WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
     EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
 
-  wdUnit := '#Sum';
+       ind_st := '80039';
+        IBQZABEZP.Close;
+        IBQZABEZP.SQL.Clear;
+        IBQZABEZP.SQL.Add
+          ('select *  from q_zabezp q where q.post_index="' + ind_st +
+            '" and q.proc="' + zabezp_proc + '"');
+        IBQZABEZP.Open;
+             sum:=sum+      IBQZABEZP.FieldByName('Q' + IntToStr(ComboMonList.ItemIndex + 1) + '').Asinteger;
+      wdUnit := '#Dnipro';
   tmp1 := true;
   tmp2 := wdFindContinue;
-  tmp3 := IntToStr(sum);
+  tmp3 := EditNumberPrognoz.Text;
   tmp4 := wdReplaceAll;
   WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
     EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
 
 
-  // ...
+      wdUnit := '#Sum';
+  tmp1 := true;
+  tmp2 := wdFindContinue;
+  tmp3 := inttostr(sum);
+  tmp4 := wdReplaceAll;
+  WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+    EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
 
-  if (copy(Nach1, Pos('#', Nach1) + 1, (Length(Nach1))) = ComboBox2.Text) then
+
+   //...
+
+
+if (copy(Nach1, Pos('#', Nach1) + 1, (Length(Nach1))) = ComboBox2.Text) then
     ss := copy(Nach1, 1, Pos('#', Nach1) - 1)
   else
     ss := copy(Nach2, 1, Pos('#', Nach2) - 1);
@@ -765,7 +767,9 @@ begin
 {$ENDIF}
   Screen.Cursor := crArrow;
 
-end;
+
+  end;
+
 
 procedure TForm1.Progn_dnist_mon;
 var
@@ -788,7 +792,7 @@ begin
     me := CBmonmend.ItemIndex;
     dbeg := CBmondbeg.ItemIndex;
     dend := CBmondend.ItemIndex;
-    }  // ------------------------
+  }  // ------------------------
   Screen.Cursor := crHourGlass;
   WordApp := TWordApplication.Create(Self);
   WordApp.Connect();
@@ -821,7 +825,8 @@ begin
   if CheckBoxBerezKviten.Checked then
     tmp3 := tmp3 + ' і період березень-квітень';
 
-  tmp3 := tmp3 + ' ' + FormatDateTime('yyyy', DTProgn.Date);
+    tmp3:=tmp3 +  ' ' +   FormatDateTime
+      ('yyyy', DTProgn.Date);
   tmp4 := wdReplaceAll;
   WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
     EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
@@ -960,39 +965,45 @@ begin
       // -----------------------------------------------------------
       IBQZABEZP.Close;
       IBQZABEZP.SQL.Clear;
-      IBQZABEZP.SQL.Add(
-        'select avg(q) as q from (select Q3 as q from  q_zabezp q where q.post_index=81921'
-          + ' and q.proc="ser"' + ' union' +
-          ' select Q4 as q from  q_zabezp q where q.post_index=81921' +
-          ' and q.proc="ser") as q');
+      IBQZABEZP.SQL.Add('select avg(q) as q from (select Q3 as q from  q_zabezp q where q.post_index=81921'+
+            ' and q.proc="ser"'+
+            ' union'+
+            ' select Q4 as q from  q_zabezp q where q.post_index=81921'+
+            ' and q.proc="ser") as q');
       IBQZABEZP.Open;
-      if not IBQZABEZP.FieldByName('Q').IsNull then
+      if not IBQZABEZP.FieldByName('Q')
+        .IsNull then
         Cell(curCol, 3).Range.Text := FormatPripliv
-          (IBQZABEZP.FieldByName('Q').AsFloat);
+          (IBQZABEZP.FieldByName('Q')
+            .AsFloat);
       // -----------------------------------------------------------
       IBQZABEZP.Close;
       IBQZABEZP.SQL.Clear;
-      IBQZABEZP.SQL.Add(
-        'select min(q) as q from (select Q3 as q from  q_zabezp q where q.post_index=81921'
-          + ' and q.proc="qmin"' + ' union' +
-          ' select Q4 as q from  q_zabezp q where q.post_index=81921' +
-          ' and q.proc="qmin") as q');
+      IBQZABEZP.SQL.Add('select min(q) as q from (select Q3 as q from  q_zabezp q where q.post_index=81921'+
+            ' and q.proc="qmin"'+
+            ' union'+
+            ' select Q4 as q from  q_zabezp q where q.post_index=81921'+
+            ' and q.proc="qmin") as q');
       IBQZABEZP.Open;
-      if not IBQZABEZP.FieldByName('Q').IsNull then
+      if not IBQZABEZP.FieldByName('Q' )
+        .IsNull then
         Cell(curCol, 4).Range.Text := FormatPripliv
-          (IBQZABEZP.FieldByName('Q').AsFloat);
+          (IBQZABEZP.FieldByName('Q')
+            .AsFloat);
       // -----------------------------------------------------------
       IBQZABEZP.Close;
       IBQZABEZP.SQL.Clear;
-      IBQZABEZP.SQL.Add(
-        'select max(q) as q from (select Q3 as q from  q_zabezp q where q.post_index=81921'
-          + ' and q.proc="qmax"' + ' union' +
-          ' select Q4 as q from  q_zabezp q where q.post_index=81921' +
-          ' and q.proc="qmax") as q');
+      IBQZABEZP.SQL.Add('select max(q) as q from (select Q3 as q from  q_zabezp q where q.post_index=81921'+
+            ' and q.proc="qmax"'+
+            ' union'+
+            ' select Q4 as q from  q_zabezp q where q.post_index=81921'+
+            ' and q.proc="qmax") as q');
       IBQZABEZP.Open;
-      if not IBQZABEZP.FieldByName('Q').IsNull then
+      if not IBQZABEZP.FieldByName('Q')
+        .IsNull then
         Cell(curCol, 5).Range.Text := FormatPripliv
-          (IBQZABEZP.FieldByName('Q').AsFloat);
+          (IBQZABEZP.FieldByName('Q')
+            .AsFloat);
       // -----------------------------------------------------------
 
       IBQZABEZP.Close;
@@ -1000,11 +1011,13 @@ begin
       IBQZABEZP.SQL.Add('select *  from q_zabezp q where q.post_index="' +
           ind_st + '" and q.proc="' + zabezp_proc + '"');
       IBQZABEZP.Open;
-      if (not IBQZABEZP.FieldByName('Q3').IsNull) and
-        (not IBQZABEZP.FieldByName('Q4').IsNull) then
-        avg := IBQZABEZP.FieldByName('Q3').Asinteger + IBQZABEZP.FieldByName
-          ('Q4').Asinteger;
-      Cell(curCol, 6).Range.Text := IntToStr(avg);
+      if (not IBQZABEZP.FieldByName('Q3')
+        .IsNull) and (not IBQZABEZP.FieldByName('Q4')
+        .IsNull) then
+        avg:= IBQZABEZP.FieldByName('Q3')
+            .AsInteger+ IBQZABEZP.FieldByName('Q4')
+            .AsInteger;
+        Cell(curCol, 6).Range.Text :=inttostr(avg);
       // -----------------------------------------------------------
       IBQPripliv.Close;
       IBQPripliv.SQL.Clear;
@@ -2016,53 +2029,45 @@ end;
 procedure TForm1.ButtonRiverPostClick(Sender: TObject);
 
 begin
-  form2.Caption := 'Каталог пунктів для "' + TreeView1.Selected.Text + '"';
-  if (copy(parForm, 1, 2) = 'le') then
-  begin
-    form2.DBGrid1.DataSource := form2.DataSourceLED;
-    form2.DBNavigator1.DataSource:= form2.DataSourceLED;
-    form2.IBDataSetLED.Close;
-    form2.IBDataSetLED.Open;
-
-  end
-  else
-  begin
-    form2.IBDataSetPovSt.Close;
-    form2.IBDataSetPovSt.ParamByName('type_obj').Asinteger := 1;
-    form2.IBDataSetPovSt.ParamByName('prognoz_name').Asinteger := StrToInt
-      ((copy(parForm, 3, 1)));
-    form2.DBGrid1.DataSource := form2.DataSourceST;
-     form2.DBNavigator1.DataSource:=  form2.DataSourceST;
-    form2.IBDataSetPovSt.Open;
-  end;
-  form2.Show;
+form2.Caption:='Каталог пунктів' + TreeView1.Selected.Text;
+if  (copy(parForm, 3, 1)='le') then   begin
+ Form2.DBGrid1.DataSource:=  Form2.DataSourceLED;
+  form2.IBDataSetLED.Close;
+   form2.IBDataSetLED.open;
+end else begin
+ form2.IBDataSetPovStVd.Close;
+ form2.IBDataSetPovStVd.ParamByName('type_obj').AsInteger:=1;
+form2.IBDataSetPovStVd.ParamByName('prognoz_name').AsInteger:= strtoint((copy(parForm, 3, 1)));
+   Form2.DBGrid1.DataSource:=  Form2.DataSourceVD;
+  form2.IBDataSetPovStVd.open;
+end;
+form2.Show ;
 end;
 
 procedure TForm1.ButtonVodoshovClick(Sender: TObject);
 begin
-  form2.Caption := 'Каталог водосховищ для "' + TreeView1.Selected.Text + '"';
-  form2.IBDataSetPovVd.Close;
-  form2.IBDataSetPovVd.ParamByName('type_obj').Asinteger := 3;
-  form2.IBDataSetPovVd.ParamByName('prognoz_name').Asinteger := StrToInt
-    ((copy(parForm, 3, 1)));
-  form2.DBGrid1.DataSource := form2.DataSourceVD;
-   form2.DBNavigator1.DataSource:=  form2.DataSourceVD;
-  form2.IBDataSetPovVd.Open;
-  form2.Show;
+form2.Caption:='Каталог водосховищ для' + TreeView1.Selected.Text;
+ form2.IBDataSetPovStVd.Close;
+ form2.IBDataSetPovStVd.ParamByName('type_obj').AsInteger:=3;
+form2.IBDataSetPovStVd.ParamByName('prognoz_name').AsInteger:= strtoint((copy(parForm, 3, 1)));
+   Form2.DBGrid1.DataSource:=  Form2.DataSourceVD;
+  form2.IBDataSetPovStVd.open;
+  form2.Show ;
 end;
 
 procedure TForm1.ButtonBasClick(Sender: TObject);
 begin
-  form2.Caption := 'Каталог басейнів для "' + TreeView1.Selected.Text + '"';
-  form2.IBDataSetPovBas.Close;
-  form2.IBDataSetPovBas.ParamByName('type_obj').Asinteger := 2;
-  form2.IBDataSetPovBas.ParamByName('prognoz_name').Asinteger := StrToInt
-    ((copy(parForm, 3, 1)));
+form2.Caption:='Каталог басейнів для' + TreeView1.Selected.Text;
+form2.IBDataSetPovBas.Close;
+form2.IBDataSetPovBas.ParamByName('type_obj').AsInteger:=2;
+form2.IBDataSetPovBas.ParamByName('prognoz_name').AsInteger:= strtoint((copy(parForm, 3, 1)));
 
-  form2.IBDataSetPovBas.Open;
-  form2.DBGrid1.DataSource := form2.DataSourceBAS;
-    form2.DBNavigator1.DataSource:=  form2.DataSourceBAS;
-  form2.Show;
+ form2.IBDataSetPovBas.open;
+Form2.DBGrid1.DataSource:=  Form2.DataSourceBAS;
+
+
+
+form2.Show ;
 end;
 
 procedure TForm1.ButtonNumberPrognozClick(Sender: TObject);
@@ -2074,16 +2079,16 @@ begin
   IBsetNum.Transaction := IBTransaction1;
   IBsetNum.Close;
   IBsetNum.SQL.Text :=
-    'UPDATE PROGNPERIOD  SET NUMVIPUSK =' + EditNumberPrognoz.Text;
-  // +
-  // 'WHERE NPERIOD =' + IntToStr(TreeView1.Selected.StateIndex);
+    'UPDATE PROGNPERIOD  SET NUMVIPUSK =' + EditNumberPrognoz.Text ;
+    //+
+  //  'WHERE NPERIOD =' + IntToStr(TreeView1.Selected.StateIndex);
   IBsetNum.Open;
 
 end;
 
 procedure TForm1.ButtonProgPunktClick(Sender: TObject);
 begin
-  form2.Caption := 'Каталог прогнозпунктів для ' + TreeView1.Selected.Text;
+form2.Caption:='Каталог прогнозпунктів для ' + TreeView1.Selected.Text;
 end;
 
 procedure TForm1.CBDekedaClick(Sender: TObject);
@@ -2236,7 +2241,7 @@ begin
   while (not IBPrognObj.Eof) do
   begin
     if not IBPrognObj.FieldByName('NOBJ').IsNull then
-      nobj := IBPrognObj.FieldByName('NOBJ').Asinteger
+      nobj := IBPrognObj.FieldByName('NOBJ').AsInteger
     else
       nobj := 0;
     if not IBPrognObj.FieldByName('OBJ').IsNull then
@@ -2259,7 +2264,7 @@ begin
     begin
       MyTreeNode2 := TreeView1.Items.AddChild
         (MyTreeNode1, IBPrognPeriod.FieldByName('PERIOD').AsString);
-      MyTreeNode2.StateIndex := IBPrognPeriod.FieldByName('NPERIOD').Asinteger;
+      MyTreeNode2.StateIndex := IBPrognPeriod.FieldByName('NPERIOD').AsInteger;
       IBPrognPeriod.Next;
     end;
     IBPrognPeriod.Free;
@@ -2271,34 +2276,38 @@ begin
   FormClear();
   TreeView1.FullExpand;
 
-  CheckListBoxLED.Checked[0] := true;
-  CheckListBoxLED.Checked[1] := true;
-  CheckListBoxLED.Checked[2] := true;
+  CheckListBoxLED.Checked[0]:=true;
+   CheckListBoxLED.Checked[1]:=true;
+    CheckListBoxLED.Checked[2]:=true;
 
-  CheckListBoxPo1.Checked[0] := true;
-  CheckListBoxPo1.Checked[1] := true;
-  CheckListBoxPo1.Checked[2] := true;
+    CheckListBoxPo1.Checked[0]:=true;
+   CheckListBoxPo1.Checked[1]:=true;
+    CheckListBoxPo1.Checked[2]:=true;
 
-  CheckListBoxPO2.Checked[0] := true;
-  CheckListBoxPO2.Checked[1] := true;
-  CheckListBoxPO2.Checked[2] := true;
+    CheckListBoxPo2.Checked[0]:=true;
+   CheckListBoxPo2.Checked[1]:=true;
+    CheckListBoxPo2.Checked[2]:=true;
 
-  IBsetNum := TIBQuery.Create(nil);
+
+ IBsetNum := TIBQuery.Create(nil);
   IBsetNum.Database := IBDatabase1;
   IBsetNum.Transaction := IBTransaction1;
   IBsetNum.Close;
-  IBsetNum.SQL.Text := 'UPDATE PROGNOZ_LED SET CHEKED = 2';
+  IBsetNum.SQL.Text :=
+    'UPDATE PROGNOZ_LED SET CHEKED = 2' ;
 
   IBsetNum.Open;
 
-  IBsetNum := TIBQuery.Create(nil);
+IBsetNum := TIBQuery.Create(nil);
   IBsetNum.Database := IBDatabase1;
   IBsetNum.Transaction := IBTransaction1;
   IBsetNum.Close;
-  IBsetNum.SQL.Text := 'UPDATE PROGNOZ_POV SET CHEKED = 2';
+  IBsetNum.SQL.Text :=
+    'UPDATE PROGNOZ_POV SET CHEKED = 2' ;
 
   IBsetNum.Open;
-      //   ShowMessage('done');
+
+
 end;
 
 procedure TForm1.TreeView1Click(Sender: TObject);
@@ -2412,7 +2421,7 @@ begin
   end;
   // ----------------------
   PanelDec.Visible := false;
-  RadioGroupPROGorKon.Visible := false;
+   RadioGroupPROGorKon.Visible :=false;
   RadioGroupPROGorKon.Visible := false;
   CheckBoxBerezKviten.Visible := false;
   CBDekeda.Checked := false;
@@ -2476,10 +2485,9 @@ begin
       parForm := IBViewForm.FieldByName('PARAM').AsString;
       // ------------------------------------------------------------------------
 
-      if (parForm = 'le1') or (parForm = 'le2') or (parForm = 'le3') or
-        (parForm = 'le4') then
+       if (parForm = 'le1') or (parForm = 'le2') or (parForm ='le3') or (parForm ='le4') then
       begin
-        PanelLedPov.Visible := true;
+      PanelLedPov.Visible := true;
 
         CheckBoxBerezKviten.Visible := false;
         PanelMon.Visible := false;
@@ -2490,22 +2498,23 @@ begin
         CBMonPer.Checked := false;
         CBMonPer.Visible := false;
         PanelZabezp.Visible := false;
-        CheckListBoxLED.Visible := true;
-        CheckListBoxPo1.Visible := false;
-        CheckListBoxPO2.Visible := false;
-        ButtonRiverPost.Visible := true;
-        ButtonProgPunkt.Visible := false;
-        ButtonBas.Visible := false;
-        ButtonVodoshov.Visible := false;
-        CheckBoxProgn.Visible := false;
-        CheckBoxText.Visible := false;
-        CheckBoxText.Visible := false;
+          CheckListBoxLED.Visible:=true;
+          CheckListBoxPo1.Visible := false;
+           CheckListBoxPo2.Visible := false;
+           ButtonRiverPost.Visible:=true;
+           ButtonProgPunkt.Visible:=false;
+           ButtonBas.Visible:=false;
+           ButtonVodoshov.Visible:=false;
+           CheckBoxProgn.Visible:=false;
+           CheckBoxText.Visible:=false;
+           CheckBoxText.Visible:=false;
 
-      end
-      else if parForm = 'po1' then
+         end
+       else
+      if parForm = 'po1' then
       begin
-        PanelLedPov.Visible := true;
-        CheckBoxBerezKviten.Visible := false;
+         PanelLedPov.Visible := true;
+            CheckBoxBerezKviten.Visible := false;
         PanelMon.Visible := false;
         CBMonList.Checked := false;
         UtochMonList.Visible := false;
@@ -2514,21 +2523,22 @@ begin
         CBMonPer.Checked := false;
         CBMonPer.Visible := false;
         PanelZabezp.Visible := false;
-        CheckListBoxLED.Visible := false;
-        CheckListBoxPo1.Visible := true;
-        CheckListBoxPO2.Visible := false;
-        ButtonRiverPost.Visible := true;
-        ButtonProgPunkt.Visible := false;
-        ButtonVodoshov.Visible := false;
-        ButtonBas.Visible := true;
-        CheckBoxProgn.Visible := false;
-        CheckBoxText.Visible := true;
+          CheckListBoxLED.Visible:=false;
+          CheckListBoxPo1.Visible := true;
+           CheckListBoxPo2.Visible := false;
+           ButtonRiverPost.Visible:=true;
+           ButtonProgPunkt.Visible:=false;
+           ButtonVodoshov.Visible:=false;
+           ButtonBas.Visible:=true;
+               CheckBoxProgn.Visible:=false;
+                 CheckBoxText.Visible:=true;
       end
 
-      else if parForm = 'po2' then
+       else
+      if parForm = 'po2' then
       begin
-        PanelLedPov.Visible := true;
-        CheckBoxBerezKviten.Visible := false;
+         PanelLedPov.Visible := true;
+            CheckBoxBerezKviten.Visible := false;
         PanelMon.Visible := false;
         CBMonList.Checked := false;
         UtochMonList.Visible := false;
@@ -2537,22 +2547,23 @@ begin
         CBMonPer.Checked := false;
         CBMonPer.Visible := false;
         PanelZabezp.Visible := true;
-        CheckListBoxLED.Visible := false;
-        CheckListBoxPo1.Visible := false;
-        CheckListBoxPO2.Visible := true;
-        ButtonRiverPost.Visible := true;
-        ButtonProgPunkt.Visible := false;
-        ButtonVodoshov.Visible := true;
+          CheckListBoxLED.Visible:=false;
+          CheckListBoxPo1.Visible := false;
+           CheckListBoxPo2.Visible := true;
+           ButtonRiverPost.Visible:=true;
+           ButtonProgPunkt.Visible:=false;
+           ButtonVodoshov.Visible:=true;
 
-        ButtonBas.Visible := true;
-        CheckBoxProgn.Visible := false;
-        CheckBoxText.Visible := false;
+           ButtonBas.Visible:=true;
+               CheckBoxProgn.Visible:=false;
+                 CheckBoxText.Visible:=false;
       end
 
-      else if parForm = 'po3' then
+             else
+      if parForm = 'po3' then
       begin
-        PanelLedPov.Visible := true;
-        CheckBoxBerezKviten.Visible := false;
+         PanelLedPov.Visible := true;
+            CheckBoxBerezKviten.Visible := false;
         PanelMon.Visible := false;
         CBMonList.Checked := false;
         UtochMonList.Visible := false;
@@ -2561,21 +2572,22 @@ begin
         CBMonPer.Checked := false;
         CBMonPer.Visible := false;
         PanelZabezp.Visible := true;
-        CheckListBoxLED.Visible := false;
-        CheckListBoxPo1.Visible := false;
-        CheckListBoxPO2.Visible := true;
-        ButtonRiverPost.Visible := true;
-        ButtonProgPunkt.Visible := false;
-        ButtonVodoshov.Visible := false;
+          CheckListBoxLED.Visible:=false;
+          CheckListBoxPo1.Visible := false;
+           CheckListBoxPo2.Visible := true;
+           ButtonRiverPost.Visible:=true;
+           ButtonProgPunkt.Visible:=false;
+           ButtonVodoshov.Visible:=false;
 
-        ButtonBas.Visible := false;
-        CheckBoxProgn.Visible := true;
-        CheckBoxText.Visible := true;
+           ButtonBas.Visible:=false;
+               CheckBoxProgn.Visible:=true;
+                 CheckBoxText.Visible:=true;
       end
 
-      else if parForm = 'dmp' then
+       else
+      if parForm = 'dmp' then
       begin
-        PanelLedPov.Visible := false;
+          PanelLedPov.Visible :=  false;
         RadioGroupPROGorKon.Visible := true;
         CheckBoxBerezKviten.Visible := true;
         PanelMon.Visible := true;
@@ -2590,18 +2602,19 @@ begin
 
       else if parForm = 'bmp' then
       begin
-        PanelLedPov.Visible := false;
+                            PanelLedPov.Visible  := false;
         PanelMon.Visible := true;
         CBMonList.Checked := true;
         UtochMonList.Visible := true;
         ComboMonList.Visible := true;
-        CBMonPer.Visible := false;
+        CBMonPer.Visible:=false;
         PanelZabezp.Visible := true;
       end
 
+
       else if parForm = 'gyd' then
       begin
-        PanelLedPov.Visible := false;
+          PanelLedPov.Visible := false;
         Panel7.Visible := true;
         CBmondbeg.Visible := true;
         CBmonmbeg.Visible := true;
@@ -2617,7 +2630,7 @@ begin
         // ----decada------
         if copy(parForm, 1, 1) = '1' then
         begin
-          PanelLedPov.Visible := false;
+            PanelLedPov.Visible  := false;
           PanelDec.Visible := true;
           CBDekeda.Checked := true;
           RadioDeckList.Visible := true;
@@ -2627,7 +2640,7 @@ begin
         end
         else
         begin
-          PanelLedPov.Visible := false;
+            PanelLedPov.Visible  := false;
           PanelDec.Visible := false;
           CBDekeda.Checked := false;
           UtochDecada.Checked := false;
@@ -2637,7 +2650,7 @@ begin
         // ----month------
         if copy(parForm, 2, 1) = '1' then
         begin
-          PanelLedPov.Visible := false;
+            PanelLedPov.Visible := false;
           PanelMon.Visible := true;
           CBMonList.Checked := true;
           CBMonPer.Visible := true;
@@ -2648,7 +2661,7 @@ begin
         end
         else
         begin
-          PanelLedPov.Visible := false;
+            PanelLedPov.Visible := false;
           PanelMon.Visible := false;
           CBMonList.Checked := false;
           UtochMonList.Checked := false;
@@ -2660,7 +2673,7 @@ begin
         // ----kvartal------
         if copy(parForm, 3, 1) = '1' then
         begin
-          PanelLedPov.Visible := false;
+            PanelLedPov.Visible := false;
           PanelKvart.Visible := true;
           CBKvartList.Checked := true;
           RadioKvartList.Visible := true;
@@ -2771,7 +2784,7 @@ begin
   while (not IBPrognObj.Eof) do
   begin
     if not IBPrognObj.FieldByName('NOBJ').IsNull then
-      nobj := IBPrognObj.FieldByName('NOBJ').Asinteger
+      nobj := IBPrognObj.FieldByName('NOBJ').AsInteger
     else
       nobj := 0;
     if not IBPrognObj.FieldByName('OBJ').IsNull then
@@ -2794,7 +2807,7 @@ begin
     begin
       MyTreeNode2 := TreeView1.Items.AddChild
         (MyTreeNode1, IBPrognPeriod.FieldByName('PERIOD').AsString);
-      MyTreeNode2.StateIndex := IBPrognPeriod.FieldByName('NPERIOD').Asinteger;
+      MyTreeNode2.StateIndex := IBPrognPeriod.FieldByName('NPERIOD').AsInteger;
       IBPrognPeriod.Next;
     end;
     IBPrognPeriod.Free;

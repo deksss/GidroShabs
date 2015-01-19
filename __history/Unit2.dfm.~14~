@@ -3,7 +3,7 @@ object Form2: TForm2
   Top = 0
   Caption = #1050#1072#1090#1072#1083#1086#1075' '#1089#1090#1072#1085#1094#1110#1081' '#1076#1083#1103' '#1087#1088#1086#1075#1085#1086#1079#1091' "'#1051#1100#1086#1076#1086#1074#1080#1081'" '
   ClientHeight = 575
-  ClientWidth = 728
+  ClientWidth = 860
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -13,17 +13,18 @@ object Form2: TForm2
   OldCreateOrder = False
   OnClose = FormClose
   OnCreate = FormCreate
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object PanelLED: TPanel
     Left = 8
     Top = 8
-    Width = 713
+    Width = 833
     Height = 534
     TabOrder = 0
     object DBNavigator1: TDBNavigator
       Left = 217
-      Top = 501
+      Top = 509
       Width = 240
       Height = 25
       DataSource = DataSourceLED
@@ -32,8 +33,8 @@ object Form2: TForm2
     object DBGrid1: TDBGrid
       Left = 0
       Top = 40
-      Width = 705
-      Height = 455
+      Width = 825
+      Height = 463
       DataSource = DataSourceLED
       TabOrder = 1
       TitleFont.Charset = DEFAULT_CHARSET
@@ -86,6 +87,10 @@ object Form2: TForm2
       '  CHEKED'
       'from PROGNOZ_LED '
       'where'
+      '  CHEKED = :CHEKED and'
+      '  EARLY = :EARLY and'
+      '  LATE = :LATE and'
+      '  MIDDLE = :MIDDLE and'
       '  POST_INDEX = :POST_INDEX')
     SelectSQL.Strings = (
       'select'
@@ -125,22 +130,6 @@ object Form2: TForm2
       DisplayLabel = #1044#1086' '#1087#1088#1086#1075#1085#1086#1079#1091
       DisplayWidth = 1
       FieldName = 'CHEKED'
-      Visible = False
-    end
-    object IBDataSetLEDPOST_INDEX: TIBStringField
-      DisplayLabel = #1030#1085#1076#1077#1082#1089' '#1087#1086#1089#1090#1072
-      FieldName = 'POST_INDEX'
-      Origin = 'CAT_POSTM.POST_INDEX'
-      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
-      Required = True
-      FixedChar = True
-      Size = 5
-    end
-    object IBDataSetLEDCPM_NAME: TIBStringField
-      DisplayLabel = #1053#1072#1079#1074#1072' '#1087#1086#1089#1090#1072
-      FieldName = 'CPM_NAME'
-      Origin = 'CAT_POSTM.CPM_NAME'
-      Size = 30
     end
     object IBDataSetLEDCR_NAME: TIBStringField
       DisplayLabel = #1053#1072#1079#1074#1072' '#1088#1110#1095#1082#1080
@@ -149,8 +138,20 @@ object Form2: TForm2
       Origin = 'CAT_RIVER.CR_NAME'
       Size = 30
     end
+    object IBDataSetLEDPOST_INDEX: TIBStringField
+      FieldName = 'POST_INDEX'
+      Origin = 'CAT_POSTM.POST_INDEX'
+      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
+      Required = True
+      FixedChar = True
+      Size = 5
+    end
+    object IBDataSetLEDCPM_NAME: TIBStringField
+      FieldName = 'CPM_NAME'
+      Origin = 'CAT_POSTM.CPM_NAME'
+      Size = 30
+    end
     object IBDataSetLEDEARLY: TIBStringField
-      DisplayLabel = #1056#1072#1085#1085#1110' '#1089#1090#1088#1086#1082#1080
       DisplayWidth = 10
       FieldName = 'EARLY'
       Origin = 'PROGNOZ_LED.EARLY'
@@ -158,7 +159,6 @@ object Form2: TForm2
       Size = 50
     end
     object IBDataSetLEDMIDDLE: TIBStringField
-      DisplayLabel = #1057#1077#1088#1077#1076#1085#1110' '#1089#1090#1088#1086#1082#1080
       DisplayWidth = 10
       FieldName = 'MIDDLE'
       Origin = 'PROGNOZ_LED.MIDDLE'
@@ -166,7 +166,6 @@ object Form2: TForm2
       Size = 50
     end
     object IBDataSetLEDLATE: TIBStringField
-      DisplayLabel = #1055#1110#1079#1085#1110' '#1089#1090#1088#1086#1082#1080
       DisplayWidth = 10
       FieldName = 'LATE'
       Origin = 'PROGNOZ_LED.LATE'
@@ -186,28 +185,24 @@ object Form2: TForm2
   object IBQueryForLKP: TIBQuery
     Database = Form1.IBDatabase1
     Transaction = Form1.IBTransaction1
-    AutoCalcFields = False
+    Active = True
     SQL.Strings = (
       
         'select cc_index, cc_name from cat_classnw where cc_index=2 or (c' +
         'c_index=6)')
     Left = 336
     Top = 328
-    object IBQueryForLKPCC_INDEX: TIntegerField
-      FieldName = 'CC_INDEX'
-    end
     object IBQueryForLKPCC_NAME: TWideStringField
       FieldName = 'CC_NAME'
-      OnChange = IBQueryForLKPCC_NAMEChange
       OnGetText = IBQueryForLKPCC_NAMEGetText
-      OnSetText = IBQueryForLKPCC_NAMESetText
-      OnValidate = IBQueryForLKPCC_NAMEValidate
+    end
+    object IBQueryForLKPCC_INDEX: TIntegerField
+      FieldName = 'CC_INDEX'
     end
   end
   object IBDataSetPovBas: TIBDataSet
     Database = Form1.IBDatabase1
     Transaction = Form1.IBTransaction1
-    BeforePost = IBDataSetPovBasBeforePost
     DeleteSQL.Strings = (
       'delete from PROGNOZ_POV'
       'where'
@@ -263,7 +258,6 @@ object Form2: TForm2
     object IBDataSetPovBasCHEKED: TSmallintField
       DisplayLabel = #1044#1086' '#1074#1080#1087#1091#1089#1082#1091'?'
       FieldName = 'CHEKED'
-      Visible = False
     end
     object IBDataSetPovBasINDEX_OBJ: TIntegerField
       DisplayLabel = #1030#1085#1076#1077#1082#1089
@@ -283,14 +277,12 @@ object Form2: TForm2
       Origin = 'PROGNOZ_POV.PROGNOZ_NAME'
       ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
       Required = True
-      Visible = False
     end
     object IBDataSetPovBasTYPE_OBJ: TIntegerField
       FieldName = 'TYPE_OBJ'
       Origin = 'PROGNOZ_POV.TYPE_OBJ'
       ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
       Required = True
-      Visible = False
     end
   end
   object DataSourceVD: TDataSource
@@ -306,7 +298,6 @@ object Form2: TForm2
   object IBDataSetPovSt: TIBDataSet
     Database = Form1.IBDatabase1
     Transaction = Form1.IBTransaction1
-    BeforePost = IBDataSetPovStBeforePost
     DeleteSQL.Strings = (
       'delete from PROGNOZ_POV'
       'where'
@@ -351,6 +342,11 @@ object Form2: TForm2
       '  TYPE_OBJ = :OLD_TYPE_OBJ')
     Left = 632
     Top = 176
+    object IBDataSetPovStCHEKED: TSmallintField
+      FieldName = 'CHEKED'
+      Origin = 'PROGNOZ_POV.CHEKED'
+      Visible = False
+    end
     object IBDataSetPovStChk_result: TStringField
       DisplayLabel = #1044#1086' '#1087#1088#1086#1075#1085#1086#1079#1091'?'
       FieldKind = fkLookup
@@ -362,18 +358,6 @@ object Form2: TForm2
       OnGetText = IBDataSetPovStChk_resultGetText
       Lookup = True
     end
-    object IBDataSetPovStCHEKED: TSmallintField
-      FieldName = 'CHEKED'
-      Origin = 'PROGNOZ_POV.CHEKED'
-      Visible = False
-    end
-    object IBDataSetPovStINDEX_OBJ: TIntegerField
-      DisplayLabel = #1030#1085#1076#1077#1082#1089
-      FieldName = 'INDEX_OBJ'
-      Origin = 'PROGNOZ_POV.INDEX_OBJ'
-      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
-      Required = True
-    end
     object IBDataSetPovStcpm_name: TWideStringField
       DisplayLabel = #1053#1072#1079#1074#1072' '#1087#1086#1089#1090#1072
       FieldName = 'cpm_name'
@@ -381,6 +365,13 @@ object Form2: TForm2
     object IBDataSetPovStCR_NAME: TWideStringField
       DisplayLabel = #1056#1110#1095#1082#1072
       FieldName = 'CR_NAME'
+    end
+    object IBDataSetPovStINDEX_OBJ: TIntegerField
+      DisplayLabel = #1030#1085#1076#1077#1082#1089
+      FieldName = 'INDEX_OBJ'
+      Origin = 'PROGNOZ_POV.INDEX_OBJ'
+      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
+      Required = True
     end
     object IBDataSetPovStTYPE_OBJ: TIntegerField
       FieldName = 'TYPE_OBJ'
@@ -400,7 +391,6 @@ object Form2: TForm2
   object IBDataSetPovVd: TIBDataSet
     Database = Form1.IBDatabase1
     Transaction = Form1.IBTransaction1
-    BeforePost = IBDataSetPovVdBeforePost
     DeleteSQL.Strings = (
       'delete from PROGNOZ_POV'
       'where'
@@ -444,17 +434,6 @@ object Form2: TForm2
       '  TYPE_OBJ = :OLD_TYPE_OBJ')
     Left = 544
     Top = 176
-    object IBDataSetPovVdChk_result: TStringField
-      DisplayLabel = #1044#1086' '#1087#1088#1086#1075#1085#1086#1079#1091'?'
-      FieldKind = fkLookup
-      FieldName = 'Chk_result'
-      LookupDataSet = IBQueryForLKP
-      LookupKeyFields = 'CC_INDEX'
-      LookupResultField = 'CC_NAME'
-      KeyFields = 'CHEKED'
-      OnGetText = IBDataSetPovVdChk_resultGetText
-      Lookup = True
-    end
     object IBDataSetPovVdCHEKED: TSmallintField
       FieldName = 'CHEKED'
       Origin = 'PROGNOZ_POV.CHEKED'
@@ -472,14 +451,22 @@ object Form2: TForm2
       ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
       Required = True
     end
+    object IBDataSetPovVdChk_result: TStringField
+      DisplayLabel = #1044#1086' '#1087#1088#1086#1075#1085#1086#1079#1091'?'
+      FieldKind = fkLookup
+      FieldName = 'Chk_result'
+      LookupDataSet = IBQueryForLKP
+      LookupKeyFields = 'CC_INDEX'
+      LookupResultField = 'CC_NAME'
+      KeyFields = 'CHEKED'
+      Lookup = True
+    end
     object IBDataSetPovVdTYPE_OBJ: TIntegerField
       FieldName = 'TYPE_OBJ'
       Origin = 'PROGNOZ_POV.TYPE_OBJ'
       ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
       Required = True
       Visible = False
-      OnSetText = IBDataSetPovVdTYPE_OBJSetText
-      OnValidate = IBDataSetPovVdTYPE_OBJValidate
     end
     object IBDataSetPovVdPROGNOZ_NAME: TIntegerField
       FieldName = 'PROGNOZ_NAME'
@@ -487,18 +474,11 @@ object Form2: TForm2
       ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
       Required = True
       Visible = False
-      OnSetText = IBDataSetPovVdPROGNOZ_NAMESetText
-      OnValidate = IBDataSetPovVdPROGNOZ_NAMEValidate
     end
   end
   object DataSourceST: TDataSource
     DataSet = IBDataSetPovSt
     Left = 624
     Top = 113
-  end
-  object DataSource1: TDataSource
-    DataSet = IBQueryForLKP
-    Left = 696
-    Top = 544
   end
 end

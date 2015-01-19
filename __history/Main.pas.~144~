@@ -2298,7 +2298,7 @@ begin
   IBsetNum.SQL.Text := 'UPDATE PROGNOZ_POV SET CHEKED = 2';
 
   IBsetNum.Open;
-      //   ShowMessage('done');
+
 end;
 
 procedure TForm1.TreeView1Click(Sender: TObject);

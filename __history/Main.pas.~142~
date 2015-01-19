@@ -2017,13 +2017,11 @@ procedure TForm1.ButtonRiverPostClick(Sender: TObject);
 
 begin
   form2.Caption := 'Каталог пунктів для "' + TreeView1.Selected.Text + '"';
-  if (copy(parForm, 1, 2) = 'le') then
+  if (copy(parForm, 3, 1) = 'le') then
   begin
     form2.DBGrid1.DataSource := form2.DataSourceLED;
-    form2.DBNavigator1.DataSource:= form2.DataSourceLED;
     form2.IBDataSetLED.Close;
     form2.IBDataSetLED.Open;
-
   end
   else
   begin
@@ -2032,7 +2030,6 @@ begin
     form2.IBDataSetPovSt.ParamByName('prognoz_name').Asinteger := StrToInt
       ((copy(parForm, 3, 1)));
     form2.DBGrid1.DataSource := form2.DataSourceST;
-     form2.DBNavigator1.DataSource:=  form2.DataSourceST;
     form2.IBDataSetPovSt.Open;
   end;
   form2.Show;
@@ -2046,7 +2043,6 @@ begin
   form2.IBDataSetPovVd.ParamByName('prognoz_name').Asinteger := StrToInt
     ((copy(parForm, 3, 1)));
   form2.DBGrid1.DataSource := form2.DataSourceVD;
-   form2.DBNavigator1.DataSource:=  form2.DataSourceVD;
   form2.IBDataSetPovVd.Open;
   form2.Show;
 end;
@@ -2061,7 +2057,6 @@ begin
 
   form2.IBDataSetPovBas.Open;
   form2.DBGrid1.DataSource := form2.DataSourceBAS;
-    form2.DBNavigator1.DataSource:=  form2.DataSourceBAS;
   form2.Show;
 end;
 
@@ -2298,7 +2293,7 @@ begin
   IBsetNum.SQL.Text := 'UPDATE PROGNOZ_POV SET CHEKED = 2';
 
   IBsetNum.Open;
-      //   ShowMessage('done');
+
 end;
 
 procedure TForm1.TreeView1Click(Sender: TObject);

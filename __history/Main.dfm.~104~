@@ -12,7 +12,6 @@ object Form1: TForm1
   Font.Style = []
   Menu = MainMenu1
   OldCreateOrder = False
-  Visible = True
   OnClose = FormClose
   OnCreate = FormCreate
   PixelsPerInch = 96
@@ -180,6 +179,8 @@ object Form1: TForm1
           Height = 560
           Align = alClient
           TabOrder = 1
+          ExplicitLeft = 273
+          ExplicitWidth = 745
           object PanelDec: TPanel
             Left = 499
             Top = 4
@@ -885,7 +886,6 @@ object Form1: TForm1
               Height = 37
               Caption = #1055#1088#1086#1075#1085#1086#1079#1087#1091#1085#1082#1090#1080
               TabOrder = 8
-              OnClick = ButtonProgPunktClick
             end
             object CheckBoxText: TCheckBox
               Left = 264
@@ -954,6 +954,8 @@ object Form1: TForm1
     OnClick = RadioGroupPROGorKonClick
   end
   object IBDatabase1: TIBDatabase
+    Connected = True
+    DatabaseName = '192.168.1.5:/work/db/firebird/GIDRO_2007.GDB'
     Params.Strings = (
       'user_name=SYSDBA'
       'password=dvvdendem')
@@ -964,6 +966,7 @@ object Form1: TForm1
     Top = 512
   end
   object IBTransaction1: TIBTransaction
+    Active = True
     DefaultDatabase = IBDatabase1
     Left = 16
     Top = 560

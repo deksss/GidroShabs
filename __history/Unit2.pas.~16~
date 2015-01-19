@@ -76,14 +76,6 @@ type
       DisplayText: Boolean);
     procedure IBDataSetPovVdChk_resultGetText(Sender: TField; var Text: string;
       DisplayText: Boolean);
-    procedure IBDataSetPovVdPROGNOZ_NAMEValidate(Sender: TField);
-    procedure IBDataSetPovVdTYPE_OBJValidate(Sender: TField);
-    procedure IBDataSetPovVdPROGNOZ_NAMESetText(Sender: TField;
-      const Text: string);
-    procedure IBDataSetPovVdTYPE_OBJSetText(Sender: TField; const Text: string);
-    procedure IBDataSetPovVdBeforePost(DataSet: TDataSet);
-    procedure IBDataSetPovBasBeforePost(DataSet: TDataSet);
-    procedure IBDataSetPovStBeforePost(DataSet: TDataSet);
 
 
 
@@ -162,18 +154,6 @@ begin
 //if IBDataSetPovVd.FieldByName()
 end;
 
-procedure TForm2.IBDataSetPovBasBeforePost(DataSet: TDataSet);
-begin
-IBDataSetPovBas.FieldByName('TYPE_OBJ').Value:=2;
- IBDataSetPovBas.FieldByName('PROGNOZ_NAME').Value:=(copy(parForm, 3, 1));
-end;
-
-procedure TForm2.IBDataSetPovStBeforePost(DataSet: TDataSet);
-begin
-IBDataSetPovST.FieldByName('TYPE_OBJ').Value:=1;
- IBDataSetPovST.FieldByName('PROGNOZ_NAME').Value:=(copy(parForm, 3, 1));
-end;
-
 procedure TForm2.IBDataSetPovStChk_resultGetText(Sender: TField;
   var Text: string; DisplayText: Boolean);
 begin
@@ -187,14 +167,6 @@ if not Sender.IsNull then
        else
           Text := Sender.Value;
   end;
-end;
-
-procedure TForm2.IBDataSetPovVdBeforePost(DataSet: TDataSet);
-var str:string; vr:Variant;
-begin
-
- IBDataSetPovVd.FieldByName('TYPE_OBJ').Value:=3;
- IBDataSetPovVd.FieldByName('PROGNOZ_NAME').Value:=(copy(parForm, 3, 1));
 end;
 
 procedure TForm2.IBDataSetPovVdChk_resultGetText(Sender: TField;
@@ -225,32 +197,6 @@ begin
        else
        text:='ͳ'
   end;
-end;
-
-procedure TForm2.IBDataSetPovVdPROGNOZ_NAMESetText(Sender: TField;
-  const Text: string);
-begin
-  if  Sender.IsNull then
-  sender.Value:=2;
-end;
-
-procedure TForm2.IBDataSetPovVdPROGNOZ_NAMEValidate(Sender: TField);
-begin
-  if  Sender.IsNull then
-  sender.Value:=2;
-end;
-
-procedure TForm2.IBDataSetPovVdTYPE_OBJSetText(Sender: TField;
-  const Text: string);
-begin
-  if  Sender.IsNull then
-  sender.Value:=2;
-end;
-
-procedure TForm2.IBDataSetPovVdTYPE_OBJValidate(Sender: TField);
-begin
-  if  Sender.IsNull then
-  sender.Value:=2;
 end;
 
 procedure TForm2.IBQueryForLKPCC_NAMEChange(Sender: TField);
