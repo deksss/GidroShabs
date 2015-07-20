@@ -113,8 +113,7 @@ type
     IBQueryLevelRovnina: TIBQuery;
     IBQueryLevelMount: TIBQuery;
     IBQueryV: TIBQuery;
-
-procedure FormCreate(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
     procedure TreeView1CustomDrawItem(Sender: TCustomTreeView; Node: TTreeNode;
       State: TCustomDrawState; var DefaultDraw: Boolean);
     procedure CBMonListClick(Sender: TObject);
@@ -152,9 +151,6 @@ procedure FormCreate(Sender: TObject);
     procedure ButtonBasClick(Sender: TObject);
     procedure ButtonVodoshovClick(Sender: TObject);
     procedure ButtonProgPunktClick(Sender: TObject);
-    procedure footer();
-    procedure wordStart();
-    procedure wordFinish();
 
   private
     { Private declarations }
@@ -241,104 +237,6 @@ implementation
 
 uses den, IniFiles, MAPI, Unit2;
 {$R *.dfm}
-
-
-procedure TForm1.wordStart(); begin
-  Screen.Cursor := crHourGlass;
-  WordApp := TWordApplication.Create(Self);
-  WordApp.Connect();
-  WordApp.Visible := true;
-{$IFDEF DEBUG}
-   WordApp.Visible := true;
-{$ENDIF}
-
-  wdUnit := putchshab + '\' + m_TemplateFile;
-  WordApp.Documents.OpenOld(wdUnit, EmptyParam, EmptyParam, EmptyParam,
-    EmptyParam, EmptyParam, EmptyParam, EmptyParam, EmptyParam, EmptyParam);
-  // -----------
-  wdUnit := putchrezult + '\' + m_ReportFileName;
-  tmp1 := false;
-  WordApp.ActiveDocument.SaveAs(wdUnit, EmptyParam, EmptyParam, EmptyParam,
-    tmp1, EmptyParam, EmptyParam, EmptyParam, EmptyParam, EmptyParam,
-    EmptyParam, EmptyParam, EmptyParam, EmptyParam, EmptyParam, EmptyParam);
-end;
-
-procedure TForm1.wordFinish(); begin
-  WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
-    EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
-  WordApp.ActiveDocument.Save;
-  WordApp.Visible := true;
-  WordApp.ShowMe;
-  WordApp.Activate;
-  WordApp.Free();
-  Screen.Cursor := crArrow;
-end;
-
-
- procedure TForm1.footer();
- var
-  namePres, path_signature:string;
- begin
-     if (copy(Nach1, Pos('#', Nach1) + 1, (Length(Nach1))) = ComboBox2.Text) then
-    namePres := copy(Nach1, 1, Pos('#', Nach1) - 1)
-  else
-    namePres := copy(Nach2, 1, Pos('#', Nach2) - 1);
-  wdUnit := '#President';
-  tmp1 := true;
-  tmp2 := wdFindContinue;
-  tmp3 := namePres;
-  tmp4 := wdReplaceAll;
-  WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
-    EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
-  // Iiaienu
-  if CheckBox1.Checked then
-  begin // 1
-    if (ComboBox2.Text = ComboBox2.Items[0]) then
-      path_signature := putchshab + '\' + 'Boss1.bmp'
-    else
-      path_signature := putchshab + '\' + 'Boss2.bmp';
-
-    wdUnit := '#Signature';
-    tmp1 := true;
-    tmp2 := wdFindStop;
-    tmp3 := '';
-    tmp4 := wdReplaceOne;
-    WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
-      EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
-    // aiaaaeyai oaee n map
-    wdUnit := true;
-    with (WordApp.Selection.InlineShapes.AddPicture(path_signature, EmptyParam,
-        wdUnit, EmptyParam)) do
-    begin
-      LockAspectRatio := wdUnit;
-    end;
-  end // 1
-  else
-  begin // 1
-    wdUnit := '#Signature';
-    tmp1 := true;
-    tmp2 := wdFindContinue;
-    tmp3 := '';
-    tmp4 := wdReplaceAll;
-    WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
-      EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
-  end; // 1
-  wdUnit := '#Name';
-  tmp1 := true;
-  tmp2 := wdFindContinue;
-  tmp3 := ComboBox2.Text;
-  tmp4 := wdReplaceAll;
-  WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
-    EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
-  // --------------------------------
-  wdUnit := '#dataprogn';
-  tmp1 := true;
-  tmp2 := wdFindContinue;
-  tmp3 := FormatDateTime('dd.mm.yyyy', DateProgn);
-  tmp4 := wdReplaceAll;
-
- end;
-
 
 function generateDecLabel(): string;
 var
@@ -627,7 +525,9 @@ begin
       po2
        else if parForm = 'po3' then
       po3
+
    else
+
     Progn_pripliv;
 end;
 
@@ -647,32 +547,9 @@ var
   mon_prog, year_prog, sum: integer;
   path_signature, ss: string;
 begin
-
-  wordStart();
-
-  // заменяем "заглушки" на реальный текст
-  wdUnit := '#Datename';
-  tmp1 := true;
-  tmp2 := wdFindContinue;
-  NameProgn(Datename);
-  tmp3 := Datename;
-  tmp4 := wdReplaceAll;
-  WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
-    EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
-  wdUnit := '#numvipusk';
-  tmp1 := true;
-  tmp2 := wdFindContinue;
-  tmp3 := EditNumberPrognoz.Text;
-  tmp4 := wdReplaceAll;
-  WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
-    EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
-
-  footer();
-  wordFinish();
+  curCol := 1;
 
 end;
-
-
 
 procedure TForm1.po1;
 var
