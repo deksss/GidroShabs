@@ -647,7 +647,9 @@ var
   mon_prog, year_prog, sum: integer;
   path_signature, ss: string;
 begin
+
   wordStart();
+
   // заменяем "заглушки" на реальный текст
   wdUnit := '#Datename';
   tmp1 := true;
@@ -664,30 +666,6 @@ begin
   tmp4 := wdReplaceAll;
   WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
     EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
-
-        wdUnit := '#YEAR';
-    tmp1 := true;
-    tmp2 := wdFindContinue;
-    tmp3 := IntToStr(StrToInt(FormatDateTime('yyyy', DTProgn.Date)));
-    tmp4 := wdReplaceAll;
-    WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
-      EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
-
-    wdUnit := '#NEXTYEAR';
-    tmp1 := true;
-    tmp2 := wdFindContinue;
-    tmp3 := IntToStr(StrToInt(FormatDateTime('yyyy', DTProgn.Date)) + 1);
-    tmp4 := wdReplaceAll;
-    WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
-      EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
-
-          wdUnit := '#PREVYEAR';
-    tmp1 := true;
-    tmp2 := wdFindContinue;
-    tmp3 := IntToStr(StrToInt(FormatDateTime('yyyy', DTProgn.Date)) - 1);
-    tmp4 := wdReplaceAll;
-    WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
-      EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
 
   footer();
   wordFinish();
@@ -704,27 +682,7 @@ var
   mon_prog, year_prog, sum: integer;
   path_signature, ss: string;
 begin
-   wordStart();
-
-  // заменяем "заглушки" на реальный текст
-  wdUnit := '#Datename';
-  tmp1 := true;
-  tmp2 := wdFindContinue;
-  NameProgn(Datename);
-  tmp3 := Datename;
-  tmp4 := wdReplaceAll;
-  WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
-    EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
-  wdUnit := '#numvipusk';
-  tmp1 := true;
-  tmp2 := wdFindContinue;
-  tmp3 := EditNumberPrognoz.Text;
-  tmp4 := wdReplaceAll;
-  WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
-    EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
-
-  footer();
-  wordFinish();
+  curCol := 1;
 
 end;
 
@@ -736,27 +694,7 @@ var
   mon_prog, year_prog, sum: integer;
   path_signature, ss: string;
 begin
-    wordStart();
-
-  // заменяем "заглушки" на реальный текст
-  wdUnit := '#Datename';
-  tmp1 := true;
-  tmp2 := wdFindContinue;
-  NameProgn(Datename);
-  tmp3 := Datename;
-  tmp4 := wdReplaceAll;
-  WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
-    EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
-  wdUnit := '#numvipusk';
-  tmp1 := true;
-  tmp2 := wdFindContinue;
-  tmp3 := EditNumberPrognoz.Text;
-  tmp4 := wdReplaceAll;
-  WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
-    EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
-
-  footer();
-  wordFinish();
+  curCol := 1;
 
 end;
 
@@ -768,27 +706,7 @@ var
   mon_prog, year_prog, sum: integer;
   path_signature, ss: string;
 begin
-  wordStart();
-
-  // заменяем "заглушки" на реальный текст
-  wdUnit := '#Datename';
-  tmp1 := true;
-  tmp2 := wdFindContinue;
-  NameProgn(Datename);
-  tmp3 := Datename;
-  tmp4 := wdReplaceAll;
-  WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
-    EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
-  wdUnit := '#numvipusk';
-  tmp1 := true;
-  tmp2 := wdFindContinue;
-  tmp3 := EditNumberPrognoz.Text;
-  tmp4 := wdReplaceAll;
-  WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
-    EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
-
-  footer();
-  wordFinish();
+  curCol := 1;
 
 end;
 
