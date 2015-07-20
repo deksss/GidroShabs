@@ -172,7 +172,7 @@ end;
 procedure TForm2.IBDataSetPovBasBeforePost(DataSet: TDataSet);
 begin
 IBDataSetPovBas.FieldByName('TYPE_OBJ').Value:=2;
-IBDataSetPovBas.FieldByName('PROGNOZ_NAME').Value:=(copy(parForm, 3, 1));
+ IBDataSetPovBas.FieldByName('PROGNOZ_NAME').Value:=(copy(parForm, 3, 1));
 end;
 
 procedure TForm2.IBDataSetPovStBeforePost(DataSet: TDataSet);

@@ -54,7 +54,6 @@ type
     IBDataSetPovBasPROGNOZ_NAME: TIntegerField;
     IBDataSetPovBasTYPE_OBJ: TIntegerField;
     DataSource1: TDataSource;
-    IBDataSetLEDPROGNOZ_ID: TSmallintField;
     procedure Button1Click(Sender: TObject);
     procedure IBDataSetLEDCHK_RESULTGetText(Sender: TField; var Text: string;
       DisplayText: Boolean);
@@ -85,7 +84,6 @@ type
     procedure IBDataSetPovVdBeforePost(DataSet: TDataSet);
     procedure IBDataSetPovBasBeforePost(DataSet: TDataSet);
     procedure IBDataSetPovStBeforePost(DataSet: TDataSet);
-    procedure IBDataSetLEDBeforePost(DataSet: TDataSet);
 
 
 
@@ -136,11 +134,6 @@ begin
 IBQueryForLKP.Open;
 end;
 
-procedure TForm2.IBDataSetLEDBeforePost(DataSet: TDataSet);
-begin
- IBDataSetLED.FieldByName('PROGNOZ_ID').Value:=(copy(parForm, 3, 1));
-end;
-
 procedure TForm2.IBDataSetLEDCHK_RESULTGetText(Sender: TField; var Text: string;
   DisplayText: Boolean);
 begin
@@ -172,7 +165,7 @@ end;
 procedure TForm2.IBDataSetPovBasBeforePost(DataSet: TDataSet);
 begin
 IBDataSetPovBas.FieldByName('TYPE_OBJ').Value:=2;
-IBDataSetPovBas.FieldByName('PROGNOZ_NAME').Value:=(copy(parForm, 3, 1));
+ IBDataSetPovBas.FieldByName('PROGNOZ_NAME').Value:=(copy(parForm, 3, 1));
 end;
 
 procedure TForm2.IBDataSetPovStBeforePost(DataSet: TDataSet);

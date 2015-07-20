@@ -495,15 +495,6 @@ begin
 
   end;
 
-  if (parForm = 'bmp') and (CBMonList.Visible) and (CBMonList.Checked) then
-      begin
-        if (ComboMonList.ItemIndex = -1) then
-        begin
-          ShowMessage('Не вибрано період прогнозу');
-          Exit;
-        end;
-      end;
-
   // ------------------------------
   if parForm = 'dmp' then
     Progn_dnist_mon

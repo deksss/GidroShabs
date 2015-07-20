@@ -110,9 +110,6 @@ type
     Label9: TLabel;
     CheckBoxText: TCheckBox;
     CheckBoxProgn: TCheckBox;
-    IBQueryLevelRovnina: TIBQuery;
-    IBQueryLevelMount: TIBQuery;
-    IBQueryV: TIBQuery;
     procedure FormCreate(Sender: TObject);
     procedure TreeView1CustomDrawItem(Sender: TCustomTreeView; Node: TTreeNode;
       State: TCustomDrawState; var DefaultDraw: Boolean);
@@ -151,7 +148,6 @@ type
     procedure ButtonBasClick(Sender: TObject);
     procedure ButtonVodoshovClick(Sender: TObject);
     procedure ButtonProgPunktClick(Sender: TObject);
-
   private
     { Private declarations }
   public
@@ -495,15 +491,6 @@ begin
 
   end;
 
-  if (parForm = 'bmp') and (CBMonList.Visible) and (CBMonList.Checked) then
-      begin
-        if (ComboMonList.ItemIndex = -1) then
-        begin
-          ShowMessage('Не вибрано період прогнозу');
-          Exit;
-        end;
-      end;
-
   // ------------------------------
   if parForm = 'dmp' then
     Progn_dnist_mon
@@ -511,23 +498,7 @@ begin
     Progn_gidrograf
   else if parForm = 'bmp' then
     Progn_bok_mon
-  else if parForm = 'le1' then
-  led
-    else if parForm = 'le2' then
-   led
-     else if parForm = 'le3' then
-     led
-             else if parForm = 'le4' then
-     led
-       else if parForm = 'po1' then
-     po1
-       else if parForm = 'po2' then
-      po2
-       else if parForm = 'po3' then
-      po3
-
-   else
-
+  else
     Progn_pripliv;
 end;
 
@@ -2489,7 +2460,7 @@ var
   IBViewForm: TIBQuery;
 begin
   FormClear();
- // form1.Caption := TreeView1.selected.Parent.Text+ ': '+  TreeView1.Selected.Text;
+  form1.Caption := TreeView1.selected.Parent.Text+ ': '+  TreeView1.Selected.Text;
   if TreeView1.Selected.Level = 1 then
   begin
     Panel5.Visible := true;

@@ -64,7 +64,6 @@ object Form2: TForm2
   object IBDataSetLED: TIBDataSet
     Database = Form1.IBDatabase1
     Transaction = Form1.IBTransaction1
-    BeforePost = IBDataSetLEDBeforePost
     DeleteSQL.Strings = (
       'delete from PROGNOZ_LED'
       'where'
@@ -72,25 +71,22 @@ object Form2: TForm2
       '  EARLY = :OLD_EARLY and'
       '  LATE = :OLD_LATE and'
       '  MIDDLE = :OLD_MIDDLE and'
-      '  POST_INDEX = :OLD_POST_INDEX and'
-      '  PROGNOZ_ID = :old_prognoz_id')
+      '  POST_INDEX = :OLD_POST_INDEX')
     InsertSQL.Strings = (
       'insert into PROGNOZ_LED'
-      '  (CHEKED, EARLY, LATE, MIDDLE, POST_INDEX, PROGNOZ_ID)'
+      '  (CHEKED, EARLY, LATE, MIDDLE, POST_INDEX)'
       'values'
-      '  (:CHEKED, :EARLY, :LATE, :MIDDLE, :POST_INDEX, :PROGNOZ_ID)')
+      '  (:CHEKED, :EARLY, :LATE, :MIDDLE, :POST_INDEX)')
     RefreshSQL.Strings = (
       'Select '
       '  POST_INDEX,'
       '  EARLY,'
       '  MIDDLE,'
       '  LATE,'
-      '  CHEKED,'
-      ' PROGNOZ_ID'
+      '  CHEKED'
       'from PROGNOZ_LED '
       'where'
-      '  POST_INDEX = :POST_INDEX AND'
-      '  PROGNOZ_ID = :PROGNOZ_ID')
+      '  POST_INDEX = :POST_INDEX')
     SelectSQL.Strings = (
       'select'
       ' POST_INDEX,'
@@ -99,13 +95,9 @@ object Form2: TForm2
       '      CR_NAME,'
       '    EARLY,'
       '    MIDDLE,'
-      '    LATE,'
-      'PROGNOZ_ID'
+      '    LATE '
       ' from PROGNOZ_LED p,cat_postm c, cat_river r'
-      
-        ' where  c.POST_INDEX  = p.POST_INDEX and c.river_id=r.river_id a' +
-        'nd'
-      ' p.PROGNOZ_ID = :PROGNOZ_ID ')
+      ' where  c.POST_INDEX  = p.POST_INDEX and c.river_id=r.river_id')
     ModifySQL.Strings = (
       'update PROGNOZ_LED'
       'set'
@@ -114,9 +106,7 @@ object Form2: TForm2
       '  LATE = :LATE,'
       '  MIDDLE = :MIDDLE'
       'where'
-      '  POST_INDEX = :OLD_POST_INDEX AND'
-      'PROGNOZ_ID = :old_prognoz_id'
-      '')
+      '  POST_INDEX = :OLD_POST_INDEX')
     Left = 368
     Top = 176
     object IBDataSetLEDCHK_RESULT: TStringField
@@ -182,10 +172,6 @@ object Form2: TForm2
       Origin = 'PROGNOZ_LED.LATE'
       FixedChar = True
       Size = 50
-    end
-    object IBDataSetLEDPROGNOZ_ID: TSmallintField
-      FieldName = 'PROGNOZ_ID'
-      Visible = False
     end
   end
   object DataSourceLED: TDataSource
