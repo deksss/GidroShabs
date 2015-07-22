@@ -118,7 +118,7 @@ object Form2: TForm2
       Width = 726
       Height = 162
       Align = alBottom
-      DataSource = DataSourceLED
+      DataSource = dsLedRiver
       TabOrder = 0
       TitleFont.Charset = DEFAULT_CHARSET
       TitleFont.Color = clWindowText
@@ -131,7 +131,7 @@ object Form2: TForm2
       Top = 167
       Width = 726
       Height = 25
-      DataSource = DataSourceLED
+      DataSource = dsLedRiver
       Align = alBottom
       TabOrder = 1
       ExplicitLeft = 217
@@ -173,17 +173,16 @@ object Form2: TForm2
       'select'
       ' POST_INDEX,'
       '    CHEKED,'
-      '    cpm_name,'
-      '      CR_NAME,'
       '    EARLY,'
       '    MIDDLE,'
       '    LATE,'
+      '    AREA_NAME,'
+      '    SORT_N'
       'PROGNOZ_ID'
-      ' from PROGNOZ_LED p,cat_postm c, cat_river r'
-      
-        ' where  c.POST_INDEX  = p.POST_INDEX and c.river_id=r.river_id a' +
-        'nd'
-      ' p.PROGNOZ_ID = :PROGNOZ_ID ')
+      ' from PROGNOZ_LED p'
+      ' where'
+      ' p.PROGNOZ_ID = :PROGNOZ_ID '
+      ' order by SORT_N')
     ModifySQL.Strings = (
       'update PROGNOZ_LED'
       'set'
@@ -195,8 +194,17 @@ object Form2: TForm2
       '  POST_INDEX = :OLD_POST_INDEX AND'
       'PROGNOZ_ID = :old_prognoz_id'
       '')
-    Left = 368
-    Top = 176
+    Left = 120
+    Top = 200
+    object intgrfldIBDataSetLEDSORT_N: TIntegerField
+      DisplayLabel = #1055#1086#1088#1103#1076#1082#1086#1074#1080#1081' '#1085#1086#1084#1077#1088
+      FieldName = 'SORT_N'
+    end
+    object strngfldIBDataSetLEDAREA_NAME: TStringField
+      DisplayLabel = #1053#1072#1079#1074#1072' '#1076#1110#1083#1103#1085#1082#1080
+      FieldName = 'AREA_NAME'
+      Size = 100
+    end
     object IBDataSetLEDCHK_RESULT: TStringField
       DisplayLabel = #1044#1086' '#1087#1088#1086#1075#1085#1086#1079#1091'?'
       DisplayWidth = 10
@@ -221,21 +229,9 @@ object Form2: TForm2
       Origin = 'CAT_POSTM.POST_INDEX'
       ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
       Required = True
+      Visible = False
       FixedChar = True
       Size = 5
-    end
-    object IBDataSetLEDCPM_NAME: TIBStringField
-      DisplayLabel = #1053#1072#1079#1074#1072' '#1087#1086#1089#1090#1072
-      FieldName = 'CPM_NAME'
-      Origin = 'CAT_POSTM.CPM_NAME'
-      Size = 30
-    end
-    object IBDataSetLEDCR_NAME: TIBStringField
-      DisplayLabel = #1053#1072#1079#1074#1072' '#1088#1110#1095#1082#1080
-      DisplayWidth = 20
-      FieldName = 'CR_NAME'
-      Origin = 'CAT_RIVER.CR_NAME'
-      Size = 30
     end
     object IBDataSetLEDEARLY: TIBStringField
       DisplayLabel = #1056#1072#1085#1085#1110' '#1089#1090#1088#1086#1082#1080
@@ -268,8 +264,8 @@ object Form2: TForm2
   end
   object DataSourceLED: TDataSource
     DataSet = IBDataSetLED
-    Left = 368
-    Top = 113
+    Left = 120
+    Top = 153
   end
   object IBQ: TIBQuery
     Left = 432
@@ -592,5 +588,117 @@ object Form2: TForm2
     DataSet = IBQueryForLKP
     Left = 352
     Top = 232
+  end
+  object ibdtstLedRiver1: TIBDataSet
+    Database = Form1.IBDatabase1
+    Transaction = Form1.IBTransaction1
+    BeforePost = IBDataSetLEDBeforePost
+    DeleteSQL.Strings = (
+      'delete from PROGNOZ_LED'
+      'where'
+      '  POST_INDEX = :OLD_POST_INDEX and'
+      '  OBJ_INDEX = :OLD_OBJ_INDEX')
+    InsertSQL.Strings = (
+      'insert into PROGNOZ_LED_RIVER'
+      '  ( POST_INDEX, OBJ_INDEX)'
+      'values'
+      '  (:POST_INDEX, :OBJ_INDEX)')
+    RefreshSQL.Strings = (
+      'select'
+      ' POST_INDEX,'
+      ' CR_NAME,'
+      ' OBJ_INDEX'
+      ' from PROGNOZ_LED_RIVER p, cat_river r'
+      ' where'
+      '  p.POST_INDEX = r.river_id and'
+      ' OBJ_INDEX = :OBJ_INDEX'
+      '')
+    SelectSQL.Strings = (
+      'select'
+      ' POST_INDEX,'
+      ' CR_NAME,'
+      ' OBJ_INDEX'
+      ' from PROGNOZ_LED_RIVER p, cat_river r'
+      ' where'
+      '  p.POST_INDEX = r.river_id and'
+      ' OBJ_INDEX = :OBJ_INDEX')
+    ModifySQL.Strings = (
+      ''
+      '')
+    Left = 312
+    Top = 400
+    object strngfld1: TStringField
+      DisplayLabel = #1044#1086' '#1087#1088#1086#1075#1085#1086#1079#1091'?'
+      DisplayWidth = 10
+      FieldKind = fkLookup
+      FieldName = 'CHK_RESULT'
+      LookupDataSet = IBQueryForLKP
+      LookupKeyFields = 'CC_INDEX'
+      LookupResultField = 'CC_NAME'
+      KeyFields = 'CHEKED'
+      OnGetText = IBDataSetLEDCHK_RESULTGetText
+      Lookup = True
+    end
+    object smlntfld1: TSmallintField
+      DisplayLabel = #1044#1086' '#1087#1088#1086#1075#1085#1086#1079#1091
+      DisplayWidth = 1
+      FieldName = 'CHEKED'
+      Visible = False
+    end
+    object ibstrngfld1: TIBStringField
+      DisplayLabel = #1030#1085#1076#1077#1082#1089' '#1087#1086#1089#1090#1072
+      FieldName = 'POST_INDEX'
+      Origin = 'CAT_POSTM.POST_INDEX'
+      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
+      Required = True
+      FixedChar = True
+      Size = 5
+    end
+    object ibstrngfld2: TIBStringField
+      DisplayLabel = #1053#1072#1079#1074#1072' '#1087#1086#1089#1090#1072
+      FieldName = 'CPM_NAME'
+      Origin = 'CAT_POSTM.CPM_NAME'
+      Size = 30
+    end
+    object ibstrngfld3: TIBStringField
+      DisplayLabel = #1053#1072#1079#1074#1072' '#1088#1110#1095#1082#1080
+      DisplayWidth = 20
+      FieldName = 'CR_NAME'
+      Origin = 'CAT_RIVER.CR_NAME'
+      Size = 30
+    end
+    object ibstrngfld4: TIBStringField
+      DisplayLabel = #1056#1072#1085#1085#1110' '#1089#1090#1088#1086#1082#1080
+      DisplayWidth = 10
+      FieldName = 'EARLY'
+      Origin = 'PROGNOZ_LED.EARLY'
+      FixedChar = True
+      Size = 50
+    end
+    object ibstrngfld5: TIBStringField
+      DisplayLabel = #1057#1077#1088#1077#1076#1085#1110' '#1089#1090#1088#1086#1082#1080
+      DisplayWidth = 10
+      FieldName = 'MIDDLE'
+      Origin = 'PROGNOZ_LED.MIDDLE'
+      FixedChar = True
+      Size = 50
+    end
+    object ibstrngfld6: TIBStringField
+      DisplayLabel = #1055#1110#1079#1085#1110' '#1089#1090#1088#1086#1082#1080
+      DisplayWidth = 10
+      FieldName = 'LATE'
+      Origin = 'PROGNOZ_LED.LATE'
+      FixedChar = True
+      Size = 50
+    end
+    object smlntfld2: TSmallintField
+      FieldName = 'PROGNOZ_ID'
+      Visible = False
+    end
+  end
+  object dsLedRiver: TDataSource
+    DataSet = ibdtstLedRiver1
+    Left = 408
+    Top = 401
   end
 end

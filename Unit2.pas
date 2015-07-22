@@ -17,7 +17,6 @@ type
     Button1: TButton;
     Button2: TButton;
     IBDataSetLEDCHEKED: TSmallintField;
-    IBDataSetLEDCR_NAME: TIBStringField;
     IBQ: TIBQuery;
     IBQueryForLKP: TIBQuery;
     IBDataSetLEDCHK_RESULT: TStringField;
@@ -26,7 +25,6 @@ type
     IBDataSetPovBas: TIBDataSet;
     StringField2: TStringField;
     IBDataSetLEDPOST_INDEX: TIBStringField;
-    IBDataSetLEDCPM_NAME: TIBStringField;
     IBDataSetLEDEARLY: TIBStringField;
     IBDataSetLEDMIDDLE: TIBStringField;
     IBDataSetLEDLATE: TIBStringField;
@@ -60,6 +58,19 @@ type
     dbnvgrRiver: TDBNavigator;
     lblRiver: TLabel;
     lblObj: TLabel;
+    ibdtstLedRiver1: TIBDataSet;
+    strngfld1: TStringField;
+    smlntfld1: TSmallintField;
+    ibstrngfld1: TIBStringField;
+    ibstrngfld2: TIBStringField;
+    ibstrngfld3: TIBStringField;
+    ibstrngfld4: TIBStringField;
+    ibstrngfld5: TIBStringField;
+    ibstrngfld6: TIBStringField;
+    smlntfld2: TSmallintField;
+    dsLedRiver: TDataSource;
+    strngfldIBDataSetLEDAREA_NAME: TStringField;
+    intgrfldIBDataSetLEDSORT_N: TIntegerField;
     procedure Button1Click(Sender: TObject);
     procedure IBDataSetLEDCHK_RESULTGetText(Sender: TField; var Text: string;
       DisplayText: Boolean);
