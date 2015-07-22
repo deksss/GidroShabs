@@ -2,7 +2,7 @@ object Form2: TForm2
   Left = 0
   Top = 0
   Caption = #1050#1072#1090#1072#1083#1086#1075' '#1089#1090#1072#1085#1094#1110#1081' '#1076#1083#1103' '#1087#1088#1086#1075#1085#1086#1079#1091' "'#1051#1100#1086#1076#1086#1074#1080#1081'" '
-  ClientHeight = 575
+  ClientHeight = 593
   ClientWidth = 728
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -15,25 +15,66 @@ object Form2: TForm2
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
+  object lblRiver: TLabel
+    Left = 0
+    Top = 312
+    Width = 728
+    Height = 23
+    Align = alTop
+    Caption = #1056#1110#1095#1082#1080' '#1090#1072' '#1074#1086#1076#1086#1089#1093#1086#1074#1080#1097#1072' '#1086#1073#39#1108#1082#1090#1091':'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -19
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    ExplicitLeft = 264
+    ExplicitTop = 320
+    ExplicitWidth = 263
+  end
+  object lblObj: TLabel
+    Left = 0
+    Top = 0
+    Width = 728
+    Height = 23
+    Align = alTop
+    Caption = #1054#1073'`'#1108#1082#1090#1080' '#1090#1072#1073#1083#1080#1094#1110':'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -19
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    ExplicitWidth = 150
+  end
   object PanelLED: TPanel
-    Left = 8
-    Top = 8
-    Width = 713
-    Height = 534
+    Left = 0
+    Top = 23
+    Width = 728
+    Height = 289
+    Align = alTop
     TabOrder = 0
+    ExplicitLeft = 8
+    ExplicitTop = 8
+    ExplicitWidth = 713
     object DBNavigator1: TDBNavigator
-      Left = 217
-      Top = 501
-      Width = 240
+      Left = 1
+      Top = 263
+      Width = 726
       Height = 25
       DataSource = DataSourceLED
+      Align = alBottom
       TabOrder = 0
+      ExplicitLeft = 217
+      ExplicitTop = 501
+      ExplicitWidth = 240
     end
     object DBGrid1: TDBGrid
-      Left = 0
-      Top = 40
-      Width = 705
-      Height = 455
+      Left = 1
+      Top = -238
+      Width = 726
+      Height = 501
+      Align = alBottom
       DataSource = DataSourceLED
       TabOrder = 1
       TitleFont.Charset = DEFAULT_CHARSET
@@ -44,8 +85,8 @@ object Form2: TForm2
     end
   end
   object Button1: TButton
-    Left = 225
-    Top = 548
+    Left = 217
+    Top = 560
     Width = 75
     Height = 25
     Caption = #1047#1073#1077#1088#1110#1075#1090#1080
@@ -53,13 +94,50 @@ object Form2: TForm2
     OnClick = Button1Click
   end
   object Button2: TButton
-    Left = 320
-    Top = 548
+    Left = 328
+    Top = 560
     Width = 145
     Height = 25
     Caption = #1047#1072#1082#1088#1080#1090#1080' '#1073#1077#1079' '#1079#1073#1077#1088#1077#1078#1077#1085#1085#1103
     TabOrder = 2
     OnClick = Button2Click
+  end
+  object pnlLedRiver: TPanel
+    Left = 0
+    Top = 335
+    Width = 728
+    Height = 193
+    Align = alTop
+    TabOrder = 3
+    ExplicitLeft = 8
+    ExplicitTop = 352
+    ExplicitWidth = 712
+    object dbgrdRiver: TDBGrid
+      Left = 1
+      Top = 5
+      Width = 726
+      Height = 162
+      Align = alBottom
+      DataSource = DataSourceLED
+      TabOrder = 0
+      TitleFont.Charset = DEFAULT_CHARSET
+      TitleFont.Color = clWindowText
+      TitleFont.Height = -11
+      TitleFont.Name = 'Tahoma'
+      TitleFont.Style = []
+    end
+    object dbnvgrRiver: TDBNavigator
+      Left = 1
+      Top = 167
+      Width = 726
+      Height = 25
+      DataSource = DataSourceLED
+      Align = alBottom
+      TabOrder = 1
+      ExplicitLeft = 217
+      ExplicitTop = 501
+      ExplicitWidth = 240
+    end
   end
   object IBDataSetLED: TIBDataSet
     Database = Form1.IBDatabase1
@@ -194,8 +272,8 @@ object Form2: TForm2
     Top = 113
   end
   object IBQ: TIBQuery
-    Left = 208
-    Top = 320
+    Left = 432
+    Top = 40
   end
   object IBQueryForLKP: TIBQuery
     Database = Form1.IBDatabase1
@@ -205,8 +283,8 @@ object Form2: TForm2
       
         'select cc_index, cc_name from cat_classnw where cc_index=2 or (c' +
         'c_index=6)')
-    Left = 336
-    Top = 328
+    Left = 368
+    Top = 32
     object IBQueryForLKPCC_INDEX: TIntegerField
       FieldName = 'CC_INDEX'
     end
@@ -512,7 +590,7 @@ object Form2: TForm2
   end
   object DataSource1: TDataSource
     DataSet = IBQueryForLKP
-    Left = 696
-    Top = 544
+    Left = 352
+    Top = 232
   end
 end

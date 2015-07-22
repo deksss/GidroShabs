@@ -2623,6 +2623,7 @@ begin
   ComboDecMonList.Text := '';
   CBmonmbeg.Text := '';
   CBmonmend.Text := '';
+  chklstTabs.Items.Clear;
   for i := 0 to 11 do
   begin
     CBmonmbeg.Items.Append(Mon_ukr[i]);
@@ -2682,6 +2683,7 @@ begin
   NFile.Caption := 'Назва файлу результату:';
   NameDirect.Caption := 'Назва дерикторії результату:';
 
+  chklstTabs.Visible := False;
 end;
 
 procedure TForm1.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -2693,7 +2695,7 @@ end;
 procedure TForm1.ViewClick;
 var
   IBViewForm: TIBQuery;
-  tableCount:Integer;
+  tableCount, i :Integer;
 begin
   FormClear();
  // form1.Caption := TreeView1.selected.Parent.Text+ ': '+  TreeView1.Selected.Text;
@@ -2761,8 +2763,13 @@ begin
         ButtonBas.Visible := true;
         CheckBoxProgn.Visible := false;
         CheckBoxText.Visible := true;
-      end
 
+        chklstTabs.Visible := True;
+        tableCount := 5;
+        chklstTabs.Items.Clear;
+        for I := 1 to  tableCount do
+            chklstTabs.Items.Add('Таблиця ' + IntToStr(i));
+      end
       else if parForm = 'po2' then
       begin
         PanelLedPov.Visible := true;
@@ -2785,6 +2792,11 @@ begin
         ButtonBas.Visible := true;
         CheckBoxProgn.Visible := false;
         CheckBoxText.Visible := false;
+
+        chklstTabs.Visible := True;
+        tableCount := 4;
+        for I := 1 to  tableCount do
+            chklstTabs.Items.Add('Таблиця ' + IntToStr(i));
       end
 
       else if parForm = 'po3' then
@@ -2809,6 +2821,11 @@ begin
         ButtonBas.Visible := false;
         CheckBoxProgn.Visible := true;
         CheckBoxText.Visible := true;
+
+        chklstTabs.Visible := True;
+        tableCount := 5;
+        for I := 1 to  tableCount do
+            chklstTabs.Items.Add('Таблиця ' + IntToStr(i));
       end
 
       else if parForm = 'dmp' then

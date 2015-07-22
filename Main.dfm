@@ -184,7 +184,7 @@ object Form1: TForm1
             Left = 243
             Top = -1
             Width = 485
-            Height = 246
+            Height = 267
             BevelKind = bkTile
             BevelOuter = bvNone
             TabOrder = 7
@@ -333,7 +333,7 @@ object Form1: TForm1
               Left = 16
               Top = 163
               Width = 232
-              Height = 62
+              Height = 94
               Flat = False
               Font.Charset = DEFAULT_CHARSET
               Font.Color = clWindowText
@@ -480,7 +480,7 @@ object Form1: TForm1
             end
           end
           object PanelMon: TPanel
-            Left = 260
+            Left = 254
             Top = -1
             Width = 249
             Height = 249
@@ -1094,7 +1094,7 @@ object Form1: TForm1
     Left = 52
     Top = 455
     Bitmap = {
-      494C0101150017000C0010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010115001700100010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000006000000001002000000000000060
       000000000000000000000000000000000000D2D2D2FFFDFDFDFF000000000000
       0000CDCDCDFFB8B8B8FFB8B8B8FFB8B8B8FFB8B8B8FFB8B8B8FFB8B8B8FFB8B8

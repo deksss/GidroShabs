@@ -55,11 +55,6 @@ type
     IBDataSetPovBasTYPE_OBJ: TIntegerField;
     DataSource1: TDataSource;
     IBDataSetLEDPROGNOZ_ID: TSmallintField;
-    pnlLedRiver: TPanel;
-    dbgrdRiver: TDBGrid;
-    dbnvgrRiver: TDBNavigator;
-    lblRiver: TLabel;
-    lblObj: TLabel;
     procedure Button1Click(Sender: TObject);
     procedure IBDataSetLEDCHK_RESULTGetText(Sender: TField; var Text: string;
       DisplayText: Boolean);
