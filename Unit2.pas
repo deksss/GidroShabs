@@ -59,40 +59,28 @@ type
     lblRiver: TLabel;
     lblObj: TLabel;
     ibdtstLedRiver1: TIBDataSet;
-    strngfld1: TStringField;
-    smlntfld1: TSmallintField;
     ibstrngfld1: TIBStringField;
-    ibstrngfld2: TIBStringField;
     ibstrngfld3: TIBStringField;
-    ibstrngfld4: TIBStringField;
-    ibstrngfld5: TIBStringField;
-    ibstrngfld6: TIBStringField;
     smlntfld2: TSmallintField;
     dsLedRiver: TDataSource;
     strngfldIBDataSetLEDAREA_NAME: TStringField;
     intgrfldIBDataSetLEDSORT_N: TIntegerField;
+    intgrfldLedRiver1OBJ_INDEX: TIntegerField;
     procedure Button1Click(Sender: TObject);
     procedure IBDataSetLEDCHK_RESULTGetText(Sender: TField; var Text: string;
       DisplayText: Boolean);
     procedure FormCreate(Sender: TObject);
-    procedure StringField1GetText(Sender: TField; var Text: string;
-      DisplayText: Boolean);
-    procedure IBDataSetPovStChk_resultGetText(Sender: TField;
-      var Text: string; DisplayText: Boolean);
+
+
     procedure IBDataSetPovBasBeforeInsert(DataSet: TDataSet);
-    procedure StringField2GetText(Sender: TField; var Text: string;
-      DisplayText: Boolean);
+
     procedure Button2Click(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
-    procedure IBQueryForLKPCC_NAMEValidate(Sender: TField);
-    procedure IBQueryForLKPCC_NAMESetText(Sender: TField; const Text: string);
-    procedure IBQueryForLKPCC_NAMEChange(Sender: TField);
-    procedure IBQueryForLKPCC_NAMEGetText(Sender: TField; var Text: string;
-      DisplayText: Boolean);
-    procedure IBDataSetPovVdCR_NAMEGetText(Sender: TField; var Text: string;
-      DisplayText: Boolean);
-    procedure IBDataSetPovVdChk_resultGetText(Sender: TField; var Text: string;
-      DisplayText: Boolean);
+
+
+
+
+
     procedure IBDataSetPovVdPROGNOZ_NAMEValidate(Sender: TField);
     procedure IBDataSetPovVdTYPE_OBJValidate(Sender: TField);
     procedure IBDataSetPovVdPROGNOZ_NAMESetText(Sender: TField;
@@ -149,7 +137,7 @@ begin
     'UPDATE PROGNOZ_LED  SET CHEKED = 2' ;
   IBsetNum.Open;
   IBQueryForLKP.Close;
-IBQueryForLKP.Open;
+  IBQueryForLKP.Open;
 end;
 
 procedure TForm2.IBDataSetLEDBeforePost(DataSet: TDataSet);
@@ -197,20 +185,7 @@ IBDataSetPovST.FieldByName('TYPE_OBJ').Value:=1;
  IBDataSetPovST.FieldByName('PROGNOZ_NAME').Value:=(copy(parForm, 3, 1));
 end;
 
-procedure TForm2.IBDataSetPovStChk_resultGetText(Sender: TField;
-  var Text: string; DisplayText: Boolean);
-begin
-if not Sender.IsNull then
- begin
-  if Sender.Value ='Бєлгідромет' then
-      text:='Так'
-       else
-  if Sender.Value ='Півн.Зах.Гідромет' then
-       text:='Ні'
-       else
-          Text := Sender.Value;
-  end;
-end;
+
 
 procedure TForm2.IBDataSetPovVdBeforePost(DataSet: TDataSet);
 var str:string; vr:Variant;
@@ -220,35 +195,9 @@ begin
  IBDataSetPovVd.FieldByName('PROGNOZ_NAME').Value:=(copy(parForm, 3, 1));
 end;
 
-procedure TForm2.IBDataSetPovVdChk_resultGetText(Sender: TField;
-  var Text: string; DisplayText: Boolean);
-begin
-       if not Sender.IsNull then
- begin
-  if Sender.Value ='Бєлгідромет' then
-     text:='Так'
-       else
-  if Sender.Value ='Півн.Зах.Гідромет' then
-       text:='Ні'
-       else
-       text:='Ні'
-  end;
-end;
 
-procedure TForm2.IBDataSetPovVdCR_NAMEGetText(Sender: TField; var Text: string;
-  DisplayText: Boolean);
-begin
-     if not Sender.IsNull then
- begin
-  if Sender.Value ='Бєлгідромет' then
-     text:='Так'
-       else
-  if Sender.Value ='Півн.Зах.Гідромет' then
-       text:='Ні'
-       else
-       text:='Ні'
-  end;
-end;
+
+
 
 procedure TForm2.IBDataSetPovVdPROGNOZ_NAMESetText(Sender: TField;
   const Text: string);
@@ -276,92 +225,16 @@ begin
   sender.Value:=2;
 end;
 
-procedure TForm2.IBQueryForLKPCC_NAMEChange(Sender: TField);
-begin
-    if not Sender.IsNull then
- begin
-  if Sender.Value ='Бєлгідромет' then
-     sender.value:='Так'
-       else
-  if Sender.Value ='Півн.Зах.Гідромет' then
-       sender.value:='Ні'
-       else
-       sender.value:='Ні'
-  end;
-end;
 
-procedure TForm2.IBQueryForLKPCC_NAMEGetText(Sender: TField; var Text: string;
-  DisplayText: Boolean);
-begin
-  if not Sender.IsNull then
- begin
-  if Sender.Value ='Бєлгідромет' then
-     text:='Так'
-       else
-  if Sender.Value ='Півн.Зах.Гідромет' then
-       text:='Ні'
-       else
-       text:='Ні'
-  end;
-end;
 
-procedure TForm2.IBQueryForLKPCC_NAMESetText(Sender: TField;
-  const Text: string);
-begin
- if not Sender.IsNull then
- begin
-  if Sender.Value ='Бєлгідромет' then
-     sender.value:='Так'
-       else
-  if Sender.Value ='Півн.Зах.Гідромет' then
-       sender.value:='Ні'
-       else
-       sender.value:='Ні'
-  end;
-end;
 
-procedure TForm2.IBQueryForLKPCC_NAMEValidate(Sender: TField);
-begin
- if not Sender.IsNull then
- begin
-  if Sender.Value ='Бєлгідромет' then
-    sender.value:='Так'
-       else
-  if Sender.Value ='Півн.Зах.Гідромет' then
-       sender.value:='Ні'
-       else
-      sender.value:='Ні'
-  end;
-end;
 
-procedure TForm2.StringField1GetText(Sender: TField; var Text: string;
-  DisplayText: Boolean);
-begin
-if not Sender.IsNull then
- begin
-  if Sender.Value ='Бєлгідромет' then
-      text:='Так'
-       else
-  if Sender.Value ='Півн.Зах.Гідромет' then
-       text:='Ні'
-       else
-          Text := Sender.Value;
-  end;
-end;
 
-procedure TForm2.StringField2GetText(Sender: TField; var Text: string;
-  DisplayText: Boolean);
-begin
- if not Sender.IsNull then
- begin
-  if Sender.Value ='Бєлгідромет' then
-      text:='Так'
-       else
-  if Sender.Value ='Півн.Зах.Гідромет' then
-       text:='Ні'
-       else
-          Text := Sender.Value;
-  end;
-end;
+
+
+
+
+
+
 
 end.
