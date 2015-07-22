@@ -329,6 +329,29 @@ object Form1: TForm1
               TabOrder = 10
               OnClick = LedChekClick
             end
+            object chklstTabs: TCheckListBox
+              Left = 16
+              Top = 163
+              Width = 232
+              Height = 62
+              Flat = False
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ItemHeight = 27
+              Items.Strings = (
+                #1058#1072#1073#1083#1080#1094#1103' 1'
+                #1058#1072#1073#1083#1080#1094#1103' 2'
+                #1058#1072#1073#1083#1080#1094#1103' 3'
+                #1058#1072#1073#1083#1080#1094#1103' 4'
+                #1058#1072#1073#1083#1080#1094#1103' 5')
+              ParentFont = False
+              Style = lbOwnerDrawVariable
+              TabOrder = 11
+              Visible = False
+            end
           end
           object PanelDec: TPanel
             Left = 499
@@ -457,8 +480,8 @@ object Form1: TForm1
             end
           end
           object PanelMon: TPanel
-            Left = 252
-            Top = 4
+            Left = 260
+            Top = -1
             Width = 249
             Height = 249
             BevelKind = bkTile
@@ -1071,7 +1094,7 @@ object Form1: TForm1
     Left = 52
     Top = 455
     Bitmap = {
-      494C010115001700080010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C0101150017000C0010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000006000000001002000000000000060
       000000000000000000000000000000000000D2D2D2FFFDFDFDFF000000000000
       0000CDCDCDFFB8B8B8FFB8B8B8FFB8B8B8FFB8B8B8FFB8B8B8FFB8B8B8FFB8B8

@@ -113,6 +113,7 @@ type
     IBQueryLevelRovnina: TIBQuery;
     IBQueryLevelMount: TIBQuery;
     IBQueryV: TIBQuery;
+    chklstTabs: TCheckListBox;
 
 procedure FormCreate(Sender: TObject);
     procedure TreeView1CustomDrawItem(Sender: TCustomTreeView; Node: TTreeNode;
@@ -2692,6 +2693,7 @@ end;
 procedure TForm1.ViewClick;
 var
   IBViewForm: TIBQuery;
+  tableCount:Integer;
 begin
   FormClear();
  // form1.Caption := TreeView1.selected.Parent.Text+ ': '+  TreeView1.Selected.Text;
@@ -2717,7 +2719,6 @@ begin
         (parForm = 'le4') then
       begin
         PanelLedPov.Visible := true;
-
         CheckBoxBerezKviten.Visible := false;
         PanelMon.Visible := false;
         CBMonList.Checked := false;
