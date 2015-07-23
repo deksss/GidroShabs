@@ -3,7 +3,7 @@ object Form2: TForm2
   Top = 0
   Caption = #1050#1072#1090#1072#1083#1086#1075' '#1089#1090#1072#1085#1094#1110#1081' '#1076#1083#1103' '#1087#1088#1086#1075#1085#1086#1079#1091' "'#1051#1100#1086#1076#1086#1074#1080#1081'" '
   ClientHeight = 593
-  ClientWidth = 728
+  ClientWidth = 739
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -17,8 +17,8 @@ object Form2: TForm2
   TextHeight = 13
   object lblRiver: TLabel
     Left = 0
-    Top = 312
-    Width = 728
+    Top = 335
+    Width = 739
     Height = 23
     Align = alTop
     Caption = #1056#1110#1095#1082#1080' '#1090#1072' '#1074#1086#1076#1086#1089#1093#1086#1074#1080#1097#1072' '#1086#1073#39#1108#1082#1090#1091':'
@@ -28,52 +28,50 @@ object Form2: TForm2
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    ExplicitLeft = 264
-    ExplicitTop = 320
+    ExplicitTop = 312
     ExplicitWidth = 263
   end
   object lblObj: TLabel
     Left = 0
     Top = 0
-    Width = 728
-    Height = 23
+    Width = 739
+    Height = 46
     Align = alTop
-    Caption = #1054#1073'`'#1108#1082#1090#1080' '#1090#1072#1073#1083#1080#1094#1110':'
+    Caption = 
+      #1054#1073'`'#1108#1082#1090#1080' '#1090#1072#1073#1083#1080#1094#1110':'#13#10'('#1074#1074#1077#1076#1110#1090#1100' '#1094#1080#1092#1088#1091' "1" '#1074' '#1087#1086#1083#1110' "'#1044#1086' '#1087#1088#1086#1075#1085#1086#1079#1091'?" '#1103#1082#1097#1086' ' +
+      #1086#1073#1108#39#1082#1090' '#1084#1072#1108' '#1087#1086#1090#1088#1072#1087#1080#1090#1080' '#1076#1086' '#1076#1086#1082#1091#1084#1077#1085#1090#1091')'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -19
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    ExplicitWidth = 150
+    ExplicitWidth = 735
   end
   object PanelLED: TPanel
     Left = 0
-    Top = 23
-    Width = 728
+    Top = 46
+    Width = 739
     Height = 289
     Align = alTop
     TabOrder = 0
-    ExplicitLeft = 8
-    ExplicitTop = 8
-    ExplicitWidth = 713
+    ExplicitTop = 23
+    ExplicitWidth = 728
     object DBNavigator1: TDBNavigator
       Left = 1
       Top = 263
-      Width = 726
+      Width = 737
       Height = 25
       DataSource = DataSourceLED
       Align = alBottom
       TabOrder = 0
-      ExplicitLeft = 217
-      ExplicitTop = 501
-      ExplicitWidth = 240
+      ExplicitWidth = 726
     end
     object DBGrid1: TDBGrid
       Left = 1
-      Top = -238
-      Width = 726
-      Height = 501
+      Top = 6
+      Width = 737
+      Height = 257
       Align = alBottom
       DataSource = DataSourceLED
       TabOrder = 1
@@ -82,6 +80,7 @@ object Form2: TForm2
       TitleFont.Height = -11
       TitleFont.Name = 'Tahoma'
       TitleFont.Style = []
+      OnCellClick = DBGrid1CellClick
     end
   end
   object Button1: TButton
@@ -104,18 +103,17 @@ object Form2: TForm2
   end
   object pnlLedRiver: TPanel
     Left = 0
-    Top = 335
-    Width = 728
+    Top = 358
+    Width = 739
     Height = 193
     Align = alTop
     TabOrder = 3
-    ExplicitLeft = 8
-    ExplicitTop = 352
-    ExplicitWidth = 712
+    ExplicitTop = 335
+    ExplicitWidth = 728
     object dbgrdRiver: TDBGrid
       Left = 1
       Top = 5
-      Width = 726
+      Width = 737
       Height = 162
       Align = alBottom
       DataSource = dsLedRiver
@@ -129,14 +127,12 @@ object Form2: TForm2
     object dbnvgrRiver: TDBNavigator
       Left = 1
       Top = 167
-      Width = 726
+      Width = 737
       Height = 25
       DataSource = dsLedRiver
       Align = alBottom
       TabOrder = 1
-      ExplicitLeft = 217
-      ExplicitTop = 501
-      ExplicitWidth = 240
+      ExplicitWidth = 726
     end
   end
   object IBDataSetLED: TIBDataSet
@@ -179,12 +175,12 @@ object Form2: TForm2
       '    MIDDLE,'
       '    LATE,'
       '    AREA_NAME,'
+      '    PROGNOZ_ID,'
       '    SORT_N'
-      'PROGNOZ_ID'
       ' from PROGNOZ_LED p'
       ' where'
-      ' p.PROGNOZ_ID = :PROGNOZ_ID '
-      ' order by SORT_N')
+      ' p.PROGNOZ_ID = :prognoz_id '
+      ' order by sort_n')
     ModifySQL.Strings = (
       'update PROGNOZ_LED'
       'set'
@@ -193,47 +189,24 @@ object Form2: TForm2
       '  LATE = :LATE,'
       '  MIDDLE = :MIDDLE,'
       ' AREA_NAME = :AREA_NAME , '
-      'SORT_N = :SORT_N '
+      ' SORT_N = :SORT_N '
       'where'
-      '  POST_INDEX = :OLD_POST_INDEX AND')
+      '  POST_INDEX = :OLD_POST_INDEX AND'
+      'PROGNOZ_ID = :OLD_PROGNOZ_ID')
     Left = 120
     Top = 200
+    object wdstrngfldIBDataSetLEDAREA_NAME: TWideStringField
+      DisplayLabel = #1053#1072#1079#1074#1072' '#1076#1110#1083#1103#1085#1082#1080
+      FieldName = 'AREA_NAME'
+    end
     object intgrfldIBDataSetLEDSORT_N: TIntegerField
       DisplayLabel = #1055#1086#1088#1103#1076#1082#1086#1074#1080#1081' '#1085#1086#1084#1077#1088
       FieldName = 'SORT_N'
-    end
-    object strngfldIBDataSetLEDAREA_NAME: TStringField
-      DisplayLabel = #1053#1072#1079#1074#1072' '#1076#1110#1083#1103#1085#1082#1080
-      FieldName = 'AREA_NAME'
-      Size = 100
-    end
-    object IBDataSetLEDCHK_RESULT: TStringField
-      DisplayLabel = #1044#1086' '#1087#1088#1086#1075#1085#1086#1079#1091'?'
-      DisplayWidth = 10
-      FieldKind = fkLookup
-      FieldName = 'CHK_RESULT'
-      LookupDataSet = IBQueryForLKP
-      LookupKeyFields = 'CC_INDEX'
-      LookupResultField = 'CC_NAME'
-      KeyFields = 'CHEKED'
-      OnGetText = IBDataSetLEDCHK_RESULTGetText
-      Lookup = True
     end
     object IBDataSetLEDCHEKED: TSmallintField
       DisplayLabel = #1044#1086' '#1087#1088#1086#1075#1085#1086#1079#1091
       DisplayWidth = 1
       FieldName = 'CHEKED'
-      Visible = False
-    end
-    object IBDataSetLEDPOST_INDEX: TIBStringField
-      DisplayLabel = #1030#1085#1076#1077#1082#1089' '#1087#1086#1089#1090#1072
-      FieldName = 'POST_INDEX'
-      Origin = 'CAT_POSTM.POST_INDEX'
-      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
-      Required = True
-      Visible = False
-      FixedChar = True
-      Size = 5
     end
     object IBDataSetLEDEARLY: TIBStringField
       DisplayLabel = #1056#1072#1085#1085#1110' '#1089#1090#1088#1086#1082#1080
@@ -263,6 +236,10 @@ object Form2: TForm2
       FieldName = 'PROGNOZ_ID'
       Visible = False
     end
+    object intgrfldIBDataSetLEDPOST_INDEX: TIntegerField
+      FieldName = 'POST_INDEX'
+      Visible = False
+    end
   end
   object DataSourceLED: TDataSource
     DataSet = IBDataSetLED
@@ -278,16 +255,14 @@ object Form2: TForm2
     Transaction = Form1.IBTransaction1
     AutoCalcFields = False
     SQL.Strings = (
-      
-        'select cc_index, cc_name from cat_classnw where cc_index=2 or (c' +
-        'c_index=6)')
-    Left = 368
-    Top = 32
-    object IBQueryForLKPCC_INDEX: TIntegerField
-      FieldName = 'CC_INDEX'
+      'select river_id, CR_NAME from cat_river')
+    Left = 352
+    Top = 88
+    object smlntfldIBQueryForLKPRIVER_ID: TSmallintField
+      FieldName = 'RIVER_ID'
     end
-    object IBQueryForLKPCC_NAME: TWideStringField
-      FieldName = 'CC_NAME'
+    object wdstrngfldIBQueryForLKPCR_NAME: TWideStringField
+      FieldName = 'CR_NAME'
     end
   end
   object IBDataSetPovBas: TIBDataSet
@@ -584,11 +559,14 @@ object Form2: TForm2
   object ibdtstLedRiver1: TIBDataSet
     Database = Form1.IBDatabase1
     Transaction = Form1.IBTransaction1
+    BeforeInsert = ibdtstLedRiver1BeforeInsert
+    BeforePost = ibdtstLedRiver1BeforePost
     DeleteSQL.Strings = (
-      'delete from PROGNOZ_LED'
+      'delete from PROGNOZ_LED_RIVER'
       'where'
-      '  POST_INDEX = :OLD_POST_INDEX and'
-      '  OBJ_INDEX = :OLD_OBJ_INDEX')
+      '  POST_INDEX = :old_post_index'
+      ' and'
+      '  OBJ_INDEX= :old_obj_index')
     InsertSQL.Strings = (
       'insert into PROGNOZ_LED_RIVER'
       '  ( POST_INDEX, OBJ_INDEX)'
@@ -596,37 +574,26 @@ object Form2: TForm2
       '  (:POST_INDEX, :OBJ_INDEX)')
     RefreshSQL.Strings = (
       'select'
-      ' POST_INDEX,'
-      ' CR_NAME,'
-      ' OBJ_INDEX'
+      ' POST_INDEX, CR_NAME, OBJ_INDEX'
       ' from PROGNOZ_LED_RIVER p, cat_river r'
       ' where'
-      '  p.POST_INDEX = r.river_id and'
-      ' OBJ_INDEX = :OBJ_INDEX'
-      '')
+      '  p.POST_INDEX = r.river_id'
+      ' and'
+      'p.OBJ_INDEX = :OBJ_INDEX')
     SelectSQL.Strings = (
-      'select'
-      ' POST_INDEX,'
-      ' CR_NAME,'
-      ' OBJ_INDEX'
+      'select p.POST_INDEX, r.CR_NAME, p.OBJ_INDEX '
       ' from PROGNOZ_LED_RIVER p, cat_river r'
-      ' where'
-      '  p.POST_INDEX = r.river_id and'
-      ' OBJ_INDEX = :OBJ_INDEX')
+      ' where  p.POST_INDEX = r.river_id and   p.OBJ_INDEX = :obj')
     ModifySQL.Strings = (
-      ''
-      '')
+      'update PROGNOZ_LED_RIVER'
+      'set'
+      '  POST_INDEX = :POST_INDEX '
+      'where'
+      '  POST_INDEX = :old_post_index'
+      ' AND'
+      'OBJ_INDEX = :old_obj_index ')
     Left = 224
     Top = 400
-    object ibstrngfld1: TIBStringField
-      DisplayLabel = #1030#1085#1076#1077#1082#1089' '#1087#1086#1089#1090#1072
-      FieldName = 'POST_INDEX'
-      Origin = 'CAT_POSTM.POST_INDEX'
-      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
-      Required = True
-      FixedChar = True
-      Size = 5
-    end
     object ibstrngfld3: TIBStringField
       DisplayLabel = #1053#1072#1079#1074#1072' '#1088#1110#1095#1082#1080
       DisplayWidth = 20
@@ -634,12 +601,22 @@ object Form2: TForm2
       Origin = 'CAT_RIVER.CR_NAME'
       Size = 30
     end
-    object smlntfld2: TSmallintField
-      FieldName = 'PROGNOZ_ID'
+    object smlntfldLedRiver1OBJ_INDEX: TSmallintField
+      FieldName = 'OBJ_INDEX'
       Visible = False
     end
-    object intgrfldLedRiver1OBJ_INDEX: TIntegerField
-      FieldName = 'OBJ_INDEX'
+    object smlntfldLedRiver1POST_INDEX: TSmallintField
+      DisplayLabel = #1030#1085#1076#1077#1082#1089' '#1088#1110#1095#1082#1080
+      FieldName = 'POST_INDEX'
+    end
+    object strngfldLedRiver1name: TStringField
+      FieldKind = fkLookup
+      FieldName = 'name'
+      LookupDataSet = IBQueryForLKP
+      LookupKeyFields = 'river_id'
+      LookupResultField = 'CR_NAME'
+      KeyFields = 'POST_INDEX'
+      Lookup = True
     end
   end
   object dsLedRiver: TDataSource

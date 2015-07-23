@@ -19,12 +19,8 @@ type
     IBDataSetLEDCHEKED: TSmallintField;
     IBQ: TIBQuery;
     IBQueryForLKP: TIBQuery;
-    IBDataSetLEDCHK_RESULT: TStringField;
-    IBQueryForLKPCC_NAME: TWideStringField;
-    IBQueryForLKPCC_INDEX: TIntegerField;
     IBDataSetPovBas: TIBDataSet;
     StringField2: TStringField;
-    IBDataSetLEDPOST_INDEX: TIBStringField;
     IBDataSetLEDEARLY: TIBStringField;
     IBDataSetLEDMIDDLE: TIBStringField;
     IBDataSetLEDLATE: TIBStringField;
@@ -59,16 +55,17 @@ type
     lblRiver: TLabel;
     lblObj: TLabel;
     ibdtstLedRiver1: TIBDataSet;
-    ibstrngfld1: TIBStringField;
     ibstrngfld3: TIBStringField;
-    smlntfld2: TSmallintField;
     dsLedRiver: TDataSource;
-    strngfldIBDataSetLEDAREA_NAME: TStringField;
     intgrfldIBDataSetLEDSORT_N: TIntegerField;
-    intgrfldLedRiver1OBJ_INDEX: TIntegerField;
+    wdstrngfldIBDataSetLEDAREA_NAME: TWideStringField;
+    intgrfldIBDataSetLEDPOST_INDEX: TIntegerField;
+    smlntfldLedRiver1OBJ_INDEX: TSmallintField;
+    smlntfldLedRiver1POST_INDEX: TSmallintField;
+    strngfldLedRiver1name: TStringField;
+    smlntfldIBQueryForLKPRIVER_ID: TSmallintField;
+    wdstrngfldIBQueryForLKPCR_NAME: TWideStringField;
     procedure Button1Click(Sender: TObject);
-    procedure IBDataSetLEDCHK_RESULTGetText(Sender: TField; var Text: string;
-      DisplayText: Boolean);
     procedure FormCreate(Sender: TObject);
 
 
@@ -90,6 +87,9 @@ type
     procedure IBDataSetPovBasBeforePost(DataSet: TDataSet);
     procedure IBDataSetPovStBeforePost(DataSet: TDataSet);
     procedure IBDataSetLEDBeforePost(DataSet: TDataSet);
+    procedure DBGrid1CellClick(Column: TColumn);
+    procedure ibdtstLedRiver1BeforeInsert(DataSet: TDataSet);
+    procedure ibdtstLedRiver1BeforePost(DataSet: TDataSet);
 
 
 
@@ -114,6 +114,18 @@ end;
 procedure TForm2.Button2Click(Sender: TObject);
 begin
  Form1.IBTransaction1.Rollback ;
+end;
+
+procedure TForm2.DBGrid1CellClick(Column: TColumn);
+begin
+  if DBGrid1.DataSource = DataSourceLED then begin
+    ibdtstLedRiver1.Close;
+    ibdtstLedRiver1.ParamByName('obj').AsInteger :=
+    DBGrid1.DataSource.DataSet.FieldByName('POST_INDEX').AsInteger;
+    ibdtstLedRiver1.open;
+    dbgrdRiver.DataSource := dsLedRiver;
+    dbnvgrRiver.DataSource := dsLedRiver;
+  end;
 end;
 
 procedure TForm2.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -144,22 +156,6 @@ procedure TForm2.IBDataSetLEDBeforePost(DataSet: TDataSet);
 begin
  IBDataSetLED.FieldByName('PROGNOZ_ID').Value:=(copy(parForm, 3, 1));
 end;
-
-procedure TForm2.IBDataSetLEDCHK_RESULTGetText(Sender: TField; var Text: string;
-  DisplayText: Boolean);
-begin
-if not Sender.IsNull then
- begin
-  if Sender.Value ='Бєлгідромет' then
-      text:='Так'
-       else
-  if Sender.Value ='Півн.Зах.Гідромет' then
-       text:='Ні'
-       else
-          Text := Sender.Value;
-  end;
-end;
-
 
 
 
@@ -229,12 +225,15 @@ end;
 
 
 
+procedure TForm2.ibdtstLedRiver1BeforeInsert(DataSet: TDataSet);
+begin
+;
+end;
 
-
-
-
-
-
-
+procedure TForm2.ibdtstLedRiver1BeforePost(DataSet: TDataSet);
+begin
+  ibdtstLedRiver1.FieldByName('OBJ_INDEX').AsInteger :=
+  DBGrid1.DataSource.DataSet.FieldByName('POST_INDEX').AsInteger
+end;
 
 end.
