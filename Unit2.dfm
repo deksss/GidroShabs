@@ -13,6 +13,7 @@ object Form2: TForm2
   OldCreateOrder = False
   OnClose = FormClose
   OnCreate = FormCreate
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object lblRiver: TLabel
@@ -28,7 +29,6 @@ object Form2: TForm2
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    ExplicitTop = 312
     ExplicitWidth = 263
   end
   object lblObj: TLabel
@@ -55,8 +55,6 @@ object Form2: TForm2
     Height = 289
     Align = alTop
     TabOrder = 0
-    ExplicitTop = 23
-    ExplicitWidth = 728
     object DBNavigator1: TDBNavigator
       Left = 1
       Top = 263
@@ -65,7 +63,6 @@ object Form2: TForm2
       DataSource = DataSourceLED
       Align = alBottom
       TabOrder = 0
-      ExplicitWidth = 726
     end
     object DBGrid1: TDBGrid
       Left = 1
@@ -108,8 +105,6 @@ object Form2: TForm2
     Height = 193
     Align = alTop
     TabOrder = 3
-    ExplicitTop = 335
-    ExplicitWidth = 728
     object dbgrdRiver: TDBGrid
       Left = 1
       Top = 5
@@ -132,7 +127,6 @@ object Form2: TForm2
       DataSource = dsLedRiver
       Align = alBottom
       TabOrder = 1
-      ExplicitWidth = 726
     end
   end
   object IBDataSetLED: TIBDataSet
@@ -143,6 +137,8 @@ object Form2: TForm2
       'delete from PROGNOZ_LED'
       'where'
       '  PROGNOZ_ID = :old_prognoz_id '
+      'and'
+      '  POST_INDEX = :OLD_POST_INDEX'
       '')
     InsertSQL.Strings = (
       'insert into PROGNOZ_LED'
@@ -599,6 +595,7 @@ object Form2: TForm2
       DisplayWidth = 20
       FieldName = 'CR_NAME'
       Origin = 'CAT_RIVER.CR_NAME'
+      Visible = False
       Size = 30
     end
     object smlntfldLedRiver1OBJ_INDEX: TSmallintField
@@ -610,6 +607,7 @@ object Form2: TForm2
       FieldName = 'POST_INDEX'
     end
     object strngfldLedRiver1name: TStringField
+      DisplayLabel = #1053#1072#1079#1074#1072' '#1088#1110#1095#1082#1080
       FieldKind = fkLookup
       FieldName = 'name'
       LookupDataSet = IBQueryForLKP

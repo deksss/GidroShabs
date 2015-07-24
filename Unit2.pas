@@ -90,6 +90,7 @@ type
     procedure DBGrid1CellClick(Column: TColumn);
     procedure ibdtstLedRiver1BeforeInsert(DataSet: TDataSet);
     procedure ibdtstLedRiver1BeforePost(DataSet: TDataSet);
+    procedure FormShow(Sender: TObject);
 
 
 
@@ -150,6 +151,12 @@ begin
   IBsetNum.Open;
   IBQueryForLKP.Close;
   IBQueryForLKP.Open;
+end;
+
+procedure TForm2.FormShow(Sender: TObject);
+begin
+  DBGrid1.SelectedIndex := 1;
+  DBGrid1CellClick(TColumn(1));
 end;
 
 procedure TForm2.IBDataSetLEDBeforePost(DataSet: TDataSet);
