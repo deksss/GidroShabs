@@ -156,6 +156,7 @@ procedure FormCreate(Sender: TObject);
     procedure footer();
     procedure wordStart();
     procedure wordFinish();
+    procedure deleteColIfNotSelected (rowTag : string; notDeleteCol: boolean);
 
   private
     { Private declarations }
@@ -690,11 +691,97 @@ begin
     WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
       EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
 
+
+
+
+
+    wdUnit := '#Table_Post';
+    tmp1 := true;
+    tmp2 := wdFindStop;
+    tmp3 := '';
+    tmp4 := wdReplaceOne;
+    WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+      EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+
+    wdUnit := wdCharacter;
+    tmp1 := 1;
+    WordApp.Selection.MoveRight(wdUnit, tmp1, EmptyParam);
+    deleteColIfNotSelected('#ran', CheckListBoxLED.Checked[0]);
+    deleteColIfNotSelected('#ser', CheckListBoxLED.Checked[1]);
+    deleteColIfNotSelected('#piz', CheckListBoxLED.Checked[2]);
+
+    with(WordApp.Selection.Tables.Item(1))do
+    begin
+        {
+        if not(CheckListBoxLED.Checked[0]) then  begin
+        wdUnit := '#ran';
+        tmp1 := true;
+        tmp2 := wdFindStop;
+        tmp3 := '';
+        tmp4 := wdReplaceOne;
+        WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+        EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+        WordApp.Selection.SelectColumn;
+        WordApp.Selection.Columns.Delete;
+        end;
+
+        if not(CheckListBoxLED.Checked[1]) then  begin
+        wdUnit := '#ser';
+        tmp1 := true;
+        tmp2 := wdFindStop;
+        tmp3 := '';
+        tmp4 := wdReplaceOne;
+        WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+        EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+        WordApp.Selection.SelectColumn;
+        WordApp.Selection.Columns.Delete;
+        end;
+
+         if not(CheckListBoxLED.Checked[2]) then  begin
+          wdUnit := '#piz';
+             tmp1 := true;
+        tmp2 := wdFindStop;
+        tmp3 := '';
+        tmp4 := wdReplaceOne;
+        WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+        EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+        WordApp.Selection.SelectColumn;
+        WordApp.Selection.Columns.Delete;
+
+        end;
+          }
+
+     AutoFitBehavior (wdAutoFitContent);
+    end;
+
   footer();
   wordFinish();
 
 end;
 
+ procedure TForm1.deleteColIfNotSelected (rowTag : string; notDeleteCol: boolean);
+ var
+   curCol, fnumcell: integer;
+  dat_beg, dat_end, zabezp_proc: string;
+  ind_st, basesql, polsql: string;
+  mon_prog, year_prog, sum: integer;
+  path_signature, ss: string;
+ begin
+    with(WordApp.Selection.Tables.Item(1))do
+    begin
+        wdUnit := rowTag;
+        tmp1 := true;
+        tmp2 := wdFindStop;
+        tmp3 := '';
+        tmp4 := wdReplaceOne;
+        WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+        EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+        if not( notDeleteCol ) then  begin
+            WordApp.Selection.SelectColumn;
+            WordApp.Selection.Columns.Delete;
+        end;
+    end;
+ end;
 
 
 procedure TForm1.po1;

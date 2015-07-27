@@ -355,7 +355,7 @@ object Form1: TForm1
           end
           object PanelDec: TPanel
             Left = 499
-            Top = 4
+            Top = 8
             Width = 249
             Height = 249
             BevelKind = bkTile
@@ -398,6 +398,7 @@ object Form1: TForm1
               BevelKind = bkTile
               BevelOuter = bvNone
               TabOrder = 1
+              ExplicitTop = 2
               object CBDekeda: TCheckBox
                 Left = 17
                 Top = 6
@@ -481,7 +482,7 @@ object Form1: TForm1
           end
           object PanelMon: TPanel
             Left = 254
-            Top = -1
+            Top = 17
             Width = 249
             Height = 249
             BevelKind = bkTile
@@ -1094,7 +1095,7 @@ object Form1: TForm1
     Left = 52
     Top = 455
     Bitmap = {
-      494C010115001700100010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010115001700180010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000006000000001002000000000000060
       000000000000000000000000000000000000D2D2D2FFFDFDFDFF000000000000
       0000CDCDCDFFB8B8B8FFB8B8B8FFB8B8B8FFB8B8B8FFB8B8B8FFB8B8B8FFB8B8
