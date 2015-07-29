@@ -693,35 +693,6 @@ begin
       EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
         tmp1 := ibqryLED.RecordCount;
 
-  if ibqryLED.RecordCount > 1 then
-  begin
-    wdUnit := '#Table';
-    tmp1 := true;
-    tmp2 := wdFindStop;
-    tmp3 := '';
-    tmp4 := wdReplaceOne;
-    WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
-    EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
-
-    tmp1:=ibqryLED.RecordCount-1;
-    WordApp.Selection.InsertRows(tmp1 );
-  end;
-
-    wdUnit := '#Table_Post';
-    tmp1 := true;
-    tmp2 := wdFindStop;
-    tmp3 := '';
-    tmp4 := wdReplaceOne;
-    WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
-      EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
-
-    wdUnit := wdCharacter;
-    tmp1 := 1;
-    WordApp.Selection.MoveRight(wdUnit, tmp1, EmptyParam);
-
-    deleteColIfNotSelected('#ran', CheckListBoxLED.Checked[0]);
-    deleteColIfNotSelected('#ser', CheckListBoxLED.Checked[1]);
-    deleteColIfNotSelected('#piz', CheckListBoxLED.Checked[2]);
 
     ibqryLED.close;
     ibqryLED.SQL.Text :=  'select cast( list(cr.cr_name) as varchar(256)) as rivers,  '   +
@@ -735,13 +706,44 @@ begin
  'where  '                                                     +
  'p.PROGNOZ_ID = :prognoz_id '                                 +
  'AND '                                                        +
- 'r.POST_INDEX = cr.river_id  '                                +
+ 'r.POST_INDEX = cr.river_id  '                                 +
+  'AND '                                                        +
+ 'p.CHEKED = 1 '                                +
  'AND    '                                                     +
  'p.POST_INDEX =  r.OBJ_INDEX  '                               +
  'group by  obj_inx, p.SORT_N,  p.AREA_NAME,   '               +
  'p.EARLY, p.MIDDLE, p.LATE '                                  ;
   ibqryLED.ParamByName('prognoz_id').AsInteger := 1;
   ibqryLED.Open;
+  ibqryLED.FetchAll;
+  if ibqryLED.RecordCount > 1 then
+  begin
+    wdUnit := '#Tbl';
+    tmp1 := true;
+    tmp2 := wdFindStop;
+    tmp3 := '';
+    tmp4 := wdReplaceOne;
+    WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+    EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+
+    tmp1:=ibqryLED.RecordCount-1;
+    WordApp.Selection.InsertRows(tmp1 );
+  end;
+  wdUnit := wdLine;
+    tmp1 := ibqryLED.RecordCount;
+   WordApp.Selection.MoveUp(wdUnit, tmp1, EmptyParam);
+
+    wdUnit := '#Table_Post';
+    tmp1 := true;
+    tmp2 := wdFindStop;
+    tmp3 := '';
+    tmp4 := wdReplaceOne;
+    WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+      EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+
+    wdUnit := wdCharacter;
+    tmp1 := 1;
+    WordApp.Selection.MoveRight(wdUnit, tmp1, EmptyParam);
 
     with(WordApp.Selection.Tables.Item(1))do
     begin
@@ -749,20 +751,43 @@ begin
       ibqryLED.First;
       while(not ibqryLED.Eof)do
         begin
-      rowT := ibqryLED.RecNo + 1;
-      columnT := 1;
-      for j := 0 to 6 do begin
-      ShowMessage( VarToStr( ibqryLED.FieldByName('rivers').AsString));
-        Cell(rowT, columnT).Range.Text := ibqryLED.Fields[j].AsAnsiString;
-        columnT:= columnT +1;
-      end;
-       ibqryLED.Next;
-      end;
+          rowT := ibqryLED.RecNo + 1;
+          columnT := 1;
+          Cell(rowT, columnT).Range.Text := ibqryLED.FieldByName('rivers').AsWideString;
 
 
-     AutoFitBehavior (wdAutoFitContent);
+
+          columnT:= 2;
+          Cell(rowT, columnT).Range.Text := ibqryLED.FieldByName('AREA_NAME').AsWideString;
+          if ibqryLED.FieldByName('AREA_NAME').AsWideString = '' then  begin
+          Cell(rowT, columnT-1).Merge(Cell(rowT, columnT));
+                 columnT:= 4;
+          Cell(rowT, columnT).Range.Text := ibqryLED.FieldByName('EARLY').AsWideString;
+
+            columnT:= 5;
+          Cell(rowT, columnT).Range.Text := ibqryLED.FieldByName('MIDDLE').AsWideString;
+
+            columnT:= 6;
+          Cell(rowT, columnT).Range.Text := ibqryLED.FieldByName('LATE').AsWideString;
+          end else  begin
+            columnT:= 5;
+          Cell(rowT, columnT).Range.Text := ibqryLED.FieldByName('EARLY').AsWideString;
+
+            columnT:= 6;
+          Cell(rowT, columnT).Range.Text := ibqryLED.FieldByName('MIDDLE').AsWideString;
+
+            columnT:= 7;
+          Cell(rowT, columnT).Range.Text := ibqryLED.FieldByName('LATE').AsWideString;
+          end;
+          ibqryLED.Next;
+
+      end;
     end;
 
+      deleteColIfNotSelected('#ran', CheckListBoxLED.Checked[0]);
+      deleteColIfNotSelected('#ser', CheckListBoxLED.Checked[1]);
+      deleteColIfNotSelected('#piz', CheckListBoxLED.Checked[2]);
+    WordApp.Selection.Tables.Item(1).AutoFitBehavior (wdAutoFitContent);
   footer();
   wordFinish();
 
@@ -778,6 +803,7 @@ end;
  begin
     with(WordApp.Selection.Tables.Item(1))do
     begin
+         Cell(1, 1).Range.Text := Cell(1, 1).Range.Text ;
         wdUnit := rowTag;
         tmp1 := true;
         tmp2 := wdFindStop;
@@ -789,7 +815,7 @@ end;
             WordApp.Selection.SelectColumn;
             WordApp.Selection.Columns.Delete;
         end;
-    end;
+   end;
  end;
 
 
@@ -2620,7 +2646,7 @@ begin
   IBsetNum.Database := IBDatabase1;
   IBsetNum.Transaction := IBTransaction1;
   IBsetNum.Close;
-  IBsetNum.SQL.Text := 'UPDATE PROGNOZ_LED SET CHEKED = 2';
+  IBsetNum.SQL.Text := 'UPDATE PROGNOZ_LED SET CHEKED = 1';
 
   IBsetNum.Open;
 
@@ -2628,7 +2654,7 @@ begin
   IBsetNum.Database := IBDatabase1;
   IBsetNum.Transaction := IBTransaction1;
   IBsetNum.Close;
-  IBsetNum.SQL.Text := 'UPDATE PROGNOZ_POV SET CHEKED = 2';
+  IBsetNum.SQL.Text := 'UPDATE PROGNOZ_POV SET CHEKED = 1';
 
   IBsetNum.Open;
       //   ShowMessage('done');

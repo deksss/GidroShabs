@@ -147,7 +147,7 @@ begin
   IBsetNum.Transaction := Form1.IBTransaction1;
   IBsetNum.Close;
   IBsetNum.SQL.Text :=
-    'UPDATE PROGNOZ_LED  SET CHEKED = 2' ;
+    'UPDATE PROGNOZ_LED  SET CHEKED = 1' ;
   IBsetNum.Open;
   IBQueryForLKP.Close;
   IBQueryForLKP.Open;
