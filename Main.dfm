@@ -398,7 +398,6 @@ object Form1: TForm1
               BevelKind = bkTile
               BevelOuter = bvNone
               TabOrder = 1
-              ExplicitTop = 2
               object CBDekeda: TCheckBox
                 Left = 17
                 Top = 6
@@ -984,6 +983,7 @@ object Form1: TForm1
     LoginPrompt = False
     DefaultTransaction = IBTransaction1
     SQLDialect = 1
+    TraceFlags = [tfBlob]
     Left = 16
     Top = 512
   end
@@ -1095,7 +1095,7 @@ object Form1: TForm1
     Left = 52
     Top = 455
     Bitmap = {
-      494C010115001700180010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010115001700200010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000006000000001002000000000000060
       000000000000000000000000000000000000D2D2D2FFFDFDFDFF000000000000
       0000CDCDCDFFB8B8B8FFB8B8B8FFB8B8B8FFB8B8B8FFB8B8B8FFB8B8B8FFB8B8
@@ -1979,5 +1979,11 @@ object Form1: TForm1
       '  ORDER BY  NSDB_6D.POST_INDEX')
     Left = 56
     Top = 240
+  end
+  object ibqryLED: TIBQuery
+    Database = IBDatabase1
+    Transaction = IBTransaction1
+    Left = 184
+    Top = 360
   end
 end

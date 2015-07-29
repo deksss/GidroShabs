@@ -114,6 +114,7 @@ type
     IBQueryLevelMount: TIBQuery;
     IBQueryV: TIBQuery;
     chklstTabs: TCheckListBox;
+    ibqryLED: TIBQuery;
 
 procedure FormCreate(Sender: TObject);
     procedure TreeView1CustomDrawItem(Sender: TCustomTreeView; Node: TTreeNode;
@@ -646,7 +647,7 @@ var
   curCol, fnumcell: integer;
   dat_beg, dat_end, zabezp_proc: string;
   ind_st, basesql, polsql: string;
-  mon_prog, year_prog, sum: integer;
+  columnT,rowT, year_prog, sum, i, j: integer;
   path_signature, ss: string;
 begin
   wordStart();
@@ -690,10 +691,21 @@ begin
     tmp4 := wdReplaceAll;
     WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
       EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+        tmp1 := ibqryLED.RecordCount;
 
+  if ibqryLED.RecordCount > 1 then
+  begin
+    wdUnit := '#Table';
+    tmp1 := true;
+    tmp2 := wdFindStop;
+    tmp3 := '';
+    tmp4 := wdReplaceOne;
+    WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+    EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
 
-
-
+    tmp1:=ibqryLED.RecordCount-1;
+    WordApp.Selection.InsertRows(tmp1 );
+  end;
 
     wdUnit := '#Table_Post';
     tmp1 := true;
@@ -706,50 +718,47 @@ begin
     wdUnit := wdCharacter;
     tmp1 := 1;
     WordApp.Selection.MoveRight(wdUnit, tmp1, EmptyParam);
+
     deleteColIfNotSelected('#ran', CheckListBoxLED.Checked[0]);
     deleteColIfNotSelected('#ser', CheckListBoxLED.Checked[1]);
     deleteColIfNotSelected('#piz', CheckListBoxLED.Checked[2]);
 
+    ibqryLED.close;
+    ibqryLED.SQL.Text :=  'select cast( list(cr.cr_name) as varchar(256)) as rivers,  '   +
+     'p.AREA_NAME, '                                                +
+ 'p.EARLY, '                                                   +
+ 'p.MIDDLE, '                                                  +
+ 'p.LATE, '                                                    +
+ 'p.SORT_N, '                                                  +
+ 'p.POST_INDEX as obj_inx '                                    +
+ 'from PROGNOZ_LED p, prognoz_led_river r ,  cat_river cr  '   +
+ 'where  '                                                     +
+ 'p.PROGNOZ_ID = :prognoz_id '                                 +
+ 'AND '                                                        +
+ 'r.POST_INDEX = cr.river_id  '                                +
+ 'AND    '                                                     +
+ 'p.POST_INDEX =  r.OBJ_INDEX  '                               +
+ 'group by  obj_inx, p.SORT_N,  p.AREA_NAME,   '               +
+ 'p.EARLY, p.MIDDLE, p.LATE '                                  ;
+  ibqryLED.ParamByName('prognoz_id').AsInteger := 1;
+  ibqryLED.Open;
+
     with(WordApp.Selection.Tables.Item(1))do
     begin
-        {
-        if not(CheckListBoxLED.Checked[0]) then  begin
-        wdUnit := '#ran';
-        tmp1 := true;
-        tmp2 := wdFindStop;
-        tmp3 := '';
-        tmp4 := wdReplaceOne;
-        WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
-        EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
-        WordApp.Selection.SelectColumn;
-        WordApp.Selection.Columns.Delete;
-        end;
 
-        if not(CheckListBoxLED.Checked[1]) then  begin
-        wdUnit := '#ser';
-        tmp1 := true;
-        tmp2 := wdFindStop;
-        tmp3 := '';
-        tmp4 := wdReplaceOne;
-        WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
-        EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
-        WordApp.Selection.SelectColumn;
-        WordApp.Selection.Columns.Delete;
-        end;
+      ibqryLED.First;
+      while(not ibqryLED.Eof)do
+        begin
+      rowT := ibqryLED.RecNo + 1;
+      columnT := 1;
+      for j := 0 to 6 do begin
+      ShowMessage( VarToStr( ibqryLED.FieldByName('rivers').AsString));
+        Cell(rowT, columnT).Range.Text := ibqryLED.Fields[j].AsAnsiString;
+        columnT:= columnT +1;
+      end;
+       ibqryLED.Next;
+      end;
 
-         if not(CheckListBoxLED.Checked[2]) then  begin
-          wdUnit := '#piz';
-             tmp1 := true;
-        tmp2 := wdFindStop;
-        tmp3 := '';
-        tmp4 := wdReplaceOne;
-        WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
-        EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
-        WordApp.Selection.SelectColumn;
-        WordApp.Selection.Columns.Delete;
-
-        end;
-          }
 
      AutoFitBehavior (wdAutoFitContent);
     end;
