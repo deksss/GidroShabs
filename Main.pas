@@ -2399,6 +2399,17 @@ end;
 
 procedure TForm1.ButtonVodoshovClick(Sender: TObject);
 begin
+    if (copy(parForm, 1, 2) = 'le') then
+  begin
+    form2.Caption := 'Каталог водосховищ для "' + TreeView1.Selected.Text + '"';
+    form2.DBGrid1.DataSource := form2.DataSourceLED;
+    form2.DBNavigator1.DataSource:= form2.DataSourceLED;
+        form2.IBDataSetLED.ParamByName('PROGNOZ_ID').Asinteger := StrToInt
+      ((copy(parForm, 3, 1))+'1');
+    form2.IBDataSetLED.Close;
+    form2.IBDataSetLED.Open;
+    form2.Show;
+  end else begin
   form2.Caption := 'Каталог водосховищ для "' + TreeView1.Selected.Text + '"';
   form2.IBDataSetPovVd.Close;
   form2.IBDataSetPovVd.ParamByName('type_obj').Asinteger := 3;
@@ -2408,6 +2419,7 @@ begin
    form2.DBNavigator1.DataSource:=  form2.DataSourceVD;
   form2.IBDataSetPovVd.Open;
   form2.Show;
+  end;
 end;
 
 procedure TForm1.ButtonBasClick(Sender: TObject);
@@ -2862,8 +2874,10 @@ begin
         CheckBoxProgn.Visible := false;
         CheckBoxText.Visible := false;
         CheckBoxText.Visible := false;
-
+        if (parForm = 'le2')  then
+        ButtonVodoshov.Visible := true;
       end
+
       else if parForm = 'po1' then
       begin
         PanelLedPov.Visible := true;

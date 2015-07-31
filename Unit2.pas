@@ -88,7 +88,6 @@ type
     procedure IBDataSetPovStBeforePost(DataSet: TDataSet);
     procedure IBDataSetLEDBeforePost(DataSet: TDataSet);
     procedure DBGrid1CellClick(Column: TColumn);
-    procedure ibdtstLedRiver1BeforeInsert(DataSet: TDataSet);
     procedure ibdtstLedRiver1BeforePost(DataSet: TDataSet);
     procedure FormShow(Sender: TObject);
 
@@ -161,6 +160,9 @@ end;
 
 procedure TForm2.IBDataSetLEDBeforePost(DataSet: TDataSet);
 begin
+ if pos('водосховищ', form2.Caption) <> 0  then
+ IBDataSetLED.FieldByName('PROGNOZ_ID').Value:=(copy(parForm, 3, 1))+'1' //for водосховища
+ else
  IBDataSetLED.FieldByName('PROGNOZ_ID').Value:=(copy(parForm, 3, 1));
 end;
 
@@ -232,15 +234,10 @@ end;
 
 
 
-procedure TForm2.ibdtstLedRiver1BeforeInsert(DataSet: TDataSet);
-begin
-;
-end;
-
 procedure TForm2.ibdtstLedRiver1BeforePost(DataSet: TDataSet);
 begin
   ibdtstLedRiver1.FieldByName('OBJ_INDEX').AsInteger :=
-  DBGrid1.DataSource.DataSet.FieldByName('POST_INDEX').AsInteger
+  DBGrid1.DataSource.DataSet.FieldByName('POST_INDEX').AsInteger;
 end;
 
 end.
