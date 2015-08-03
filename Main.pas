@@ -158,6 +158,7 @@ procedure FormCreate(Sender: TObject);
     procedure wordStart();
     procedure wordFinish();
     procedure deleteColIfNotSelected (rowTag : string; notDeleteCol: boolean);
+    procedure fillLedTable (PrgnozId,tblId:Integer; tablePost,Tbl :string);
 
   private
     { Private declarations }
@@ -693,7 +694,15 @@ begin
       EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
         tmp1 := ibqryLED.RecordCount;
 
+   if parForm = 'le1' then begin
+       fillLedTable ( 1, 1, '#Table_Post', '#Tbl' );
+   end else
+     if parForm = 'le2' then begin
+       fillLedTable ( 21, 1, '#Table_Post1', '#Tbl1' );
+       fillLedTable ( 2, 2, '#Table_Post2', '#Tbl2' );
+   end;
 
+   {
     ibqryLED.close;
     ibqryLED.SQL.Text :=  'select cast( list(cr.cr_name) as varchar(256)) as rivers,  '   +
      'p.AREA_NAME, '                                                +
@@ -713,7 +722,7 @@ begin
  'p.POST_INDEX =  r.OBJ_INDEX  '                               +
  'group by  obj_inx, p.SORT_N,  p.AREA_NAME,   '               +
  'p.EARLY, p.MIDDLE, p.LATE '                                  ;
-  ibqryLED.ParamByName('prognoz_id').AsInteger := 1;
+  ibqryLED.ParamByName('prognoz_id').AsInteger := 2;
   ibqryLED.Open;
   ibqryLED.FetchAll;
   if ibqryLED.RecordCount > 1 then
@@ -755,7 +764,136 @@ begin
           columnT := 1;
           Cell(rowT, columnT).Range.Text := ibqryLED.FieldByName('rivers').AsWideString;
 
+          columnT:= 2;
+          Cell(rowT, columnT).Range.Text := ibqryLED.FieldByName('AREA_NAME').AsWideString;
+          if ibqryLED.FieldByName('AREA_NAME').AsWideString = '' then  begin
+          Cell(rowT, columnT-1).Merge(Cell(rowT, columnT));
+                 columnT:= 4;
+          Cell(rowT, columnT).Range.Text := ibqryLED.FieldByName('EARLY').AsWideString;
 
+            columnT:= 5;
+          Cell(rowT, columnT).Range.Text := ibqryLED.FieldByName('MIDDLE').AsWideString;
+
+            columnT:= 6;
+          Cell(rowT, columnT).Range.Text := ibqryLED.FieldByName('LATE').AsWideString;
+          end else  begin
+            columnT:= 5;
+          Cell(rowT, columnT).Range.Text := ibqryLED.FieldByName('EARLY').AsWideString;
+
+            columnT:= 6;
+          Cell(rowT, columnT).Range.Text := ibqryLED.FieldByName('MIDDLE').AsWideString;
+
+            columnT:= 7;
+          Cell(rowT, columnT).Range.Text := ibqryLED.FieldByName('LATE').AsWideString;
+          end;
+          ibqryLED.Next;
+
+      end;
+    end;
+
+      deleteColIfNotSelected('#ran', CheckListBoxLED.Checked[0]);
+      deleteColIfNotSelected('#ser', CheckListBoxLED.Checked[1]);
+      deleteColIfNotSelected('#piz', CheckListBoxLED.Checked[2]);
+    WordApp.Selection.Tables.Item(1).AutoFitBehavior (wdAutoFitContent);
+    }
+  footer();
+  wordFinish();
+
+end;
+
+ procedure TForm1.deleteColIfNotSelected (rowTag : string; notDeleteCol: boolean);
+ var
+   curCol, fnumcell: integer;
+  dat_beg, dat_end, zabezp_proc: string;
+  ind_st, basesql, polsql: string;
+  mon_prog, year_prog, sum: integer;
+  path_signature, ss: string;
+ begin
+    with(WordApp.Selection.Tables.Item(1))do
+    begin
+         Cell(1, 1).Range.Text := Cell(1, 1).Range.Text ;
+        wdUnit := rowTag;
+        tmp1 := true;
+        tmp2 := wdFindStop;
+        tmp3 := '';
+        tmp4 := wdReplaceOne;
+        WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+        EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+        if not( notDeleteCol ) then  begin
+            WordApp.Selection.SelectColumn;
+            WordApp.Selection.Columns.Delete;
+        end;
+   end;
+ end;
+
+  procedure TForm1.fillLedTable (PrgnozId, tblId:Integer; tablePost,Tbl :string);
+ var
+   curCol, fnumcell: integer;
+  dat_beg, dat_end, zabezp_proc: string;
+  ind_st, basesql, polsql: string;
+  mon_prog, year_prog, sum,  columnT,rowT: integer;
+  path_signature, ss: string;
+ begin
+       ibqryLED.close;
+    ibqryLED.SQL.Text :=  'select cast( list(cr.cr_name) as varchar(256)) as rivers,  '   +
+     'p.AREA_NAME, '                                                +
+ 'p.EARLY, '                                                   +
+ 'p.MIDDLE, '                                                  +
+ 'p.LATE, '                                                    +
+ 'p.SORT_N, '                                                  +
+ 'p.POST_INDEX as obj_inx '                                    +
+ 'from PROGNOZ_LED p, prognoz_led_river r ,  cat_river cr  '   +
+ 'where  '                                                     +
+ 'p.PROGNOZ_ID = :prognoz_id '                                 +
+ 'AND '                                                        +
+ 'r.POST_INDEX = cr.river_id  '                                 +
+  'AND '                                                        +
+ 'p.CHEKED = 1 '                                +
+ 'AND    '                                                     +
+ 'p.POST_INDEX =  r.OBJ_INDEX  '                               +
+ 'group by  obj_inx, p.SORT_N,  p.AREA_NAME,   '               +
+ 'p.EARLY, p.MIDDLE, p.LATE '                                  ;
+  ibqryLED.ParamByName('prognoz_id').AsInteger := PrgnozId;
+  ibqryLED.Open;
+  ibqryLED.FetchAll;
+  if ibqryLED.RecordCount > 1 then
+  begin
+    wdUnit := Tbl;
+    tmp1 := true;
+    tmp2 := wdFindStop;
+    tmp3 := '';
+    tmp4 := wdReplaceOne;
+    WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+    EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+
+    tmp1:=ibqryLED.RecordCount-1;
+    WordApp.Selection.InsertRows(tmp1 );
+  end;
+  wdUnit := wdLine;
+    tmp1 := ibqryLED.RecordCount;
+   WordApp.Selection.MoveUp(wdUnit, tmp1, EmptyParam);
+
+    wdUnit := tablePost;
+    tmp1 := true;
+    tmp2 := wdFindStop;
+    tmp3 := '';
+    tmp4 := wdReplaceOne;
+    WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+      EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+
+    wdUnit := wdCharacter;
+    tmp1 := 1;
+    WordApp.Selection.MoveRight(wdUnit, tmp1, EmptyParam);
+
+    with(WordApp.Selection.Tables.Item(1))do
+    begin
+
+      ibqryLED.First;
+      while(not ibqryLED.Eof)do
+        begin
+          rowT := ibqryLED.RecNo + 2;
+          columnT := 1;
+          Cell(rowT, columnT).Range.Text := ibqryLED.FieldByName('rivers').AsWideString;
 
           columnT:= 2;
           Cell(rowT, columnT).Range.Text := ibqryLED.FieldByName('AREA_NAME').AsWideString;
@@ -788,34 +926,6 @@ begin
       deleteColIfNotSelected('#ser', CheckListBoxLED.Checked[1]);
       deleteColIfNotSelected('#piz', CheckListBoxLED.Checked[2]);
     WordApp.Selection.Tables.Item(1).AutoFitBehavior (wdAutoFitContent);
-  footer();
-  wordFinish();
-
-end;
-
- procedure TForm1.deleteColIfNotSelected (rowTag : string; notDeleteCol: boolean);
- var
-   curCol, fnumcell: integer;
-  dat_beg, dat_end, zabezp_proc: string;
-  ind_st, basesql, polsql: string;
-  mon_prog, year_prog, sum: integer;
-  path_signature, ss: string;
- begin
-    with(WordApp.Selection.Tables.Item(1))do
-    begin
-         Cell(1, 1).Range.Text := Cell(1, 1).Range.Text ;
-        wdUnit := rowTag;
-        tmp1 := true;
-        tmp2 := wdFindStop;
-        tmp3 := '';
-        tmp4 := wdReplaceOne;
-        WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
-        EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
-        if not( notDeleteCol ) then  begin
-            WordApp.Selection.SelectColumn;
-            WordApp.Selection.Columns.Delete;
-        end;
-   end;
  end;
 
 
