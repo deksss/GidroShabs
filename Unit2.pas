@@ -66,7 +66,7 @@ type
     ibqryBass: TIBQuery;
     strngfldIBDataSetPovBasname: TStringField;
     ibqryPost: TIBQuery;
-    strngfldIBDataSetPovStOBJ_NAME: TStringField;
+    wdstrngfldIBDataSetPovStOBJ_NAME: TWideStringField;
     wdstrngfldPostPOST_INDEX: TWideStringField;
     wdstrngfldPostCPM_NAME: TWideStringField;
     procedure Button1Click(Sender: TObject);

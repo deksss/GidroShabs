@@ -421,10 +421,12 @@ object Form2: TForm2
     object IBDataSetPovStcpm_name: TWideStringField
       DisplayLabel = #1053#1072#1079#1074#1072' '#1087#1086#1089#1090#1072
       FieldName = 'cpm_name'
+      Visible = False
     end
     object IBDataSetPovStCR_NAME: TWideStringField
       DisplayLabel = #1056#1110#1095#1082#1072
       FieldName = 'CR_NAME'
+      Size = 30
     end
     object IBDataSetPovStTYPE_OBJ: TIntegerField
       FieldName = 'TYPE_OBJ'
@@ -440,8 +442,7 @@ object Form2: TForm2
       Required = True
       Visible = False
     end
-    object strngfldIBDataSetPovStOBJ_NAME: TStringField
-      DisplayLabel = #1053#1072#1079#1074#1072' '#1087#1086#1089#1090#1072
+    object wdstrngfldIBDataSetPovStOBJ_NAME: TWideStringField
       FieldKind = fkLookup
       FieldName = 'OBJ_NAME'
       LookupDataSet = ibqryPost
@@ -625,8 +626,8 @@ object Form2: TForm2
     AutoCalcFields = False
     SQL.Strings = (
       'select POOL_ID, CP_NAME from CAT_POOL')
-    Left = 272
-    Top = 96
+    Left = 288
+    Top = 80
   end
   object ibqryPost: TIBQuery
     Database = Form1.IBDatabase1
@@ -634,14 +635,15 @@ object Form2: TForm2
     AutoCalcFields = False
     SQL.Strings = (
       'select POST_INDEX, CPM_NAME from CAT_POSTM')
-    Left = 224
-    Top = 96
+    Left = 208
+    Top = 88
     object wdstrngfldPostPOST_INDEX: TWideStringField
       FieldName = 'POST_INDEX'
+      Size = 5
     end
     object wdstrngfldPostCPM_NAME: TWideStringField
       FieldName = 'CPM_NAME'
-      Size = 0
+      Size = 30
     end
   end
 end

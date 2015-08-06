@@ -703,100 +703,7 @@ begin
        fillLedTable ( 2, 2, '#Table_Post2', '#Tbl2' );
    end;
 
-   {
-    ibqryLED.close;
-    ibqryLED.SQL.Text :=  'select cast( list(cr.cr_name) as varchar(256)) as rivers,  '   +
-     'p.AREA_NAME, '                                                +
- 'p.EARLY, '                                                   +
- 'p.MIDDLE, '                                                  +
- 'p.LATE, '                                                    +
- 'p.SORT_N, '                                                  +
- 'p.POST_INDEX as obj_inx '                                    +
- 'from PROGNOZ_LED p, prognoz_led_river r ,  cat_river cr  '   +
- 'where  '                                                     +
- 'p.PROGNOZ_ID = :prognoz_id '                                 +
- 'AND '                                                        +
- 'r.POST_INDEX = cr.river_id  '                                 +
-  'AND '                                                        +
- 'p.CHEKED = 1 '                                +
- 'AND    '                                                     +
- 'p.POST_INDEX =  r.OBJ_INDEX  '                               +
- 'group by  obj_inx, p.SORT_N,  p.AREA_NAME,   '               +
- 'p.EARLY, p.MIDDLE, p.LATE '                                  ;
-  ibqryLED.ParamByName('prognoz_id').AsInteger := 2;
-  ibqryLED.Open;
-  ibqryLED.FetchAll;
-  if ibqryLED.RecordCount > 1 then
-  begin
-    wdUnit := '#Tbl';
-    tmp1 := true;
-    tmp2 := wdFindStop;
-    tmp3 := '';
-    tmp4 := wdReplaceOne;
-    WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
-    EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
 
-    tmp1:=ibqryLED.RecordCount-1;
-    WordApp.Selection.InsertRows(tmp1 );
-  end;
-  wdUnit := wdLine;
-    tmp1 := ibqryLED.RecordCount;
-   WordApp.Selection.MoveUp(wdUnit, tmp1, EmptyParam);
-
-    wdUnit := '#Table_Post';
-    tmp1 := true;
-    tmp2 := wdFindStop;
-    tmp3 := '';
-    tmp4 := wdReplaceOne;
-    WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
-      EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
-
-    wdUnit := wdCharacter;
-    tmp1 := 1;
-    WordApp.Selection.MoveRight(wdUnit, tmp1, EmptyParam);
-
-    with(WordApp.Selection.Tables.Item(1))do
-    begin
-
-      ibqryLED.First;
-      while(not ibqryLED.Eof)do
-        begin
-          rowT := ibqryLED.RecNo + 1;
-          columnT := 1;
-          Cell(rowT, columnT).Range.Text := ibqryLED.FieldByName('rivers').AsWideString;
-
-          columnT:= 2;
-          Cell(rowT, columnT).Range.Text := ibqryLED.FieldByName('AREA_NAME').AsWideString;
-          if ibqryLED.FieldByName('AREA_NAME').AsWideString = '' then  begin
-          Cell(rowT, columnT-1).Merge(Cell(rowT, columnT));
-                 columnT:= 4;
-          Cell(rowT, columnT).Range.Text := ibqryLED.FieldByName('EARLY').AsWideString;
-
-            columnT:= 5;
-          Cell(rowT, columnT).Range.Text := ibqryLED.FieldByName('MIDDLE').AsWideString;
-
-            columnT:= 6;
-          Cell(rowT, columnT).Range.Text := ibqryLED.FieldByName('LATE').AsWideString;
-          end else  begin
-            columnT:= 5;
-          Cell(rowT, columnT).Range.Text := ibqryLED.FieldByName('EARLY').AsWideString;
-
-            columnT:= 6;
-          Cell(rowT, columnT).Range.Text := ibqryLED.FieldByName('MIDDLE').AsWideString;
-
-            columnT:= 7;
-          Cell(rowT, columnT).Range.Text := ibqryLED.FieldByName('LATE').AsWideString;
-          end;
-          ibqryLED.Next;
-
-      end;
-    end;
-
-      deleteColIfNotSelected('#ran', CheckListBoxLED.Checked[0]);
-      deleteColIfNotSelected('#ser', CheckListBoxLED.Checked[1]);
-      deleteColIfNotSelected('#piz', CheckListBoxLED.Checked[2]);
-    WordApp.Selection.Tables.Item(1).AutoFitBehavior (wdAutoFitContent);
-    }
   footer();
   wordFinish();
 
@@ -957,23 +864,31 @@ begin
   WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
     EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
 
-     {
-     wdUnit := '#Table_Post1';
+
+
+  if chklstTabs.Checked[0] = false then  begin
+
+      wdUnit := '#Table_Post1';
     tmp1 := true;
     tmp2 := wdFindStop;
     tmp3 := '';
-    tmp4 := wdNone;
+    tmp4 := wdReplaceOne;
     WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
-      EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4); }
-  if chklstTabs.Checked[0] = false then  begin
+      EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+
     wdUnit := wdCharacter;
     tmp1 := 1;
     WordApp.Selection.MoveRight(wdUnit, tmp1, EmptyParam);
     WordApp.Selection.Tables.Item(1).Select;
-     WordApp.Selection.Tables.Item(1).Delete;
+    WordApp.Selection.Tables.Item(1).Delete;
   end else
    begin
 
+     form2.IBDataSetPovSt.Close;
+    form2.IBDataSetPovSt.ParamByName('type_obj').Asinteger := 1;
+    form2.IBDataSetPovSt.ParamByName('prognoz_name').Asinteger := StrToInt
+      ((copy(parForm, 3, 1)));
+     form2.IBDataSetPovSt.Open;
 
   form2.IBDataSetPovBas.Close;
   form2.IBDataSetPovBas.ParamByName('type_obj').Asinteger := 2;
@@ -981,10 +896,11 @@ begin
     ((copy(parForm, 3, 1)));
   form2.IBDataSetPovBas.Open;
 
-
+     form2.IBDataSetPovBas.FetchAll;
+     form2.IBDataSetPovSt.FetchAll;
   if form2.IBDataSetPovBas.RecordCount > 1 then
   begin
-    wdUnit := '#Tbl1';
+    wdUnit := '#tbl1';
     tmp1 := true;
     tmp2 := wdFindStop;
     tmp3 := '';
