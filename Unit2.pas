@@ -20,7 +20,6 @@ type
     IBQ: TIBQuery;
     IBQueryForLKP: TIBQuery;
     IBDataSetPovBas: TIBDataSet;
-    StringField2: TStringField;
     IBDataSetLEDEARLY: TIBStringField;
     IBDataSetLEDMIDDLE: TIBStringField;
     IBDataSetLEDLATE: TIBStringField;
@@ -34,7 +33,6 @@ type
     IBDataSetPovStINDEX_OBJ: TIntegerField;
     IBDataSetPovStPROGNOZ_NAME: TIntegerField;
     IBDataSetPovStTYPE_OBJ: TIntegerField;
-    IBDataSetPovStChk_result: TStringField;
     IBDataSetPovStcpm_name: TWideStringField;
     IBDataSetPovStCR_NAME: TWideStringField;
     IBDataSetPovVd: TIBDataSet;
@@ -65,6 +63,12 @@ type
     strngfldLedRiver1name: TStringField;
     smlntfldIBQueryForLKPRIVER_ID: TSmallintField;
     wdstrngfldIBQueryForLKPCR_NAME: TWideStringField;
+    ibqryBass: TIBQuery;
+    strngfldIBDataSetPovBasname: TStringField;
+    ibqryPost: TIBQuery;
+    strngfldIBDataSetPovStOBJ_NAME: TStringField;
+    wdstrngfldPostPOST_INDEX: TWideStringField;
+    wdstrngfldPostCPM_NAME: TWideStringField;
     procedure Button1Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
 
@@ -78,11 +82,9 @@ type
 
 
 
-    procedure IBDataSetPovVdPROGNOZ_NAMEValidate(Sender: TField);
-    procedure IBDataSetPovVdTYPE_OBJValidate(Sender: TField);
-    procedure IBDataSetPovVdPROGNOZ_NAMESetText(Sender: TField;
-      const Text: string);
-    procedure IBDataSetPovVdTYPE_OBJSetText(Sender: TField; const Text: string);
+
+
+
     procedure IBDataSetPovVdBeforePost(DataSet: TDataSet);
     procedure IBDataSetPovBasBeforePost(DataSet: TDataSet);
     procedure IBDataSetPovStBeforePost(DataSet: TDataSet);
@@ -150,6 +152,10 @@ begin
   IBsetNum.Open;
   IBQueryForLKP.Close;
   IBQueryForLKP.Open;
+  ibqryBass.Open;
+
+  ibqryPost.Close;
+  ibqryPost.Open;
 end;
 
 procedure TForm2.FormShow(Sender: TObject);
@@ -204,31 +210,7 @@ end;
 
 
 
-procedure TForm2.IBDataSetPovVdPROGNOZ_NAMESetText(Sender: TField;
-  const Text: string);
-begin
-  if  Sender.IsNull then
-  sender.Value:=2;
-end;
 
-procedure TForm2.IBDataSetPovVdPROGNOZ_NAMEValidate(Sender: TField);
-begin
-  if  Sender.IsNull then
-  sender.Value:=2;
-end;
-
-procedure TForm2.IBDataSetPovVdTYPE_OBJSetText(Sender: TField;
-  const Text: string);
-begin
-  if  Sender.IsNull then
-  sender.Value:=2;
-end;
-
-procedure TForm2.IBDataSetPovVdTYPE_OBJValidate(Sender: TField);
-begin
-  if  Sender.IsNull then
-  sender.Value:=2;
-end;
 
 
 

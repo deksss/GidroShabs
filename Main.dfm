@@ -940,10 +940,6 @@ object Form1: TForm1
         Font.Style = []
         ImageIndex = 1
         ParentFont = False
-        ExplicitLeft = 0
-        ExplicitTop = 0
-        ExplicitWidth = 0
-        ExplicitHeight = 0
       end
       object TabSheet3: TTabSheet
         Caption = #1055#1086#1087#1077#1088#1077#1076#1078#1077#1085#1085#1103
@@ -954,10 +950,6 @@ object Form1: TForm1
         Font.Style = []
         ImageIndex = 2
         ParentFont = False
-        ExplicitLeft = 0
-        ExplicitTop = 0
-        ExplicitWidth = 0
-        ExplicitHeight = 0
       end
       object TabSheet4: TTabSheet
         Caption = #1064#1090#1086#1088#1084
@@ -968,10 +960,6 @@ object Form1: TForm1
         Font.Style = []
         ImageIndex = 3
         ParentFont = False
-        ExplicitLeft = 0
-        ExplicitTop = 0
-        ExplicitWidth = 0
-        ExplicitHeight = 0
       end
     end
   end
@@ -1107,7 +1095,7 @@ object Form1: TForm1
     Left = 52
     Top = 455
     Bitmap = {
-      494C0101150017002C0010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010115001700380010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000006000000001002000000000000060
       000000000000000000000000000000000000D2D2D2FFFDFDFDFF000000000000
       0000CDCDCDFFB8B8B8FFB8B8B8FFB8B8B8FFB8B8B8FFB8B8B8FFB8B8B8FFB8B8
@@ -1997,5 +1985,42 @@ object Form1: TForm1
     Transaction = IBTransaction1
     Left = 184
     Top = 360
+  end
+  object ibqryPo: TIBQuery
+    Database = IBDatabase1
+    Transaction = IBTransaction1
+    SQL.Strings = (
+      'select '
+      ' INDEX_OBJ, '
+      '   cpm_name, '
+      '   CR_NAME,'
+      '   type_obj,'
+      '   PROGNOZ_NAME '
+      'from PROGNOZ_POV p,cat_postm c, cat_river r, CAT_POOL cp'
+      'where  c.POST_INDEX  = p.INDEX_OBJ and'
+      ' c.river_id=r.river_id  and'
+      ' CHEKED = 1  and '
+      'type_obj = :type_obj and'
+      ' r.pool_id = cp.pool_id   and'
+      ' cp.pool_id = :poolId and'
+      ' prognoz_name=:prognoz_name')
+    Left = 136
+    Top = 160
+    ParamData = <
+      item
+        DataType = ftUnknown
+        Name = 'type_obj'
+        ParamType = ptUnknown
+      end
+      item
+        DataType = ftUnknown
+        Name = 'poolId'
+        ParamType = ptUnknown
+      end
+      item
+        DataType = ftUnknown
+        Name = 'prognoz_name'
+        ParamType = ptUnknown
+      end>
   end
 end

@@ -115,6 +115,7 @@ type
     IBQueryV: TIBQuery;
     chklstTabs: TCheckListBox;
     ibqryLED: TIBQuery;
+    ibqryPo: TIBQuery;
 
 procedure FormCreate(Sender: TObject);
     procedure TreeView1CustomDrawItem(Sender: TCustomTreeView; Node: TTreeNode;
@@ -158,7 +159,7 @@ procedure FormCreate(Sender: TObject);
     procedure wordStart();
     procedure wordFinish();
     procedure deleteColIfNotSelected (rowTag : string; notDeleteCol: boolean);
-    procedure fillLedTable (PrgnozId,tblId:Integer; tablePost,Tbl :string);
+    procedure fillLedTable (PrgnozId,rowOffset:Integer; tablePost,Tbl :string);
 
   private
     { Private declarations }
@@ -698,7 +699,7 @@ begin
        fillLedTable ( 1, 1, '#Table_Post', '#Tbl' );
    end else
      if parForm = 'le2' then begin
-       fillLedTable ( 21, 1, '#Table_Post1', '#Tbl1' );
+       fillLedTable ( 21, 2, '#Table_Post1', '#Tbl1' );
        fillLedTable ( 2, 2, '#Table_Post2', '#Tbl2' );
    end;
 
@@ -826,7 +827,7 @@ end;
    end;
  end;
 
-  procedure TForm1.fillLedTable (PrgnozId, tblId:Integer; tablePost,Tbl :string);
+  procedure TForm1.fillLedTable (PrgnozId, rowOffset:Integer; tablePost,Tbl :string);
  var
    curCol, fnumcell: integer;
   dat_beg, dat_end, zabezp_proc: string;
@@ -891,7 +892,7 @@ end;
       ibqryLED.First;
       while(not ibqryLED.Eof)do
         begin
-          rowT := ibqryLED.RecNo + 2;
+          rowT := ibqryLED.RecNo + rowOffset;
           columnT := 1;
           Cell(rowT, columnT).Range.Text := ibqryLED.FieldByName('rivers').AsWideString;
 
@@ -934,7 +935,7 @@ var
   curCol, fnumcell: integer;
   dat_beg, dat_end, zabezp_proc: string;
   ind_st, basesql, polsql: string;
-  mon_prog, year_prog, sum: integer;
+  mon_prog, year_prog, sum, columnT,rowT: integer;
   path_signature, ss: string;
 begin
    wordStart();
@@ -955,6 +956,88 @@ begin
   tmp4 := wdReplaceAll;
   WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
     EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+
+     {
+     wdUnit := '#Table_Post1';
+    tmp1 := true;
+    tmp2 := wdFindStop;
+    tmp3 := '';
+    tmp4 := wdNone;
+    WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+      EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4); }
+  if chklstTabs.Checked[0] = false then  begin
+    wdUnit := wdCharacter;
+    tmp1 := 1;
+    WordApp.Selection.MoveRight(wdUnit, tmp1, EmptyParam);
+    WordApp.Selection.Tables.Item(1).Select;
+     WordApp.Selection.Tables.Item(1).Delete;
+  end else
+   begin
+
+
+  form2.IBDataSetPovBas.Close;
+  form2.IBDataSetPovBas.ParamByName('type_obj').Asinteger := 2;
+  form2.IBDataSetPovBas.ParamByName('prognoz_name').Asinteger := StrToInt
+    ((copy(parForm, 3, 1)));
+  form2.IBDataSetPovBas.Open;
+
+
+  if form2.IBDataSetPovBas.RecordCount > 1 then
+  begin
+    wdUnit := '#Tbl1';
+    tmp1 := true;
+    tmp2 := wdFindStop;
+    tmp3 := '';
+    tmp4 := wdReplaceOne;
+    WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+    EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+
+    tmp1:=form2.IBDataSetPovBas.RecordCount + form2.IBDataSetPovSt.RecordCount-1;
+    WordApp.Selection.InsertRows(tmp1 );
+  end;
+
+  wdUnit := wdLine;
+    tmp1 := form2.IBDataSetPovBas.RecordCount;
+   WordApp.Selection.MoveUp(wdUnit, tmp1, EmptyParam);
+
+  wdUnit := '#Table_Post1';
+    tmp1 := true;
+    tmp2 := wdFindStop;
+    tmp3 := '';
+    tmp4 := wdReplaceOne;
+    WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+      EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+
+    wdUnit := wdCharacter;
+    tmp1 := 1;
+    WordApp.Selection.MoveRight(wdUnit, tmp1, EmptyParam);
+
+   with(WordApp.Selection.Tables.Item(1))do
+    begin
+
+      form2.IBDataSetPovBas.First;
+      while(not form2.IBDataSetPovBas.Eof)do
+        begin
+          rowT := form2.IBDataSetPovBas.RecNo + 3;
+          columnT := 2;
+          Cell(rowT, columnT).Range.Text := form2.IBDataSetPovBas.FieldByName('CP_NAME').AsWideString;
+          Cell(rowT, 1).Merge(Cell(rowT, 9));
+
+          form2.IBDataSetPovBas.Next;
+
+           ibqryPo.Close;
+            ibqryPo.ParamByName('type_obj').Asinteger := 1;
+           ibqryPo.ParamByName('prognoz_name').Asinteger := StrToInt
+            ((copy(parForm, 3, 1)));     ibqryPo.ParamByName('type_obj').Asinteger := 1;
+           ibqryPo.ParamByName('poolId').Asinteger :=
+           form2.IBDataSetPovBas.FieldByName('INDEX_OBJ').AsInteger;
+           ibqryPo.Open;
+
+      end;
+    end;
+
+
+  end;
 
   footer();
   wordFinish();
@@ -2543,6 +2626,7 @@ begin
   form2.IBDataSetPovBas.Open;
   form2.DBGrid1.DataSource := form2.DataSourceBAS;
     form2.DBNavigator1.DataSource:=  form2.DataSourceBAS;
+  form2.pnlLedRiver.Visible := false;
   form2.Show;
 end;
 
@@ -2763,6 +2847,8 @@ begin
   CheckListBoxPO2.Checked[0] := true;
   CheckListBoxPO2.Checked[1] := true;
   CheckListBoxPO2.Checked[2] := true;
+
+  chklstTabs.CheckAll(cbChecked, true, true);
 
   IBsetNum := TIBQuery.Create(nil);
   IBsetNum.Database := IBDatabase1;
@@ -3013,8 +3099,10 @@ begin
         chklstTabs.Visible := True;
         tableCount := 5;
         chklstTabs.Items.Clear;
-        for I := 1 to  tableCount do
+        for I := 1 to  tableCount do begin
             chklstTabs.Items.Add('Таблиця ' + IntToStr(i));
+            chklstTabs.Checked[i-1] := True;
+        end;
       end
       else if parForm = 'po2' then
       begin

@@ -1,8 +1,9 @@
 object Form2: TForm2
   Left = 0
   Top = 0
+  AutoSize = True
   Caption = #1050#1072#1090#1072#1083#1086#1075' '#1089#1090#1072#1085#1094#1110#1081' '#1076#1083#1103' '#1087#1088#1086#1075#1085#1086#1079#1091' "'#1051#1100#1086#1076#1086#1074#1080#1081'" '
-  ClientHeight = 593
+  ClientHeight = 559
   ClientWidth = 739
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -16,21 +17,6 @@ object Form2: TForm2
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
-  object lblRiver: TLabel
-    Left = 0
-    Top = 335
-    Width = 739
-    Height = 23
-    Align = alTop
-    Caption = #1056#1110#1095#1082#1080' '#1090#1072' '#1074#1086#1076#1086#1089#1093#1086#1074#1080#1097#1072' '#1086#1073#39#1108#1082#1090#1091':'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -19
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    ParentFont = False
-    ExplicitWidth = 263
-  end
   object lblObj: TLabel
     Left = 0
     Top = 0
@@ -81,18 +67,18 @@ object Form2: TForm2
     end
   end
   object Button1: TButton
-    Left = 217
-    Top = 560
-    Width = 75
+    Left = 441
+    Top = 534
+    Width = 160
     Height = 25
     Caption = #1047#1073#1077#1088#1110#1075#1090#1080
     TabOrder = 1
     OnClick = Button1Click
   end
   object Button2: TButton
-    Left = 328
-    Top = 560
-    Width = 145
+    Left = 136
+    Top = 533
+    Width = 137
     Height = 25
     Caption = #1047#1072#1082#1088#1080#1090#1080' '#1073#1077#1079' '#1079#1073#1077#1088#1077#1078#1077#1085#1085#1103
     TabOrder = 2
@@ -100,16 +86,31 @@ object Form2: TForm2
   end
   object pnlLedRiver: TPanel
     Left = 0
-    Top = 358
+    Top = 335
     Width = 739
     Height = 193
     Align = alTop
     TabOrder = 3
+    object lblRiver: TLabel
+      Left = 1
+      Top = 1
+      Width = 737
+      Height = 23
+      Align = alBottom
+      Caption = #1056#1110#1095#1082#1080' '#1090#1072' '#1074#1086#1076#1086#1089#1093#1086#1074#1080#1097#1072' '#1086#1073#39#1108#1082#1090#1091':'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -19
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      ExplicitWidth = 263
+    end
     object dbgrdRiver: TDBGrid
       Left = 1
-      Top = 5
+      Top = 24
       Width = 737
-      Height = 162
+      Height = 143
       Align = alBottom
       DataSource = dsLedRiver
       TabOrder = 0
@@ -252,8 +253,8 @@ object Form2: TForm2
     AutoCalcFields = False
     SQL.Strings = (
       'select river_id, CR_NAME from cat_river')
-    Left = 352
-    Top = 88
+    Left = 344
+    Top = 96
     object smlntfldIBQueryForLKPRIVER_ID: TSmallintField
       FieldName = 'RIVER_ID'
     end
@@ -305,21 +306,9 @@ object Form2: TForm2
       '  TYPE_OBJ = :OLD_TYPE_OBJ')
     Left = 456
     Top = 176
-    object StringField2: TStringField
-      DisplayLabel = #1044#1086' '#1087#1088#1086#1075#1085#1086#1079#1091'?'
-      DisplayWidth = 10
-      FieldKind = fkLookup
-      FieldName = 'CHK_RESULT'
-      LookupDataSet = IBQueryForLKP
-      LookupKeyFields = 'CC_INDEX'
-      LookupResultField = 'CC_NAME'
-      KeyFields = 'CHEKED'
-      Lookup = True
-    end
     object IBDataSetPovBasCHEKED: TSmallintField
-      DisplayLabel = #1044#1086' '#1074#1080#1087#1091#1089#1082#1091'?'
+      DisplayLabel = #1044#1086' '#1087#1088#1086#1075#1085#1086#1079#1091
       FieldName = 'CHEKED'
-      Visible = False
     end
     object IBDataSetPovBasINDEX_OBJ: TIntegerField
       DisplayLabel = #1030#1085#1076#1077#1082#1089
@@ -332,6 +321,7 @@ object Form2: TForm2
       DisplayLabel = #1053#1072#1079#1074#1072' '#1073#1072#1089#1077#1081#1085#1072
       FieldName = 'CP_NAME'
       Origin = 'CAT_POOL.CP_NAME'
+      Visible = False
       Size = 30
     end
     object IBDataSetPovBasPROGNOZ_NAME: TIntegerField
@@ -347,6 +337,15 @@ object Form2: TForm2
       ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
       Required = True
       Visible = False
+    end
+    object strngfldIBDataSetPovBasname: TStringField
+      FieldKind = fkLookup
+      FieldName = 'name'
+      LookupDataSet = ibqryBass
+      LookupKeyFields = 'POOL_ID'
+      LookupResultField = 'CP_NAME'
+      KeyFields = 'INDEX_OBJ'
+      Lookup = True
     end
   end
   object DataSourceVD: TDataSource
@@ -407,20 +406,10 @@ object Form2: TForm2
       '  TYPE_OBJ = :OLD_TYPE_OBJ')
     Left = 632
     Top = 176
-    object IBDataSetPovStChk_result: TStringField
-      DisplayLabel = #1044#1086' '#1087#1088#1086#1075#1085#1086#1079#1091'?'
-      FieldKind = fkLookup
-      FieldName = 'Chk_result'
-      LookupDataSet = IBQueryForLKP
-      LookupKeyFields = 'CC_INDEX'
-      LookupResultField = 'CC_NAME'
-      KeyFields = 'CHEKED'
-      Lookup = True
-    end
     object IBDataSetPovStCHEKED: TSmallintField
+      DisplayLabel = #1044#1086' '#1087#1088#1086#1075#1085#1086#1079#1091
       FieldName = 'CHEKED'
       Origin = 'PROGNOZ_POV.CHEKED'
-      Visible = False
     end
     object IBDataSetPovStINDEX_OBJ: TIntegerField
       DisplayLabel = #1030#1085#1076#1077#1082#1089
@@ -450,6 +439,16 @@ object Form2: TForm2
       ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
       Required = True
       Visible = False
+    end
+    object strngfldIBDataSetPovStOBJ_NAME: TStringField
+      DisplayLabel = #1053#1072#1079#1074#1072' '#1087#1086#1089#1090#1072
+      FieldKind = fkLookup
+      FieldName = 'OBJ_NAME'
+      LookupDataSet = ibqryPost
+      LookupKeyFields = 'POST_INDEX'
+      LookupResultField = 'CPM_NAME'
+      KeyFields = 'INDEX_OBJ'
+      Lookup = True
     end
   end
   object IBDataSetPovVd: TIBDataSet
@@ -539,7 +538,6 @@ object Form2: TForm2
       ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
       Required = True
       Visible = False
-      OnSetText = IBDataSetPovVdPROGNOZ_NAMESetText
     end
   end
   object DataSourceST: TDataSource
@@ -620,5 +618,30 @@ object Form2: TForm2
     DataSet = ibdtstLedRiver1
     Left = 320
     Top = 393
+  end
+  object ibqryBass: TIBQuery
+    Database = Form1.IBDatabase1
+    Transaction = Form1.IBTransaction1
+    AutoCalcFields = False
+    SQL.Strings = (
+      'select POOL_ID, CP_NAME from CAT_POOL')
+    Left = 272
+    Top = 96
+  end
+  object ibqryPost: TIBQuery
+    Database = Form1.IBDatabase1
+    Transaction = Form1.IBTransaction1
+    AutoCalcFields = False
+    SQL.Strings = (
+      'select POST_INDEX, CPM_NAME from CAT_POSTM')
+    Left = 224
+    Top = 96
+    object wdstrngfldPostPOST_INDEX: TWideStringField
+      FieldName = 'POST_INDEX'
+    end
+    object wdstrngfldPostCPM_NAME: TWideStringField
+      FieldName = 'CPM_NAME'
+      Size = 0
+    end
   end
 end
