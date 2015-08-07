@@ -843,7 +843,7 @@ var
   dat_beg, dat_end, zabezp_proc: string;
   ind_st, basesql, polsql: string;
   mon_prog, year_prog, sum, columnT,rowT: integer;
-  path_signature, ss: string;
+  path_signature, ss, prev_river: string;
 begin
    wordStart();
 
@@ -927,19 +927,19 @@ begin
     wdUnit := wdCharacter;
     tmp1 := 1;
     WordApp.Selection.MoveRight(wdUnit, tmp1, EmptyParam);
-
+  rowT := 3;
    with(WordApp.Selection.Tables.Item(1))do
     begin
 
       form2.IBDataSetPovBas.First;
       while(not form2.IBDataSetPovBas.Eof)do
         begin
-          rowT := form2.IBDataSetPovBas.RecNo + 3;
+
           columnT := 2;
           Cell(rowT, columnT).Range.Text := form2.IBDataSetPovBas.FieldByName('CP_NAME').AsWideString;
           Cell(rowT, 1).Merge(Cell(rowT, 9));
 
-          form2.IBDataSetPovBas.Next;
+           rowT := rowT + 1;
 
            ibqryPo.Close;
             ibqryPo.ParamByName('type_obj').Asinteger := 1;
@@ -948,7 +948,47 @@ begin
            ibqryPo.ParamByName('poolId').Asinteger :=
            form2.IBDataSetPovBas.FieldByName('INDEX_OBJ').AsInteger;
            ibqryPo.Open;
+           ibqryPo.First;
+           while(not ibqryPo.Eof)do
+           begin
+               if prev_river <> ibqryPo.FieldByName('CR_NAME').AsWideString then
+               begin
+                  columnT := 2;
+                  Cell(rowT, columnT).Range.Text := ibqryPo.FieldByName('CR_NAME').AsWideString;
+                  prev_river := ibqryPo.FieldByName('CR_NAME').AsWideString;
+               end;
+                  columnT := 3;
+                  Cell(rowT, columnT).Range.Text := ibqryPo.FieldByName('CPM_NAME').AsWideString;
 
+                  if ibqryPo.FieldByName('CR_TYPE').AsInteger = 1 then
+                  begin
+                     columnT := 7;
+                     Cell(rowT, columnT).Range.Text :=
+                     ibqryPo.FieldByName('NB7A_HMAXM').AsWideString;
+                     columnT := 8;
+                     Cell(rowT, columnT).Range.Text :=
+                     ibqryPo.FieldByName('NB7A_HMIDM').AsWideString;
+                     columnT := 9;
+                     Cell(rowT, columnT).Range.Text :=
+                     ibqryPo.FieldByName('NB7A_HMINM').AsWideString;
+                  end else
+                  begin
+                     columnT := 7;
+                     Cell(rowT, columnT).Range.Text :=
+                     ibqryPo.FieldByName('NB7B_HMAXY').AsWideString;
+                     columnT := 8;
+                     Cell(rowT, columnT).Range.Text :=
+                     ibqryPo.FieldByName('NB7B_HMIDY').AsWideString;
+                     columnT := 9;
+                     Cell(rowT, columnT).Range.Text :=
+                     ibqryPo.FieldByName('NB7B_HMINY').AsWideString;
+                  end;
+
+               rowT := rowT + 1;
+               ibqryPo.Next;
+           end;
+
+          form2.IBDataSetPovBas.Next;
       end;
     end;
 
