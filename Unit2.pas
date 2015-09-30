@@ -175,10 +175,6 @@ end;
 
 
 
-
-
-
-
 procedure TForm2.IBDataSetPovBasBeforeInsert(DataSet: TDataSet);
 begin
 //if IBDataSetPovVd.FieldByName()

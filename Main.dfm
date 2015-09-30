@@ -12,6 +12,7 @@ object Form1: TForm1
   Font.Style = []
   Menu = MainMenu1
   OldCreateOrder = False
+  Position = poDesigned
   Visible = True
   OnClose = FormClose
   OnCreate = FormCreate
@@ -940,6 +941,10 @@ object Form1: TForm1
         Font.Style = []
         ImageIndex = 1
         ParentFont = False
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
       end
       object TabSheet3: TTabSheet
         Caption = #1055#1086#1087#1077#1088#1077#1076#1078#1077#1085#1085#1103
@@ -950,6 +955,10 @@ object Form1: TForm1
         Font.Style = []
         ImageIndex = 2
         ParentFont = False
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
       end
       object TabSheet4: TTabSheet
         Caption = #1064#1090#1086#1088#1084
@@ -960,6 +969,10 @@ object Form1: TForm1
         Font.Style = []
         ImageIndex = 3
         ParentFont = False
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
       end
     end
   end
@@ -1095,7 +1108,7 @@ object Form1: TForm1
     Left = 52
     Top = 455
     Bitmap = {
-      494C0101150017003C0010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010115001700540010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000006000000001002000000000000060
       000000000000000000000000000000000000D2D2D2FFFDFDFDFF000000000000
       0000CDCDCDFFB8B8B8FFB8B8B8FFB8B8B8FFB8B8B8FFB8B8B8FFB8B8B8FFB8B8
@@ -2033,6 +2046,164 @@ object Form1: TForm1
       'and nb.post_index = p.INDEX_OBJ')
     Left = 136
     Top = 160
+    ParamData = <
+      item
+        DataType = ftUnknown
+        Name = 'type_obj'
+        ParamType = ptUnknown
+      end
+      item
+        DataType = ftUnknown
+        Name = 'poolId'
+        ParamType = ptUnknown
+      end
+      item
+        DataType = ftUnknown
+        Name = 'prognoz_name'
+        ParamType = ptUnknown
+      end
+      item
+        DataType = ftUnknown
+        Name = 'type_obj'
+        ParamType = ptUnknown
+      end
+      item
+        DataType = ftUnknown
+        Name = 'poolId'
+        ParamType = ptUnknown
+      end
+      item
+        DataType = ftUnknown
+        Name = 'prognoz_name'
+        ParamType = ptUnknown
+      end>
+  end
+  object ibqryPo2: TIBQuery
+    Database = IBDatabase1
+    Transaction = IBTransaction1
+    SQL.Strings = (
+      'select   distinct'
+      ' INDEX_OBJ, '
+      '   cpm_name, '
+      '   CR_NAME,'
+      '   type_obj,'
+      '   PROGNOZ_NAME,'
+      '    NB7A_HMAXM,'
+      '    NB7A_HMIDM,'
+      '    NB7A_HMINM,'
+      '    CR_TYPE'
+      
+        'from PROGNOZ_POV p,cat_postm c, cat_river r, CAT_POOL cp, NSDB_D' +
+        '7A na'
+      'where  c.POST_INDEX  = p.INDEX_OBJ and'
+      'c.river_id=r.river_id'
+      'and CHEKED = 1'
+      ' and type_obj = :type_obj and'
+      ' r.pool_id = :poolId'
+      'and prognoz_name= :prognoz_name'
+      'and na.post_index = p.INDEX_OBJ'
+      ' UNION'
+      ' select   distinct'
+      ' INDEX_OBJ, '
+      '   cpm_name, '
+      '   CR_NAME,'
+      '   type_obj,'
+      '   PROGNOZ_NAME,'
+      '    NB7B_HMAXY,'
+      '    NB7B_HMIDY,'
+      '    NB7B_HMINY,'
+      '    CR_TYPE'
+      
+        'from PROGNOZ_POV p,cat_postm c, cat_river r, CAT_POOL cp, NSDB_D' +
+        '7B nb'
+      'where  c.POST_INDEX  = p.INDEX_OBJ and'
+      'c.river_id=r.river_id'
+      'and CHEKED = 1'
+      ' and type_obj = :type_obj and'
+      ' r.pool_id = :poolId'
+      'and prognoz_name= :prognoz_name'
+      'and nb.post_index = p.INDEX_OBJ')
+    Left = 136
+    Top = 224
+    ParamData = <
+      item
+        DataType = ftUnknown
+        Name = 'type_obj'
+        ParamType = ptUnknown
+      end
+      item
+        DataType = ftUnknown
+        Name = 'poolId'
+        ParamType = ptUnknown
+      end
+      item
+        DataType = ftUnknown
+        Name = 'prognoz_name'
+        ParamType = ptUnknown
+      end
+      item
+        DataType = ftUnknown
+        Name = 'type_obj'
+        ParamType = ptUnknown
+      end
+      item
+        DataType = ftUnknown
+        Name = 'poolId'
+        ParamType = ptUnknown
+      end
+      item
+        DataType = ftUnknown
+        Name = 'prognoz_name'
+        ParamType = ptUnknown
+      end>
+  end
+  object ibqryForPo: TIBQuery
+    Database = IBDatabase1
+    Transaction = IBTransaction1
+    SQL.Strings = (
+      'select   distinct'
+      ' INDEX_OBJ, '
+      '   cpm_name, '
+      '   CR_NAME,'
+      '   type_obj,'
+      '   PROGNOZ_NAME,'
+      '    NB7A_HMAXM,'
+      '    NB7A_HMIDM,'
+      '    NB7A_HMINM,'
+      '    CR_TYPE'
+      
+        'from PROGNOZ_POV p,cat_postm c, cat_river r, CAT_POOL cp, NSDB_D' +
+        '7A na'
+      'where  c.POST_INDEX  = p.INDEX_OBJ and'
+      'c.river_id=r.river_id'
+      'and CHEKED = 1'
+      ' and type_obj = :type_obj and'
+      ' r.pool_id = :poolId'
+      'and prognoz_name= :prognoz_name'
+      'and na.post_index = p.INDEX_OBJ'
+      ' UNION'
+      ' select   distinct'
+      ' INDEX_OBJ, '
+      '   cpm_name, '
+      '   CR_NAME,'
+      '   type_obj,'
+      '   PROGNOZ_NAME,'
+      '    NB7B_HMAXY,'
+      '    NB7B_HMIDY,'
+      '    NB7B_HMINY,'
+      '    CR_TYPE'
+      
+        'from PROGNOZ_POV p,cat_postm c, cat_river r, CAT_POOL cp, NSDB_D' +
+        '7B nb'
+      'where  c.POST_INDEX  = p.INDEX_OBJ and'
+      'c.river_id=r.river_id'
+      'and CHEKED = 1'
+      ' and type_obj = :type_obj and'
+      ' r.pool_id = :poolId'
+      'and prognoz_name= :prognoz_name'
+      'and nb.post_index = p.INDEX_OBJ')
+    Left = 72
+    Top = 144
     ParamData = <
       item
         DataType = ftUnknown

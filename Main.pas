@@ -116,6 +116,8 @@ type
     chklstTabs: TCheckListBox;
     ibqryLED: TIBQuery;
     ibqryPo: TIBQuery;
+    ibqryPo2: TIBQuery;
+    ibqryForPo: TIBQuery;
 
 procedure FormCreate(Sender: TObject);
     procedure TreeView1CustomDrawItem(Sender: TCustomTreeView; Node: TTreeNode;
@@ -160,6 +162,7 @@ procedure FormCreate(Sender: TObject);
     procedure wordFinish();
     procedure deleteColIfNotSelected (rowTag : string; notDeleteCol: boolean);
     procedure fillLedTable (PrgnozId,rowOffset:Integer; tablePost,Tbl :string);
+    procedure poTableFill (tableIndex, rowOffset, upDeleteCount,dwnDeleteCount:integer; tableHead, tableBody:string ) ;
 
   private
     { Private declarations }
@@ -248,7 +251,8 @@ uses den, IniFiles, MAPI, Unit2;
 {$R *.dfm}
 
 
-procedure TForm1.wordStart(); begin
+procedure TForm1.wordStart();
+ begin
   Screen.Cursor := crHourGlass;
   WordApp := TWordApplication.Create(Self);
   WordApp.Connect();
@@ -865,10 +869,66 @@ begin
     EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
 
 
+        wdUnit := '#YEAR';
+    tmp1 := true;
+    tmp2 := wdFindContinue;
+    tmp3 := IntToStr(StrToInt(FormatDateTime('yyyy', DTProgn.Date)));
+    tmp4 := wdReplaceAll;
+    WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+      EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
 
-  if chklstTabs.Checked[0] = false then  begin
+    wdUnit := '#NEXTYEAR';
+    tmp1 := true;
+    tmp2 := wdFindContinue;
+    tmp3 := IntToStr(StrToInt(FormatDateTime('yyyy', DTProgn.Date)) + 1);
+    tmp4 := wdReplaceAll;
+    WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+      EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
 
-      wdUnit := '#Table_Post1';
+          wdUnit := '#PREVYEAR';
+    tmp1 := true;
+    tmp2 := wdFindContinue;
+    tmp3 := IntToStr(StrToInt(FormatDateTime('yyyy', DTProgn.Date)) - 1);
+    tmp4 := wdReplaceAll;
+    WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+      EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+        tmp1 := ibqryLED.RecordCount;
+
+  poTableFill (0,3, 4, 6, '#Table_Post1', '#tbl1' ) ;
+  poTableFill (1,3,4, 3, '#Table_Post2', '#tbl2' ) ;
+  poTableFill (2,3,5, 5, '#Table_Post3', '#tbl3' ) ;
+  poTableFill (3,3,4, 6, '#Table_Post4', '#tbl4' ) ;
+  poTableFill (4,3,4, 6, '#Table_Post5', '#tbl5' ) ;
+  footer();
+  wordFinish();
+
+end;
+
+procedure Tform1.poTableFill (tableIndex, rowOffset, upDeleteCount,dwnDeleteCount:integer; tableHead, tableBody:string ) ;
+  var rowT, columnT, number :integer;
+  prev_river: string;
+  Extend:OLEVariant;
+begin
+    if chklstTabs.Checked[tableIndex] = false then  begin
+     {
+        wdUnit := '#head1';
+    tmp1 := true;
+    tmp2 := wdFindStop;
+    tmp3 := '';
+    tmp4 := wdReplaceOne;
+    WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+      EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+
+         wdUnit := wdParagraph;
+    tmp1 := 3;
+      tmp4 := wdExtend;
+       WordApp.Selection.MoveDown(wdUnit, tmp1, tmp4);
+
+        tmp1 := 1;
+         wdUnit := wdCharacter;
+     WordApp.Selection.Delete( wdUnit, tmp1);
+                        }
+      wdUnit := tableHead;
     tmp1 := true;
     tmp2 := wdFindStop;
     tmp3 := '';
@@ -881,26 +941,47 @@ begin
     WordApp.Selection.MoveRight(wdUnit, tmp1, EmptyParam);
     WordApp.Selection.Tables.Item(1).Select;
     WordApp.Selection.Tables.Item(1).Delete;
+
+    wdUnit := wdLine;
+    tmp1 := upDeleteCount;
+    Extend   := wdExtend;
+    WordApp.Selection.MoveUp(wdUnit, tmp1, Extend);
+
+    wdUnit := wdCharacter;
+    tmp1 := 1;
+    WordApp.Selection.Delete(wdUnit, tmp1);
+
+    wdUnit := wdLine;
+    tmp1 := dwnDeleteCount;
+    Extend   := wdExtend;
+    WordApp.Selection.MoveDown(wdUnit, tmp1, Extend);
+
+    wdUnit := wdCharacter;
+    tmp1 := 1;
+    WordApp.Selection.Delete(wdUnit, tmp1);
+
+    //Selection.MoveDown Unit:=wdLine, Count:=9, Extend:=wdExtend
+   // Selection.Delete Unit:=wdCharacter, Count:=1
   end else
    begin
 
-     form2.IBDataSetPovSt.Close;
+    form2.IBDataSetPovSt.Close;
     form2.IBDataSetPovSt.ParamByName('type_obj').Asinteger := 1;
     form2.IBDataSetPovSt.ParamByName('prognoz_name').Asinteger := StrToInt
       ((copy(parForm, 3, 1)));
      form2.IBDataSetPovSt.Open;
 
-  form2.IBDataSetPovBas.Close;
-  form2.IBDataSetPovBas.ParamByName('type_obj').Asinteger := 2;
-  form2.IBDataSetPovBas.ParamByName('prognoz_name').Asinteger := StrToInt
+    form2.IBDataSetPovBas.Close;
+    form2.IBDataSetPovBas.ParamByName('type_obj').Asinteger := 2;
+    form2.IBDataSetPovBas.ParamByName('prognoz_name').Asinteger := StrToInt
     ((copy(parForm, 3, 1)));
-  form2.IBDataSetPovBas.Open;
+    form2.IBDataSetPovBas.Open;
 
      form2.IBDataSetPovBas.FetchAll;
      form2.IBDataSetPovSt.FetchAll;
   if form2.IBDataSetPovBas.RecordCount > 1 then
   begin
-    wdUnit := '#tbl1';
+    wdUnit := tableBody;
     tmp1 := true;
     tmp2 := wdFindStop;
     tmp3 := '';
@@ -916,7 +997,7 @@ begin
     tmp1 := form2.IBDataSetPovBas.RecordCount;
    WordApp.Selection.MoveUp(wdUnit, tmp1, EmptyParam);
 
-  wdUnit := '#Table_Post1';
+  wdUnit := tableHead;
     tmp1 := true;
     tmp2 := wdFindStop;
     tmp3 := '';
@@ -927,13 +1008,15 @@ begin
     wdUnit := wdCharacter;
     tmp1 := 1;
     WordApp.Selection.MoveRight(wdUnit, tmp1, EmptyParam);
-  rowT := 3;
+  rowT := rowOffset;
+  number := 0;
    with(WordApp.Selection.Tables.Item(1))do
     begin
-
       form2.IBDataSetPovBas.First;
-      while(not form2.IBDataSetPovBas.Eof)do
-        begin
+      while(not form2.IBDataSetPovBas.Eof) do begin
+      if ( NOT (form2.IBDataSetPovBas.FieldByName('INDEX_OBJ').AsInteger IN [9,10,11]))
+          and  (tableIndex = 0)
+       then begin
 
           columnT := 2;
           Cell(rowT, columnT).Range.Text := form2.IBDataSetPovBas.FieldByName('CP_NAME').AsWideString;
@@ -942,7 +1025,7 @@ begin
            rowT := rowT + 1;
 
            ibqryPo.Close;
-            ibqryPo.ParamByName('type_obj').Asinteger := 1;
+           ibqryPo.ParamByName('type_obj').Asinteger := 1;
            ibqryPo.ParamByName('prognoz_name').Asinteger := StrToInt
             ((copy(parForm, 3, 1)));     ibqryPo.ParamByName('type_obj').Asinteger := 1;
            ibqryPo.ParamByName('poolId').Asinteger :=
@@ -951,14 +1034,20 @@ begin
            ibqryPo.First;
            while(not ibqryPo.Eof)do
            begin
+               number := number + 1;
+               columnT := 1;
+               Cell(rowT, columnT).Range.Text := IntToStr(number);
+
                if prev_river <> ibqryPo.FieldByName('CR_NAME').AsWideString then
                begin
                   columnT := 2;
-                  Cell(rowT, columnT).Range.Text := ibqryPo.FieldByName('CR_NAME').AsWideString;
+                  Cell(rowT, columnT).Range.Text :=
+                  ibqryPo.FieldByName('CR_NAME').AsWideString;
                   prev_river := ibqryPo.FieldByName('CR_NAME').AsWideString;
                end;
                   columnT := 3;
-                  Cell(rowT, columnT).Range.Text := ibqryPo.FieldByName('CPM_NAME').AsWideString;
+                  Cell(rowT, columnT).Range.Text :=
+                  ibqryPo.FieldByName('CPM_NAME').AsWideString;
 
                   if ibqryPo.FieldByName('CR_TYPE').AsInteger = 1 then
                   begin
@@ -986,18 +1075,75 @@ begin
 
                rowT := rowT + 1;
                ibqryPo.Next;
-           end;
+                  end;
+        end else if (form2.IBDataSetPovBas.FieldByName('INDEX_OBJ').AsInteger IN [9,10,11]) then begin
+         columnT := 2;
+          Cell(rowT, columnT).Range.Text := form2.IBDataSetPovBas.FieldByName('CP_NAME').AsWideString;
+          Cell(rowT, 1).Merge(Cell(rowT, 9));
+
+           rowT := rowT + 1;
+
+           ibqryPo.Close;
+           ibqryPo.ParamByName('type_obj').Asinteger := 1;
+           ibqryPo.ParamByName('prognoz_name').Asinteger := StrToInt
+            ((copy(parForm, 3, 1)));     ibqryPo.ParamByName('type_obj').Asinteger := 1;
+           ibqryPo.ParamByName('poolId').Asinteger :=
+           form2.IBDataSetPovBas.FieldByName('INDEX_OBJ').AsInteger;
+           ibqryPo.Open;
+           ibqryPo.First;
+           while(not ibqryPo.Eof)do
+           begin
+               number := number + 1;
+               columnT := 1;
+               Cell(rowT, columnT).Range.Text := IntToStr(number);
+
+               if prev_river <> ibqryPo.FieldByName('CR_NAME').AsWideString then
+               begin
+                  columnT := 2;
+                  Cell(rowT, columnT).Range.Text :=
+                  ibqryPo.FieldByName('CR_NAME').AsWideString;
+                  prev_river := ibqryPo.FieldByName('CR_NAME').AsWideString;
+               end;
+                  columnT := 3;
+                  Cell(rowT, columnT).Range.Text :=
+                  ibqryPo.FieldByName('CPM_NAME').AsWideString;
+
+               ibqryForPo.close;
+               ibqryForPo.SQL.Text :=
+               'select max(hh08) as maxYear  from gydro_1_2 where post_index = :indx and date_ch > :db and date_ch <= :de' ;
+               ibqryForPo.ParamByName('db').AsDate := EncodeDate(StrToInt(FormatDateTime('yyyy', DTProgn.Date)), 1, 1);;
+               ibqryForPo.ParamByName('de').AsDate := Now ;
+               ibqryForPo.ParamByName('indx').AsDate := ibqryPo.FieldByName('INDEX_OBJ').AsInteger;
+               ibqryForPo.Open;
+               columnT := 4;
+                  Cell(rowT, columnT).Range.Text :=
+                  ibqryForPo.FieldByName('maxYear').AsWideString;
+
+
+                 ibqryForPo.close;
+               ibqryForPo.SQL.Text :=
+               'select max(hh08) as maxAll  from gydro_1_2 where post_index = :indx' ;
+                ibqryForPo.ParamByName('indx').AsDate := ibqryPo.FieldByName('INDEX_OBJ').AsInteger;
+               ibqryForPo.Open;
+               columnT := 5;
+                  Cell(rowT, columnT).Range.Text :=
+                  ibqryForPo.FieldByName('maxAll').AsWideString;
+
+               rowT := rowT + 1;
+               ibqryPo.Next;
+                  end;
+
+        end;
 
           form2.IBDataSetPovBas.Next;
       end;
+
+     for i:=3  to Rows.Count  do begin
+//        if (Cell(i, 1).Range.Text = '') then
+     end;
+
     end;
-
-
   end;
-
-  footer();
-  wordFinish();
-
 end;
 
 procedure TForm1.po2;
