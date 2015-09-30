@@ -69,6 +69,11 @@ type
     wdstrngfldIBDataSetPovStOBJ_NAME: TWideStringField;
     wdstrngfldPostPOST_INDEX: TWideStringField;
     wdstrngfldPostCPM_NAME: TWideStringField;
+    smlntfldIBDataSetPovSttable1: TSmallintField;
+    smlntfldIBDataSetPovSttable2: TSmallintField;
+    smlntfldIBDataSetPovSttable3: TSmallintField;
+    smlntfldIBDataSetPovSttable4: TSmallintField;
+    smlntfldIBDataSetPovSttable5: TSmallintField;
     procedure Button1Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
 

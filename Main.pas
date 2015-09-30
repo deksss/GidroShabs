@@ -966,6 +966,18 @@ begin
    begin
 
     form2.IBDataSetPovSt.Close;
+
+     form2.IBDataSetPovSt.SelectSQL.Text := 'select'  +
+ ' INDEX_OBJ,   '  +
+   ' CHEKED,  '     +
+   ' cpm_name, '     +
+   ' CR_NAME, type_obj, PROGNOZ_NAME,  '     +
+' table1, table2, table3, table4, table5  '   +
+' from PROGNOZ_POV p,cat_postm c, cat_river r   '   +
+' where  c.POST_INDEX  = p.INDEX_OBJ and c.river_id=r.river_id  '  +
+ ' and type_obj = :type_obj   '     +
+' and prognoz_name=:prognoz_name    '   +
+' and table1 = 1';
     form2.IBDataSetPovSt.ParamByName('type_obj').Asinteger := 1;
     form2.IBDataSetPovSt.ParamByName('prognoz_name').Asinteger := StrToInt
       ((copy(parForm, 3, 1)));
@@ -1017,13 +1029,10 @@ begin
       if ( NOT (form2.IBDataSetPovBas.FieldByName('INDEX_OBJ').AsInteger IN [9,10,11]))
           and  (tableIndex = 0)
        then begin
-
           columnT := 2;
           Cell(rowT, columnT).Range.Text := form2.IBDataSetPovBas.FieldByName('CP_NAME').AsWideString;
           Cell(rowT, 1).Merge(Cell(rowT, 9));
-
            rowT := rowT + 1;
-
            ibqryPo.Close;
            ibqryPo.ParamByName('type_obj').Asinteger := 1;
            ibqryPo.ParamByName('prognoz_name').Asinteger := StrToInt
@@ -1037,7 +1046,6 @@ begin
                number := number + 1;
                columnT := 1;
                Cell(rowT, columnT).Range.Text := IntToStr(number);
-
                if prev_river <> ibqryPo.FieldByName('CR_NAME').AsWideString then
                begin
                   columnT := 2;
@@ -1048,6 +1056,10 @@ begin
                   columnT := 3;
                   Cell(rowT, columnT).Range.Text :=
                   ibqryPo.FieldByName('CPM_NAME').AsWideString;
+
+                    columnT := 4;
+                  Cell(rowT, columnT).Range.Text :=
+                FloatToStrF(  ibqryPo.FieldByName('POST_NIL').AsFloat, ffFixed, 8, 1);
 
                   if ibqryPo.FieldByName('CR_TYPE').AsInteger = 1 then
                   begin
@@ -1107,6 +1119,9 @@ begin
                   columnT := 3;
                   Cell(rowT, columnT).Range.Text :=
                   ibqryPo.FieldByName('CPM_NAME').AsWideString;
+                   columnT := 4;
+                  Cell(rowT, columnT).Range.Text :=
+                FloatToStrF(  ibqryPo.FieldByName('POST_NIL').AsFloat, ffFixed, 8, 1);
 
                ibqryForPo.close;
                ibqryForPo.SQL.Text :=
@@ -1118,7 +1133,6 @@ begin
                columnT := 4;
                   Cell(rowT, columnT).Range.Text :=
                   ibqryForPo.FieldByName('maxYear').AsWideString;
-
 
                  ibqryForPo.close;
                ibqryForPo.SQL.Text :=
@@ -1132,9 +1146,7 @@ begin
                rowT := rowT + 1;
                ibqryPo.Next;
                   end;
-
         end;
-
           form2.IBDataSetPovBas.Next;
       end;
 
@@ -2681,7 +2693,20 @@ begin
   end
   else
   begin
+  Form2.lblRiver.Visible := false;
+  form2.dbgrdRiver.Visible := false;
+  Form2.dbnvgrRiver.Visible := False;
     form2.IBDataSetPovSt.Close;
+     form2.IBDataSetPovSt.SelectSQL.Text := 'select'  +
+ ' INDEX_OBJ,   '  +
+   ' CHEKED,  '     +
+   ' cpm_name, '     +
+   ' CR_NAME, type_obj, PROGNOZ_NAME,  '     +
+' table1, table2, table3, table4, table5  '   +
+' from PROGNOZ_POV p,cat_postm c, cat_river r   '   +
+' where  c.POST_INDEX  = p.INDEX_OBJ and c.river_id=r.river_id  '  +
+ ' and type_obj = :type_obj   '     +
+' and prognoz_name=:prognoz_name    ';
     form2.IBDataSetPovSt.ParamByName('type_obj').Asinteger := 1;
     form2.IBDataSetPovSt.ParamByName('prognoz_name').Asinteger := StrToInt
       ((copy(parForm, 3, 1)));

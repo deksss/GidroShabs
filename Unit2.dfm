@@ -371,15 +371,24 @@ object Form2: TForm2
       '  TYPE_OBJ = :OLD_TYPE_OBJ')
     InsertSQL.Strings = (
       'insert into PROGNOZ_POV'
-      '  (CHEKED, INDEX_OBJ, PROGNOZ_NAME, TYPE_OBJ)'
+      
+        '  (CHEKED, INDEX_OBJ, PROGNOZ_NAME, TYPE_OBJ, table1, table2, ta' +
+        'ble3, table4,table5)'
       'values'
-      '  (:CHEKED, :INDEX_OBJ, :PROGNOZ_NAME, :TYPE_OBJ)')
+      
+        '  (:CHEKED, :INDEX_OBJ, :PROGNOZ_NAME, :TYPE_OBJ, :table1, :tabl' +
+        'e2, :table3, :table4, :table5)')
     RefreshSQL.Strings = (
       'Select '
       '  CHEKED,'
       '  INDEX_OBJ,'
       '  PROGNOZ_NAME,'
-      '  TYPE_OBJ'
+      '  TYPE_OBJ,'
+      'table1,'
+      'table2,'
+      'table3,'
+      'table4,'
+      'table5'
       'from PROGNOZ_POV '
       'where'
       '  CHEKED = :CHEKED and'
@@ -391,7 +400,8 @@ object Form2: TForm2
       ' INDEX_OBJ, '
       '   CHEKED,'
       '   cpm_name, '
-      '   CR_NAME, type_obj, PROGNOZ_NAME '
+      '   CR_NAME, type_obj, PROGNOZ_NAME,'
+      'table1, table2, table3, table4, table5 '
       'from PROGNOZ_POV p,cat_postm c, cat_river r '
       'where  c.POST_INDEX  = p.INDEX_OBJ and c.river_id=r.river_id  '
       ' and type_obj = :type_obj'
@@ -399,7 +409,12 @@ object Form2: TForm2
     ModifySQL.Strings = (
       'update PROGNOZ_POV'
       'set'
-      '  CHEKED = :CHEKED'
+      '  CHEKED = :CHEKED,'
+      'table1 = :table1,'
+      'table2 = :table2,'
+      'table3 = :table3,'
+      'table4 = :table4,'
+      'table5 = :table5'
       'where'
       '  INDEX_OBJ = :OLD_INDEX_OBJ and'
       '  PROGNOZ_NAME = :OLD_PROGNOZ_NAME and'
@@ -443,6 +458,7 @@ object Form2: TForm2
       Visible = False
     end
     object wdstrngfldIBDataSetPovStOBJ_NAME: TWideStringField
+      DisplayLabel = #1053#1072#1079#1074#1072' '#1087#1086#1089#1090#1072
       FieldKind = fkLookup
       FieldName = 'OBJ_NAME'
       LookupDataSet = ibqryPost
@@ -450,6 +466,21 @@ object Form2: TForm2
       LookupResultField = 'CPM_NAME'
       KeyFields = 'INDEX_OBJ'
       Lookup = True
+    end
+    object smlntfldIBDataSetPovSttable1: TSmallintField
+      FieldName = 'table1'
+    end
+    object smlntfldIBDataSetPovSttable2: TSmallintField
+      FieldName = 'table2'
+    end
+    object smlntfldIBDataSetPovSttable3: TSmallintField
+      FieldName = 'table3'
+    end
+    object smlntfldIBDataSetPovSttable4: TSmallintField
+      FieldName = 'table4'
+    end
+    object smlntfldIBDataSetPovSttable5: TSmallintField
+      FieldName = 'table5'
     end
   end
   object IBDataSetPovVd: TIBDataSet
