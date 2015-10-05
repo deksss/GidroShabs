@@ -162,8 +162,7 @@ procedure FormCreate(Sender: TObject);
     procedure wordFinish();
     procedure deleteColIfNotSelected (rowTag : string; notDeleteCol: boolean);
     procedure fillLedTable (PrgnozId,rowOffset:Integer; tablePost,Tbl :string);
-    procedure poTableFill (tableIndex, rowOffset:integer; tableHead, tableBody:string ) ;
-    function deleteTable(tableIndex,  upDeleteCount,dwnDeleteCount:integer; tableHead:string ):boolean ;
+    procedure poTableFill (tableIndex, rowOffset, upDeleteCount,dwnDeleteCount:integer; tableHead, tableBody:string ) ;
 
   private
     { Private declarations }
@@ -895,8 +894,8 @@ begin
     WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
       EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
         tmp1 := ibqryLED.RecordCount;
- if not(deleteTable(0, 4, 6, '#Table_Post1' )) then
-  poTableFill (0,3,  '#Table_Post1', '#tbl1' ) ;
+
+  poTableFill (0,3, 4, 6, '#Table_Post1', '#tbl1' ) ;
   //poTableFill (1,3,4, 3, '#Table_Post2', '#tbl2' ) ;
  // poTableFill (2,3,5, 5, '#Table_Post3', '#tbl3' ) ;
  // poTableFill (3,3,4, 6, '#Table_Post4', '#tbl4' ) ;
@@ -906,12 +905,31 @@ begin
 
 end;
 
-function Tform1.deleteTable(tableIndex,  upDeleteCount,dwnDeleteCount:integer; tableHead:string ):boolean ;
-var
+procedure Tform1.poTableFill (tableIndex, rowOffset, upDeleteCount,dwnDeleteCount:integer; tableHead, tableBody:string ) ;
+  var rowT, columnT, number :integer;
+  prev_river: string;
   Extend:OLEVariant;
 begin
-if chklstTabs.Checked[tableIndex] = false then  begin
-    wdUnit := tableHead;
+    if chklstTabs.Checked[tableIndex] = false then  begin
+     {
+        wdUnit := '#head1';
+    tmp1 := true;
+    tmp2 := wdFindStop;
+    tmp3 := '';
+    tmp4 := wdReplaceOne;
+    WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
+      EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
+
+         wdUnit := wdParagraph;
+    tmp1 := 3;
+      tmp4 := wdExtend;
+       WordApp.Selection.MoveDown(wdUnit, tmp1, tmp4);
+
+        tmp1 := 1;
+         wdUnit := wdCharacter;
+     WordApp.Selection.Delete( wdUnit, tmp1);
+                        }
+      wdUnit := tableHead;
     tmp1 := true;
     tmp2 := wdFindStop;
     tmp3 := '';
@@ -945,16 +963,8 @@ if chklstTabs.Checked[tableIndex] = false then  begin
 
     //Selection.MoveDown Unit:=wdLine, Count:=9, Extend:=wdExtend
    // Selection.Delete Unit:=wdCharacter, Count:=1
-   result := true;
   end else
-  result :=  false;
-end;
-
-procedure Tform1.poTableFill (tableIndex, rowOffset:integer; tableHead, tableBody:string ) ;
-  var rowT, columnT, number :integer;
-  prev_river: string;
-  Extend:OLEVariant;
-begin
+   begin
 
     form2.IBDataSetPovSt.Close;
       form2.IBDataSetPovSt.SelectSQL.Clear;
@@ -1155,7 +1165,7 @@ begin
      end;
 
     end;
-
+  end;
 end;
 
 procedure TForm1.po2;
