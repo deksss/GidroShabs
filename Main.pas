@@ -164,6 +164,7 @@ procedure FormCreate(Sender: TObject);
     procedure fillLedTable (PrgnozId,rowOffset:Integer; tablePost,Tbl :string);
     procedure poTableFill (tableIndex, rowOffset:integer; tableHead, tableBody:string ) ;
     function deleteTable(tableIndex,  upDeleteCount,dwnDeleteCount:integer; tableHead:string ):boolean ;
+    procedure poTable1( rowOffset:integer ) ;
 
   private
     { Private declarations }
@@ -897,6 +898,19 @@ begin
         tmp1 := ibqryLED.RecordCount;
  if not(deleteTable(0, 4, 6, '#Table_Post1' )) then
   poTableFill (0,3,  '#Table_Post1', '#tbl1' ) ;
+
+   if not(deleteTable(1, 4, 3, '#Table_Post1' )) then
+  poTableFill (1,3, '#Table_Post2', '#tbl2' );
+
+   if not(deleteTable(2, 5, 5, '#Table_Post1' )) then
+  poTableFill (2,3, '#Table_Post3', '#tbl3' ) ;
+
+   if not(deleteTable(3, 4, 6, '#Table_Post1' )) then
+  poTableFill (3,3, '#Table_Post4', '#tbl4' )  ;
+
+   if not(deleteTable(4, 4, 6, '#Table_Post1' )) then
+  poTableFill (4,3, '#Table_Post5', '#tbl5' ) ;
+
   //poTableFill (1,3,4, 3, '#Table_Post2', '#tbl2' ) ;
  // poTableFill (2,3,5, 5, '#Table_Post3', '#tbl3' ) ;
  // poTableFill (3,3,4, 6, '#Table_Post4', '#tbl4' ) ;
@@ -948,6 +962,88 @@ if chklstTabs.Checked[tableIndex] = false then  begin
    result := true;
   end else
   result :=  false;
+end;
+
+
+procedure Tform1.poTable1 (
+ rowOffset:integer ) ;
+  var rowT, columnT, number :integer;
+  prev_river: string;
+  Extend:OLEVariant;
+begin
+  rowT := rowOffset;
+  number := 0;
+  with(WordApp.Selection.Tables.Item(1))do
+    begin
+      form2.IBDataSetPovBas.First;
+      while(not form2.IBDataSetPovBas.Eof) do begin
+      if ( NOT (form2.IBDataSetPovBas.FieldByName('INDEX_OBJ').AsInteger IN [9,10,11]))
+       then begin
+          columnT := 2;
+          Cell(rowT, columnT).Range.Text := form2.IBDataSetPovBas.FieldByName('CP_NAME').AsWideString;
+          Cell(rowT, 1).Merge(Cell(rowT, 9));
+           rowT := rowT + 1;
+           ibqryPo.Close;
+           ibqryPo.ParamByName('type_obj').Asinteger := 1;
+           ibqryPo.ParamByName('prognoz_name').Asinteger := StrToInt
+            ((copy(parForm, 3, 1)));     ibqryPo.ParamByName('type_obj').Asinteger := 1;
+           ibqryPo.ParamByName('poolId').Asinteger :=
+           form2.IBDataSetPovBas.FieldByName('INDEX_OBJ').AsInteger;
+           ibqryPo.Open;
+           ibqryPo.First;
+           while(not ibqryPo.Eof)do
+           begin
+               number := number + 1;
+               columnT := 1;
+               Cell(rowT, columnT).Range.Text := IntToStr(number);
+               if prev_river <> ibqryPo.FieldByName('CR_NAME').AsWideString then
+               begin
+                  columnT := 2;
+                  Cell(rowT, columnT).Range.Text :=
+                  ibqryPo.FieldByName('CR_NAME').AsWideString;
+                  prev_river := ibqryPo.FieldByName('CR_NAME').AsWideString;
+               end;
+                  columnT := 3;
+                  Cell(rowT, columnT).Range.Text :=
+                  ibqryPo.FieldByName('CPM_NAME').AsWideString;
+
+                    columnT := 6;
+                  Cell(rowT, columnT).Range.Text :=
+                FloatToStrF(  ibqryPo.FieldByName('POST_NIL').AsFloat, ffFixed, 8, 1);
+
+                  if ibqryPo.FieldByName('CR_TYPE').AsInteger = 1 then
+                  begin
+                     columnT := 7;
+                     Cell(rowT, columnT).Range.Text :=
+                     ibqryPo.FieldByName('NB7A_HMAXM').AsWideString;
+                     columnT := 8;
+                     Cell(rowT, columnT).Range.Text :=
+                     ibqryPo.FieldByName('NB7A_HMIDM').AsWideString;
+                     columnT := 9;
+                     Cell(rowT, columnT).Range.Text :=
+                     ibqryPo.FieldByName('NB7A_HMINM').AsWideString;
+                  end else
+                  begin
+                     columnT := 7;
+                     Cell(rowT, columnT).Range.Text :=
+                     ibqryPo.FieldByName('NB7B_HMAXY').AsWideString;
+                     columnT := 8;
+                     Cell(rowT, columnT).Range.Text :=
+                     ibqryPo.FieldByName('NB7B_HMIDY').AsWideString;
+                     columnT := 9;
+                     Cell(rowT, columnT).Range.Text :=
+                     ibqryPo.FieldByName('NB7B_HMINY').AsWideString;
+                  end;
+
+               rowT := rowT + 1;
+               ibqryPo.Next;
+                  end;
+        end;
+       form2.IBDataSetPovBas.Next;
+      end;
+
+  end;
+
 end;
 
 procedure Tform1.poTableFill (tableIndex, rowOffset:integer; tableHead, tableBody:string ) ;
@@ -1020,6 +1116,8 @@ begin
     wdUnit := wdCharacter;
     tmp1 := 1;
     WordApp.Selection.MoveRight(wdUnit, tmp1, EmptyParam);
+    poTable1(rowOffset) ;
+  {
   rowT := rowOffset;
   number := 0;
    with(WordApp.Selection.Tables.Item(1))do
@@ -1057,7 +1155,7 @@ begin
                   Cell(rowT, columnT).Range.Text :=
                   ibqryPo.FieldByName('CPM_NAME').AsWideString;
 
-                    columnT := 4;
+                    columnT := 6;
                   Cell(rowT, columnT).Range.Text :=
                 FloatToStrF(  ibqryPo.FieldByName('POST_NIL').AsFloat, ffFixed, 8, 1);
 
@@ -1088,7 +1186,9 @@ begin
                rowT := rowT + 1;
                ibqryPo.Next;
                   end;
-        end else if (form2.IBDataSetPovBas.FieldByName('INDEX_OBJ').AsInteger IN [9,10,11]) then begin
+        end
+
+        else if (form2.IBDataSetPovBas.FieldByName('INDEX_OBJ').AsInteger IN [9,10,11]) then begin
          columnT := 2;
           Cell(rowT, columnT).Range.Text := form2.IBDataSetPovBas.FieldByName('CP_NAME').AsWideString;
           Cell(rowT, 1).Merge(Cell(rowT, 9));
@@ -1155,7 +1255,7 @@ begin
      end;
 
     end;
-
+     }
 end;
 
 procedure TForm1.po2;
