@@ -74,6 +74,11 @@ type
     smlntfldIBDataSetPovSttable3: TSmallintField;
     smlntfldIBDataSetPovSttable4: TSmallintField;
     smlntfldIBDataSetPovSttable5: TSmallintField;
+    smlntfldIBDataSetPovBastable1: TSmallintField;
+    smlntfldIBDataSetPovBastable2: TSmallintField;
+    smlntfldIBDataSetPovBastable3: TSmallintField;
+    smlntfldIBDataSetPovBastable4: TSmallintField;
+    smlntfldIBDataSetPovBastable5: TSmallintField;
     procedure Button1Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
 

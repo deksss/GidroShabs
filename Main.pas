@@ -272,7 +272,8 @@ procedure TForm1.wordStart();
     EmptyParam, EmptyParam, EmptyParam, EmptyParam, EmptyParam, EmptyParam);
 end;
 
-procedure TForm1.wordFinish(); begin
+procedure TForm1.wordFinish();
+begin
   WordApp.Selection.Find.ExecuteOld(wdUnit, EmptyParam, tmp1, EmptyParam,
     EmptyParam, EmptyParam, tmp1, tmp2, EmptyParam, tmp3, tmp4);
   WordApp.ActiveDocument.Save;
@@ -895,10 +896,10 @@ begin
         tmp1 := ibqryLED.RecordCount;
 
   poTableFill (0,3, 4, 6, '#Table_Post1', '#tbl1' ) ;
-  poTableFill (1,3,4, 3, '#Table_Post2', '#tbl2' ) ;
-  poTableFill (2,3,5, 5, '#Table_Post3', '#tbl3' ) ;
-  poTableFill (3,3,4, 6, '#Table_Post4', '#tbl4' ) ;
-  poTableFill (4,3,4, 6, '#Table_Post5', '#tbl5' ) ;
+  //poTableFill (1,3,4, 3, '#Table_Post2', '#tbl2' ) ;
+ // poTableFill (2,3,5, 5, '#Table_Post3', '#tbl3' ) ;
+ // poTableFill (3,3,4, 6, '#Table_Post4', '#tbl4' ) ;
+//  poTableFill (4,3,4, 6, '#Table_Post5', '#tbl5' ) ;
   footer();
   wordFinish();
 
@@ -966,8 +967,8 @@ begin
    begin
 
     form2.IBDataSetPovSt.Close;
-
-     form2.IBDataSetPovSt.SelectSQL.Text := 'select'  +
+      form2.IBDataSetPovSt.SelectSQL.Clear;
+     form2.IBDataSetPovSt.SelectSQL.Add ('select'  +
  ' INDEX_OBJ,   '  +
    ' CHEKED,  '     +
    ' cpm_name, '     +
@@ -975,15 +976,24 @@ begin
 ' table1, table2, table3, table4, table5  '   +
 ' from PROGNOZ_POV p,cat_postm c, cat_river r   '   +
 ' where  c.POST_INDEX  = p.INDEX_OBJ and c.river_id=r.river_id  '  +
- ' and type_obj = :type_obj   '     +
+' and type_obj = :type_obj   '     +
 ' and prognoz_name=:prognoz_name    '   +
-' and table1 = 1';
+' and p.table1 = 1');
     form2.IBDataSetPovSt.ParamByName('type_obj').Asinteger := 1;
     form2.IBDataSetPovSt.ParamByName('prognoz_name').Asinteger := StrToInt
       ((copy(parForm, 3, 1)));
      form2.IBDataSetPovSt.Open;
 
     form2.IBDataSetPovBas.Close;
+     form2.IBDataSetPovBas.SelectSQL.Text :=
+' select'     +
+' INDEX_OBJ,  '                                          +
+' CHEKED,    '                                        +
+' CP_NAME, PROGNOZ_NAME, TYPE_OBJ, table1, table2, table3, table4, table5 '                     +
+' from PROGNOZ_POV p, CAT_POOL c'                           +
+' where  c.POOL_ID  = p.INDEX_OBJ   and type_obj= :type_obj and prognoz_name= :prognoz_name ' +
+' and p.table1 = 1';
+
     form2.IBDataSetPovBas.ParamByName('type_obj').Asinteger := 2;
     form2.IBDataSetPovBas.ParamByName('prognoz_name').Asinteger := StrToInt
     ((copy(parForm, 3, 1)));
@@ -991,7 +1001,7 @@ begin
 
      form2.IBDataSetPovBas.FetchAll;
      form2.IBDataSetPovSt.FetchAll;
-  if form2.IBDataSetPovBas.RecordCount > 1 then
+  if form2.IBDataSetPovBas.RecordCount >= 1 then
   begin
     wdUnit := tableBody;
     tmp1 := true;
@@ -2698,15 +2708,15 @@ begin
   Form2.dbnvgrRiver.Visible := False;
     form2.IBDataSetPovSt.Close;
      form2.IBDataSetPovSt.SelectSQL.Text := 'select'  +
- ' INDEX_OBJ,   '  +
-   ' CHEKED,  '     +
-   ' cpm_name, '     +
-   ' CR_NAME, type_obj, PROGNOZ_NAME,  '     +
-' table1, table2, table3, table4, table5  '   +
-' from PROGNOZ_POV p,cat_postm c, cat_river r   '   +
-' where  c.POST_INDEX  = p.INDEX_OBJ and c.river_id=r.river_id  '  +
- ' and type_obj = :type_obj   '     +
-' and prognoz_name=:prognoz_name    ';
+  ' INDEX_OBJ,   '  +
+  ' CHEKED,  '     +
+  ' cpm_name, '     +
+  ' CR_NAME, type_obj, PROGNOZ_NAME,  '     +
+  ' table1, table2, table3, table4, table5  '   +
+  ' from PROGNOZ_POV p,cat_postm c, cat_river r   '   +
+  ' where  c.POST_INDEX  = p.INDEX_OBJ and c.river_id=r.river_id  '  +
+  ' and type_obj = :type_obj   '     +
+  ' and prognoz_name=:prognoz_name    ';
     form2.IBDataSetPovSt.ParamByName('type_obj').Asinteger := 1;
     form2.IBDataSetPovSt.ParamByName('prognoz_name').Asinteger := StrToInt
       ((copy(parForm, 3, 1)));
@@ -2746,6 +2756,19 @@ procedure TForm1.ButtonBasClick(Sender: TObject);
 begin
   form2.Caption := 'Каталог басейнів для "' + TreeView1.Selected.Text + '"';
   form2.IBDataSetPovBas.Close;
+
+  form2.IBDataSetPovBas.SelectSQL.Clear;
+  form2.IBDataSetPovBas.SelectSQL.Text :=
+' select '                                +
+' INDEX_OBJ,  '                           +
+' CHEKED,    '                            +
+' CP_NAME, PROGNOZ_NAME, TYPE_OBJ,  table1, table2,  table3,  table4, table5   '   +
+' from PROGNOZ_POV p, CAT_POOL c '                                                  +
+' where  c.POOL_ID  = p.INDEX_OBJ and p.type_obj= :type_obj and p.prognoz_name= :prognoz_name ' ;
+
+//form2.IBDataSetPovBas.Params.AddName('type_obj', 0);
+//form2.IBDataSetPovBas.Params.AddName('prognoz_name', 1);
+
   form2.IBDataSetPovBas.ParamByName('type_obj').Asinteger := 2;
   form2.IBDataSetPovBas.ParamByName('prognoz_name').Asinteger := StrToInt
     ((copy(parForm, 3, 1)));
@@ -2755,7 +2778,10 @@ begin
     form2.DBNavigator1.DataSource:=  form2.DataSourceBAS;
   form2.pnlLedRiver.Visible := false;
   form2.Show;
+
 end;
+
+
 
 procedure TForm1.ButtonNumberPrognozClick(Sender: TObject);
 var

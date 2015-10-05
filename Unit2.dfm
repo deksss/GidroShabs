@@ -274,36 +274,49 @@ object Form2: TForm2
       '  TYPE_OBJ = :OLD_TYPE_OBJ')
     InsertSQL.Strings = (
       'insert into PROGNOZ_POV'
-      '  (CHEKED, INDEX_OBJ, PROGNOZ_NAME, TYPE_OBJ)'
+      
+        '  (CHEKED, INDEX_OBJ, PROGNOZ_NAME, TYPE_OBJ, TABLE1, TABLE2, TA' +
+        'BLE3, TABLE4, TABLE5)'
       'values'
-      '  (:CHEKED, :INDEX_OBJ, :PROGNOZ_NAME, :TYPE_OBJ)')
+      
+        '  (:CHEKED, :INDEX_OBJ, :PROGNOZ_NAME, :TYPE_OBJ, :TABLE1, :TABL' +
+        'E2, :TABLE3, :TABLE4, :TABLE5)')
     RefreshSQL.Strings = (
       'Select '
-      '  INDEX_OBJ,'
-      '  PROGNOZ_NAME,'
-      '  TYPE_OBJ'
+      'INDEX_OBJ,'
+      'PROGNOZ_NAME,'
+      'TYPE_OBJ,'
+      'table1,'
+      'table2,'
+      'table3,'
+      'table4,'
+      'table5'
       'from PROGNOZ_POV '
       'where'
       '  INDEX_OBJ = :INDEX_OBJ and'
       '  PROGNOZ_NAME = :PROGNOZ_NAME and'
       '  TYPE_OBJ = :TYPE_OBJ')
     SelectSQL.Strings = (
-      'select '
-      'INDEX_OBJ, '
-      '    CHEKED, '
-      '   CP_NAME, PROGNOZ_NAME, TYPE_OBJ '
+      
+        'select  INDEX_OBJ,  CHEKED, CP_NAME, PROGNOZ_NAME, TYPE_OBJ, tab' +
+        'le1, table2,  table3,  table4, table5  '
       'from PROGNOZ_POV p, CAT_POOL c '
       
-        'where  c.POOL_ID  = p.INDEX_OBJ   and type_obj=:type_obj and pro' +
-        'gnoz_name=:prognoz_name')
+        'where  c.POOL_ID  = p.INDEX_OBJ   and p.type_obj=:type_obj and p' +
+        '.prognoz_name=:prognoz_name')
     ModifySQL.Strings = (
       'update PROGNOZ_POV'
       'set'
-      '  CHEKED = :CHEKED'
+      'CHEKED = :CHEKED,'
+      'TABLE1 = :TABLE1,'
+      'TABLE2 = :TABLE2,'
+      'TABLE3 = :TABLE3,'
+      'TABLE4 = :TABLE4,'
+      'TABLE5 = :TABLE5'
       'where'
       '  INDEX_OBJ = :OLD_INDEX_OBJ and'
       '  PROGNOZ_NAME = :OLD_PROGNOZ_NAME and'
-      '  TYPE_OBJ = :OLD_TYPE_OBJ')
+      '  TYPE_OBJ = :OLD_TYPE_OBJ ')
     Left = 456
     Top = 176
     object IBDataSetPovBasCHEKED: TSmallintField
@@ -346,6 +359,21 @@ object Form2: TForm2
       LookupResultField = 'CP_NAME'
       KeyFields = 'INDEX_OBJ'
       Lookup = True
+    end
+    object smlntfldIBDataSetPovBastable1: TSmallintField
+      FieldName = 'table1'
+    end
+    object smlntfldIBDataSetPovBastable2: TSmallintField
+      FieldName = 'table2'
+    end
+    object smlntfldIBDataSetPovBastable3: TSmallintField
+      FieldName = 'table3'
+    end
+    object smlntfldIBDataSetPovBastable4: TSmallintField
+      FieldName = 'table4'
+    end
+    object smlntfldIBDataSetPovBastable5: TSmallintField
+      FieldName = 'table5'
     end
   end
   object DataSourceVD: TDataSource
